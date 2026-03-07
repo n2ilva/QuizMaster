@@ -1,0 +1,2 @@
+/api/* http://ec2-52-67-13-135.sa-east-1.compute.amazonaws.com:4000/api/:splat 200
+/* /index.html 200

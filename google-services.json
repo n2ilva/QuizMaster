@@ -1,0 +1,40 @@
+
+{
+  "project_info": {
+    "project_number": "454007326893",
+    "project_id": "cardmaster-934d5",
+    "storage_bucket": "cardmaster-934d5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454007326893:android:4a6a169120ee1a9e7f1e24",
+        "android_client_info": {
+          "package_name": "com.n2ilva.cardmaster"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "454007326893-4es9b9372o7anojsarkss8l0cv36a8s3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoNbDhysokUnDOJ4DOXc7TzY8wIODgZZY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454007326893-4es9b9372o7anojsarkss8l0cv36a8s3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
