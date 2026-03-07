@@ -274,7 +274,7 @@ export default function StudySessionScreen() {
   if (totalCards === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-white px-5 dark:bg-[#151718]">
-        <View style={Platform.OS === 'web' ? { maxWidth: '70%', width: '100%', alignItems: 'center' } : undefined}>
+        <View>
         <Text className="text-lg font-bold text-[#11181C] dark:text-[#ECEDEE]">
           Nenhum quiz disponível
         </Text>
@@ -295,7 +295,7 @@ export default function StudySessionScreen() {
   if (finished) {
     return (
       <View className="flex-1 items-center justify-center bg-white px-5 dark:bg-[#151718]">
-        <View style={Platform.OS === 'web' ? { maxWidth: '70%', width: '100%', alignItems: 'center' } : undefined}>
+        <View>
         {saving ? (
           <ActivityIndicator size="large" color="#3F51B5" />
         ) : (
@@ -346,7 +346,7 @@ export default function StudySessionScreen() {
       <View
         style={[
           { flex: 1 },
-          isWeb ? { maxWidth: '70%', width: '100%', alignSelf: 'center' } : undefined,
+          isWeb ? { width: '100%', alignSelf: 'center' } : undefined,
         ]}>
       {/* Header */}
       <Text className="text-xs font-medium tracking-wide text-[#687076] dark:text-[#9BA1A6]">
