@@ -274,14 +274,17 @@ export function GlossaryText({
     pattern.lastIndex = 0;
     let lastIndex = 0;
     let match: RegExpExecArray | null;
+    const seenTerms = new Set<string>();
 
     while ((match = pattern.exec(text)) !== null) {
       if (match.index > lastIndex) {
         result.push({ text: text.slice(lastIndex, match.index) });
       }
       const matched = match[0];
-      const entry = glossary[matched.toLowerCase()];
-      if (entry) {
+      const termKey = matched.toLowerCase();
+      const entry = glossary[termKey];
+      if (entry && !seenTerms.has(termKey)) {
+        seenTerms.add(termKey);
         result.push({ text: matched, entry });
       } else {
         result.push({ text: matched });
