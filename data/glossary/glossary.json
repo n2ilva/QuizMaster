@@ -1,0 +1,2858 @@
+[
+  {
+    "term": "API",
+    "definition": "Application Programming Interface — conjunto de regras e protocolos que permite a comunicação entre diferentes sistemas de software."
+  },
+  {
+    "term": "REST",
+    "definition": "Representational State Transfer — estilo de arquitetura para APIs web que utiliza os métodos HTTP (GET, POST, PUT, DELETE) para operações sobre recursos."
+  },
+  {
+    "term": "HTTP",
+    "definition": "HyperText Transfer Protocol — protocolo de comunicação usado para transferir páginas web e dados na internet."
+  },
+  {
+    "term": "HTTPS",
+    "definition": "HTTP Secure — versão segura do HTTP que usa criptografia TLS/SSL para proteger os dados transmitidos."
+  },
+  {
+    "term": "TCP",
+    "definition": "Transmission Control Protocol — protocolo de transporte confiável que garante a entrega ordenada de dados entre aplicações em rede."
+  },
+  {
+    "term": "UDP",
+    "definition": "User Datagram Protocol — protocolo de transporte rápido, sem garantia de entrega, usado em streaming e jogos online."
+  },
+  {
+    "term": "IP",
+    "definition": "Internet Protocol — protocolo responsável pelo endereçamento e roteamento de pacotes de dados na rede."
+  },
+  {
+    "term": "DNS",
+    "definition": "Domain Name System — sistema que traduz nomes de domínio (ex: google.com) em endereços IP numéricos."
+  },
+  {
+    "term": "SQL",
+    "definition": "Structured Query Language — linguagem padrão para consultar e manipular dados em bancos de dados relacionais."
+  },
+  {
+    "term": "NoSQL",
+    "definition": "Tipo de banco de dados que não usa o modelo relacional tradicional. Inclui bancos de documentos, chave-valor, colunas e grafos."
+  },
+  {
+    "term": "CRUD",
+    "definition": "Create, Read, Update, Delete — as quatro operações básicas de persistência de dados em um sistema."
+  },
+  {
+    "term": "ORM",
+    "definition": "Object-Relational Mapping — técnica que mapeia objetos de uma linguagem de programação para tabelas de um banco de dados relacional."
+  },
+  {
+    "term": "MVC",
+    "definition": "Model-View-Controller — padrão de arquitetura que separa a aplicação em três camadas: modelo de dados, interface visual e lógica de controle."
+  },
+  {
+    "term": "JSON",
+    "definition": "JavaScript Object Notation — formato leve de troca de dados baseado em pares chave-valor, muito usado em APIs web."
+  },
+  {
+    "term": "XML",
+    "definition": "eXtensible Markup Language — linguagem de marcação usada para estruturar e transportar dados entre sistemas."
+  },
+  {
+    "term": "HTML",
+    "definition": "HyperText Markup Language — linguagem de marcação usada para criar a estrutura de páginas web."
+  },
+  {
+    "term": "CSS",
+    "definition": "Cascading Style Sheets — linguagem usada para definir o estilo visual (cores, fontes, layout) de páginas HTML."
+  },
+  {
+    "term": "DOM",
+    "definition": "Document Object Model — representação em árvore da estrutura de um documento HTML/XML, manipulável via JavaScript."
+  },
+  {
+    "term": "Git",
+    "definition": "Sistema de controle de versão distribuído que permite rastrear alterações no código-fonte e colaborar em equipe."
+  },
+  {
+    "term": "GitHub",
+    "definition": "Plataforma de hospedagem de repositórios Git na nuvem, com recursos de colaboração, CI/CD e gerenciamento de projetos."
+  },
+  {
+    "term": "Docker",
+    "definition": "Plataforma de containerização que empacota aplicações e suas dependências em containers isolados e portáteis."
+  },
+  {
+    "term": "Container",
+    "definition": "Unidade leve e isolada de software que inclui código, runtime, bibliotecas e configurações para executar uma aplicação de forma consistente."
+  },
+  {
+    "term": "Kubernetes",
+    "definition": "Plataforma de orquestração de containers que automatiza deploy, escalonamento e gerenciamento de aplicações containerizadas."
+  },
+  {
+    "term": "CI/CD",
+    "definition": "Continuous Integration / Continuous Delivery — práticas de automação que integram, testam e entregam código de forma contínua."
+  },
+  {
+    "term": "DevOps",
+    "definition": "Cultura e conjunto de práticas que integram desenvolvimento (Dev) e operações (Ops) para entregar software com mais velocidade e qualidade."
+  },
+  {
+    "term": "Microserviços",
+    "definition": "Arquitetura em que a aplicação é dividida em serviços pequenos e independentes, cada um responsável por uma funcionalidade específica."
+  },
+  {
+    "term": "Monolito",
+    "definition": "Arquitetura em que toda a aplicação é construída como uma única unidade, com todos os componentes acoplados."
+  },
+  {
+    "term": "Serverless",
+    "definition": "Modelo de computação em nuvem onde o provedor gerencia a infraestrutura e o desenvolvedor foca apenas no código das funções."
+  },
+  {
+    "term": "AWS",
+    "definition": "Amazon Web Services — plataforma de serviços em nuvem da Amazon, líder de mercado em cloud computing."
+  },
+  {
+    "term": "Azure",
+    "definition": "Plataforma de serviços em nuvem da Microsoft, oferecendo computação, armazenamento, IA e outros serviços."
+  },
+  {
+    "term": "GCP",
+    "definition": "Google Cloud Platform — plataforma de serviços em nuvem do Google, com foco em dados, IA e infraestrutura global."
+  },
+  {
+    "term": "S3",
+    "definition": "Amazon Simple Storage Service — serviço de armazenamento de objetos da AWS, escalável e durável."
+  },
+  {
+    "term": "EC2",
+    "definition": "Amazon Elastic Compute Cloud — serviço da AWS que fornece servidores virtuais redimensionáveis na nuvem."
+  },
+  {
+    "term": "Lambda",
+    "definition": "AWS Lambda — serviço serverless da AWS que executa código em resposta a eventos, sem necessidade de gerenciar servidores."
+  },
+  {
+    "term": "VPC",
+    "definition": "Virtual Private Cloud — rede virtual isolada dentro de um provedor de nuvem, onde você controla sub-redes, rotas e segurança."
+  },
+  {
+    "term": "CDN",
+    "definition": "Content Delivery Network — rede de servidores distribuídos globalmente que armazena em cache e entrega conteúdo ao usuário mais próximo."
+  },
+  {
+    "term": "Load Balancer",
+    "definition": "Balanceador de carga — distribui o tráfego de rede entre múltiplos servidores para otimizar desempenho e garantir alta disponibilidade."
+  },
+  {
+    "term": "Firewall",
+    "definition": "Sistema de segurança de rede que monitora e filtra o tráfego de entrada e saída com base em regras de segurança predefinidas."
+  },
+  {
+    "term": "Proxy",
+    "definition": "Servidor intermediário que atua entre o cliente e o servidor de destino, podendo fornecer cache, anonimato ou filtragem."
+  },
+  {
+    "term": "SSH",
+    "definition": "Secure Shell — protocolo criptográfico para acesso remoto seguro a servidores via linha de comando."
+  },
+  {
+    "term": "SSL",
+    "definition": "Secure Sockets Layer — protocolo de segurança (predecessor do TLS) que criptografa a comunicação entre cliente e servidor."
+  },
+  {
+    "term": "TLS",
+    "definition": "Transport Layer Security — protocolo criptográfico que fornece comunicação segura na internet, sucessor do SSL."
+  },
+  {
+    "term": "OAuth",
+    "definition": "Protocolo de autorização que permite que aplicações acessem recursos de um usuário em outro serviço sem expor suas credenciais."
+  },
+  {
+    "term": "JWT",
+    "definition": "JSON Web Token — padrão para criação de tokens de acesso compactos e seguros, usado em autenticação de APIs."
+  },
+  {
+    "term": "Token",
+    "definition": "Sequência de caracteres que representa permissão de acesso ou identidade em sistemas de autenticação e autorização."
+  },
+  {
+    "term": "Hash",
+    "definition": "Função que transforma dados de tamanho variável em uma saída de tamanho fixo. Usada para verificação de integridade e armazenamento de senhas."
+  },
+  {
+    "term": "Criptografia",
+    "definition": "Técnica de codificação que transforma dados legíveis em formato ilegível, protegendo informações contra acessos não autorizados."
+  },
+  {
+    "term": "Endpoint",
+    "definition": "URL específica de uma API onde um recurso pode ser acessado. Ex: /api/users é um endpoint para gerenciar usuários."
+  },
+  {
+    "term": "Payload",
+    "definition": "Corpo de dados transmitido em uma requisição ou resposta HTTP, geralmente em formato JSON."
+  },
+  {
+    "term": "Middleware",
+    "definition": "Software intermediário que processa requisições entre o cliente e o servidor, podendo tratar autenticação, logs, erros, etc."
+  },
+  {
+    "term": "Framework",
+    "definition": "Estrutura de código reutilizável que fornece funcionalidades prontas para acelerar o desenvolvimento de aplicações."
+  },
+  {
+    "term": "Biblioteca",
+    "definition": "Conjunto de funções e módulos reutilizáveis que podem ser importados em um projeto para evitar reescrever código."
+  },
+  {
+    "term": "SDK",
+    "definition": "Software Development Kit — conjunto de ferramentas, bibliotecas e documentação para desenvolver aplicações em uma plataforma específica."
+  },
+  {
+    "term": "IDE",
+    "definition": "Integrated Development Environment — ambiente de desenvolvimento integrado com editor de código, debugger e ferramentas de build."
+  },
+  {
+    "term": "Compilador",
+    "definition": "Programa que traduz código-fonte de uma linguagem de programação para código de máquina ou bytecode executável."
+  },
+  {
+    "term": "Interpretador",
+    "definition": "Programa que executa código-fonte linha a linha, sem necessidade de compilação prévia. Usado em Python, JavaScript, etc."
+  },
+  {
+    "term": "Runtime",
+    "definition": "Ambiente de execução que fornece os recursos necessários para rodar um programa, como gerenciamento de memória e I/O."
+  },
+  {
+    "term": "Heap",
+    "definition": "Região de memória usada para alocação dinâmica de objetos durante a execução de um programa."
+  },
+  {
+    "term": "Stack",
+    "definition": "Estrutura de dados LIFO (último a entrar, primeiro a sair) usada para gerenciar chamadas de funções e variáveis locais na memória."
+  },
+  {
+    "term": "Queue",
+    "definition": "Estrutura de dados FIFO (primeiro a entrar, primeiro a sair) usada em filas de processamento e mensageria."
+  },
+  {
+    "term": "Array",
+    "definition": "Estrutura de dados que armazena uma coleção ordenada de elementos acessíveis por índice numérico."
+  },
+  {
+    "term": "Linked List",
+    "definition": "Lista encadeada — estrutura de dados onde cada elemento (nó) aponta para o próximo, permitindo inserções e remoções eficientes."
+  },
+  {
+    "term": "Árvore Binária",
+    "definition": "Estrutura de dados hierárquica onde cada nó tem no máximo dois filhos (esquerdo e direito), usada em buscas eficientes."
+  },
+  {
+    "term": "Grafo",
+    "definition": "Estrutura de dados composta por vértices (nós) e arestas (conexões), usada para modelar relações entre elementos."
+  },
+  {
+    "term": "Algoritmo",
+    "definition": "Sequência finita e ordenada de passos lógicos para resolver um problema ou realizar uma tarefa."
+  },
+  {
+    "term": "Big O",
+    "definition": "Notação matemática que descreve a complexidade de tempo ou espaço de um algoritmo no pior caso. Ex: O(n), O(log n)."
+  },
+  {
+    "term": "Recursão",
+    "definition": "Técnica de programação onde uma função chama a si mesma para resolver subproblemas menores até atingir um caso base."
+  },
+  {
+    "term": "Polimorfismo",
+    "definition": "Princípio da POO onde objetos de diferentes classes podem ser tratados de forma uniforme através de uma interface ou classe base comum."
+  },
+  {
+    "term": "Herança",
+    "definition": "Mecanismo da POO que permite criar uma nova classe a partir de uma classe existente, reutilizando seus atributos e métodos."
+  },
+  {
+    "term": "Encapsulamento",
+    "definition": "Princípio da POO que oculta os detalhes internos de um objeto, expondo apenas uma interface pública controlada."
+  },
+  {
+    "term": "Abstração",
+    "definition": "Princípio que simplifica a complexidade ocultando detalhes desnecessários e mostrando apenas o essencial para o uso."
+  },
+  {
+    "term": "Interface",
+    "definition": "Contrato que define métodos que uma classe deve implementar, sem especificar a implementação concreta."
+  },
+  {
+    "term": "Classe",
+    "definition": "Modelo ou blueprint que define atributos (dados) e métodos (comportamentos) para criar objetos na programação orientada a objetos."
+  },
+  {
+    "term": "Objeto",
+    "definition": "Instância de uma classe que contém dados (atributos) e comportamentos (métodos) próprios."
+  },
+  {
+    "term": "POO",
+    "definition": "Programação Orientada a Objetos — paradigma de programação baseado em classes e objetos, com princípios como herança, polimorfismo e encapsulamento."
+  },
+  {
+    "term": "Design Pattern",
+    "definition": "Padrão de Projeto — solução reutilizável para problemas recorrentes no design de software. Ex: Singleton, Observer, Factory."
+  },
+  {
+    "term": "Singleton",
+    "definition": "Padrão de projeto que garante que uma classe tenha apenas uma instância e fornece um ponto global de acesso a ela."
+  },
+  {
+    "term": "Factory",
+    "definition": "Padrão de projeto que encapsula a criação de objetos, delegando a instanciação para subclasses ou métodos especializados."
+  },
+  {
+    "term": "Observer",
+    "definition": "Padrão de projeto onde um objeto (sujeito) notifica automaticamente seus dependentes (observadores) sobre mudanças de estado."
+  },
+  {
+    "term": "SOLID",
+    "definition": "Cinco princípios de design orientado a objetos: Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation e Dependency Inversion."
+  },
+  {
+    "term": "Clean Code",
+    "definition": "Conjunto de práticas para escrever código legível, simples e fácil de manter, popularizado por Robert C. Martin."
+  },
+  {
+    "term": "Refatoração",
+    "definition": "Processo de reestruturar código existente sem alterar seu comportamento externo, melhorando legibilidade e manutenibilidade."
+  },
+  {
+    "term": "Teste Unitário",
+    "definition": "Teste automatizado que verifica o funcionamento correto de uma unidade isolada de código, como uma função ou método."
+  },
+  {
+    "term": "TDD",
+    "definition": "Test-Driven Development — metodologia onde os testes são escritos antes do código de produção."
+  },
+  {
+    "term": "Mock",
+    "definition": "Objeto simulado usado em testes para substituir dependências reais, permitindo testar componentes de forma isolada."
+  },
+  {
+    "term": "Scrum",
+    "definition": "Framework ágil para gerenciamento de projetos com sprints, daily meetings, product backlog e retrospectivas."
+  },
+  {
+    "term": "Sprint",
+    "definition": "Período fixo (geralmente 1-4 semanas) no Scrum em que a equipe se compromete a entregar um incremento funcional do produto."
+  },
+  {
+    "term": "Kanban",
+    "definition": "Metodologia visual de gerenciamento de trabalho que usa quadros com colunas para acompanhar o fluxo de tarefas."
+  },
+  {
+    "term": "Agile",
+    "definition": "Conjunto de valores e princípios para desenvolvimento iterativo e incremental, com foco em entregas frequentes e adaptação a mudanças."
+  },
+  {
+    "term": "Backlog",
+    "definition": "Lista priorizada de funcionalidades, melhorias e correções pendentes em um projeto de desenvolvimento."
+  },
+  {
+    "term": "Deploy",
+    "definition": "Processo de disponibilizar uma aplicação em um ambiente (produção, staging, etc.) para uso dos usuários finais."
+  },
+  {
+    "term": "Rollback",
+    "definition": "Processo de reverter uma alteração ou deploy para uma versão anterior estável em caso de erro ou falha."
+  },
+  {
+    "term": "Cache",
+    "definition": "Armazenamento temporário de dados frequentemente acessados para acelerar futuras requisições e reduzir carga no servidor."
+  },
+  {
+    "term": "Redis",
+    "definition": "Banco de dados em memória de alta performance, usado como cache, fila de mensagens e armazenamento de sessões."
+  },
+  {
+    "term": "MongoDB",
+    "definition": "Banco de dados NoSQL orientado a documentos que armazena dados em formato JSON/BSON flexível."
+  },
+  {
+    "term": "PostgreSQL",
+    "definition": "Sistema de banco de dados relacional open-source robusto, com suporte a JSON, extensões e consultas complexas."
+  },
+  {
+    "term": "MySQL",
+    "definition": "Sistema de banco de dados relacional open-source amplamente usado em aplicações web."
+  },
+  {
+    "term": "Firebase",
+    "definition": "Plataforma do Google que oferece backend como serviço (BaaS) com autenticação, banco de dados em tempo real, hosting e mais."
+  },
+  {
+    "term": "Firestore",
+    "definition": "Banco de dados NoSQL do Firebase, orientado a documentos, com sincronização em tempo real e consultas avançadas."
+  },
+  {
+    "term": "GraphQL",
+    "definition": "Linguagem de consulta para APIs que permite ao cliente especificar exatamente quais dados precisa, evitando over-fetching."
+  },
+  {
+    "term": "WebSocket",
+    "definition": "Protocolo de comunicação bidirecional em tempo real entre cliente e servidor sobre uma conexão TCP persistente."
+  },
+  {
+    "term": "Webhook",
+    "definition": "Mecanismo de callback HTTP que permite a um sistema notificar outro automaticamente quando um evento ocorre."
+  },
+  {
+    "term": "Latência",
+    "definition": "Tempo de atraso entre o envio de uma requisição e o recebimento da resposta em uma comunicação de rede."
+  },
+  {
+    "term": "Throughput",
+    "definition": "Volume de dados ou transações processadas por unidade de tempo em um sistema."
+  },
+  {
+    "term": "Escalabilidade",
+    "definition": "Capacidade de um sistema crescer e lidar com aumento de carga, seja adicionando recursos (vertical) ou instâncias (horizontal)."
+  },
+  {
+    "term": "Alta Disponibilidade",
+    "definition": "Capacidade de um sistema permanecer operacional e acessível por longos períodos, minimizando tempo de inatividade."
+  },
+  {
+    "term": "SLA",
+    "definition": "Service Level Agreement — acordo formal que define o nível de serviço esperado, como uptime de 99,9%."
+  },
+  {
+    "term": "Terraform",
+    "definition": "Ferramenta de Infrastructure as Code (IaC) que permite definir e provisionar infraestrutura em nuvem usando código declarativo."
+  },
+  {
+    "term": "IaC",
+    "definition": "Infrastructure as Code — prática de gerenciar e provisionar infraestrutura através de arquivos de configuração em vez de processos manuais."
+  },
+  {
+    "term": "Ansible",
+    "definition": "Ferramenta de automação de TI para gerenciamento de configuração, deploy e orquestração de servidores."
+  },
+  {
+    "term": "Linux",
+    "definition": "Sistema operacional open-source baseado em Unix, amplamente usado em servidores, cloud e dispositivos embarcados."
+  },
+  {
+    "term": "Bash",
+    "definition": "Bourne Again Shell — interpretador de comandos padrão do Linux, usado para automação e scripts de sistema."
+  },
+  {
+    "term": "CLI",
+    "definition": "Command Line Interface — interface de linha de comando que permite interagir com o sistema através de comandos de texto."
+  },
+  {
+    "term": "GUI",
+    "definition": "Graphical User Interface — interface gráfica de usuário com janelas, botões e menus visuais."
+  },
+  {
+    "term": "Machine Learning",
+    "definition": "Subcampo da IA que permite que sistemas aprendam padrões a partir de dados sem serem explicitamente programados."
+  },
+  {
+    "term": "Deep Learning",
+    "definition": "Subcampo do Machine Learning que usa redes neurais profundas (com muitas camadas) para aprender representações complexas."
+  },
+  {
+    "term": "Rede Neural",
+    "definition": "Modelo computacional inspirado no cérebro humano, composto por neurônios artificiais organizados em camadas que aprendem padrões."
+  },
+  {
+    "term": "NLP",
+    "definition": "Natural Language Processing — processamento de linguagem natural, área da IA que lida com a compreensão e geração de texto humano."
+  },
+  {
+    "term": "LLM",
+    "definition": "Large Language Model — modelo de linguagem de grande escala treinado com bilhões de parâmetros, como GPT e LLaMA."
+  },
+  {
+    "term": "GPT",
+    "definition": "Generative Pre-trained Transformer — arquitetura de modelo de linguagem da OpenAI, base do ChatGPT."
+  },
+  {
+    "term": "Transformer",
+    "definition": "Arquitetura de rede neural baseada em mecanismos de atenção, base dos modelos modernos de NLP como BERT e GPT."
+  },
+  {
+    "term": "Overfitting",
+    "definition": "Quando um modelo de ML se ajusta demais aos dados de treino, perdendo capacidade de generalizar para dados novos."
+  },
+  {
+    "term": "Underfitting",
+    "definition": "Quando um modelo de ML é simples demais para capturar os padrões dos dados, resultando em baixa performance."
+  },
+  {
+    "term": "Dataset",
+    "definition": "Conjunto de dados organizado usado para treinar, validar e testar modelos de Machine Learning."
+  },
+  {
+    "term": "Feature",
+    "definition": "Variável de entrada (atributo) usada por um modelo de ML para fazer previsões. Ex: idade, renda, altura."
+  },
+  {
+    "term": "Epoch",
+    "definition": "Uma passagem completa por todo o dataset de treino durante o treinamento de um modelo de Machine Learning."
+  },
+  {
+    "term": "Batch Size",
+    "definition": "Número de amostras processadas de uma vez antes de atualizar os pesos do modelo durante o treinamento."
+  },
+  {
+    "term": "Gradient Descent",
+    "definition": "Algoritmo de otimização que ajusta os parâmetros do modelo na direção que minimiza a função de perda."
+  },
+  {
+    "term": "Backpropagation",
+    "definition": "Algoritmo que calcula o gradiente da função de perda em relação a cada peso da rede neural, permitindo o aprendizado."
+  },
+  {
+    "term": "CNN",
+    "definition": "Convolutional Neural Network — rede neural especializada em processar dados com estrutura espacial, como imagens."
+  },
+  {
+    "term": "RNN",
+    "definition": "Recurrent Neural Network — rede neural com conexões recorrentes, projetada para processar sequências de dados (texto, áudio)."
+  },
+  {
+    "term": "LSTM",
+    "definition": "Long Short-Term Memory — tipo de RNN que resolve o problema de dependências de longo prazo com mecanismos de memória."
+  },
+  {
+    "term": "Regressão",
+    "definition": "Técnica de ML para prever valores numéricos contínuos a partir de variáveis de entrada. Ex: prever preço de imóvel."
+  },
+  {
+    "term": "Classificação",
+    "definition": "Tarefa de ML que atribui uma categoria ou rótulo a uma entrada. Ex: classificar e-mail como spam ou não spam."
+  },
+  {
+    "term": "Clustering",
+    "definition": "Técnica de aprendizado não supervisionado que agrupa dados similares sem rótulos pré-definidos. Ex: K-Means."
+  },
+  {
+    "term": "K-Means",
+    "definition": "Algoritmo de clustering que particiona dados em K grupos, minimizando a distância de cada ponto ao centroide do seu grupo."
+  },
+  {
+    "term": "Random Forest",
+    "definition": "Algoritmo de ML que combina múltiplas árvores de decisão para melhorar a precisão e reduzir o overfitting."
+  },
+  {
+    "term": "SVM",
+    "definition": "Support Vector Machine — algoritmo de ML que encontra o hiperplano ótimo para separar classes de dados."
+  },
+  {
+    "term": "MLOps",
+    "definition": "Práticas de DevOps aplicadas a Machine Learning: versionamento de modelos, automação de treino e monitoramento em produção."
+  },
+  {
+    "term": "Pipeline",
+    "definition": "Sequência automatizada de etapas de processamento, como coleta de dados → pré-processamento → treino → deploy."
+  },
+  {
+    "term": "VLAN",
+    "definition": "Virtual Local Area Network — rede local virtual que segmenta uma rede física em redes lógicas isoladas."
+  },
+  {
+    "term": "Sub-rede",
+    "definition": "Divisão lógica de uma rede IP em segmentos menores para melhor organização e segurança."
+  },
+  {
+    "term": "Gateway",
+    "definition": "Dispositivo de rede que serve como ponto de entrada/saída entre redes diferentes, geralmente o roteador."
+  },
+  {
+    "term": "Roteador",
+    "definition": "Dispositivo que encaminha pacotes de dados entre redes diferentes, determinando o melhor caminho para cada destino."
+  },
+  {
+    "term": "Switch",
+    "definition": "Dispositivo de rede que conecta dispositivos em uma mesma rede local (LAN) e encaminha dados com base em endereços MAC."
+  },
+  {
+    "term": "MAC Address",
+    "definition": "Media Access Control Address — identificador único de hardware de uma interface de rede, composto por 6 pares hexadecimais."
+  },
+  {
+    "term": "DHCP",
+    "definition": "Dynamic Host Configuration Protocol — protocolo que atribui automaticamente endereços IP a dispositivos em uma rede."
+  },
+  {
+    "term": "NAT",
+    "definition": "Network Address Translation — técnica que traduz endereços IP privados em públicos, permitindo múltiplos dispositivos compartilharem um IP externo."
+  },
+  {
+    "term": "VPN",
+    "definition": "Virtual Private Network — rede privada virtual que cria uma conexão criptografada sobre a internet pública."
+  },
+  {
+    "term": "FTP",
+    "definition": "File Transfer Protocol — protocolo de rede usado para transferir arquivos entre cliente e servidor."
+  },
+  {
+    "term": "SMTP",
+    "definition": "Simple Mail Transfer Protocol — protocolo padrão para envio de e-mails pela internet."
+  },
+  {
+    "term": "IMAP",
+    "definition": "Internet Message Access Protocol — protocolo para leitura de e-mails que mantém as mensagens no servidor."
+  },
+  {
+    "term": "OSI",
+    "definition": "Open Systems Interconnection — modelo de referência com 7 camadas que padroniza a comunicação de rede: Física, Enlace, Rede, Transporte, Sessão, Apresentação e Aplicação."
+  },
+  {
+    "term": "TCP/IP",
+    "definition": "Conjunto de protocolos que fundamenta a internet, organizado em 4 camadas: Enlace, Internet, Transporte e Aplicação."
+  },
+  {
+    "term": "Porta",
+    "definition": "Número (0-65535) que identifica um serviço ou processo em um dispositivo de rede. Ex: porta 80 (HTTP), 443 (HTTPS), 22 (SSH)."
+  },
+  {
+    "term": "Pacote",
+    "definition": "Unidade de dados transmitida em uma rede, contendo cabeçalho (endereço, protocolo) e payload (dados)."
+  },
+  {
+    "term": "Bandwidth",
+    "definition": "Largura de banda — capacidade máxima de transmissão de dados em uma conexão de rede, medida em bits por segundo."
+  },
+  {
+    "term": "Encryption",
+    "definition": "Processo de codificar dados usando algoritmos criptográficos para que somente quem possui a chave possa decifrá-los."
+  },
+  {
+    "term": "AES",
+    "definition": "Advanced Encryption Standard — algoritmo de criptografia simétrica amplamente usado para proteger dados, com chaves de 128, 192 ou 256 bits."
+  },
+  {
+    "term": "RSA",
+    "definition": "Algoritmo de criptografia assimétrica baseado em números primos, usado para assinaturas digitais e troca segura de chaves."
+  },
+  {
+    "term": "XSS",
+    "definition": "Cross-Site Scripting — vulnerabilidade onde código malicioso é injetado em páginas web, executando no navegador da vítima."
+  },
+  {
+    "term": "SQL Injection",
+    "definition": "Técnica de ataque que injeta comandos SQL maliciosos em campos de entrada para manipular o banco de dados."
+  },
+  {
+    "term": "CSRF",
+    "definition": "Cross-Site Request Forgery — ataque que força o navegador de um usuário autenticado a executar ações não desejadas em um site."
+  },
+  {
+    "term": "DDoS",
+    "definition": "Distributed Denial of Service — ataque que sobrecarrega um servidor com tráfego massivo de múltiplas fontes, tornando-o indisponível."
+  },
+  {
+    "term": "Phishing",
+    "definition": "Técnica de engenharia social que usa mensagens falsas para enganar vítimas e obter dados sensíveis como senhas e cartões."
+  },
+  {
+    "term": "Pentest",
+    "definition": "Penetration Testing — teste de invasão autorizado que simula ataques reais para identificar vulnerabilidades em um sistema."
+  },
+  {
+    "term": "OWASP",
+    "definition": "Open Web Application Security Project — organização que publica guias e listas de vulnerabilidades mais comuns em aplicações web."
+  },
+  {
+    "term": "MFA",
+    "definition": "Multi-Factor Authentication — autenticação multifator que exige dois ou mais métodos de verificação (senha + código, biometria, etc.)."
+  },
+  {
+    "term": "RBAC",
+    "definition": "Role-Based Access Control — modelo de controle de acesso onde permissões são atribuídas com base no papel/função do usuário."
+  },
+  {
+    "term": "React",
+    "definition": "Biblioteca JavaScript do Facebook para construir interfaces de usuário com componentes reutilizáveis e renderização eficiente."
+  },
+  {
+    "term": "React Native",
+    "definition": "Framework da Meta para criar aplicativos móveis nativos para iOS e Android usando React e JavaScript/TypeScript."
+  },
+  {
+    "term": "Node.js",
+    "definition": "Ambiente de execução JavaScript no lado do servidor, construído sobre o motor V8 do Chrome."
+  },
+  {
+    "term": "TypeScript",
+    "definition": "Superset do JavaScript que adiciona tipagem estática opcional, melhorando a segurança e a experiência de desenvolvimento."
+  },
+  {
+    "term": "JavaScript",
+    "definition": "Linguagem de programação interpretada, multi-paradigma, usada para desenvolvimento web tanto no front-end quanto no back-end."
+  },
+  {
+    "term": "Python",
+    "definition": "Linguagem de programação de alto nível, interpretada e multi-paradigma, popular em ciência de dados, IA, web e automação."
+  },
+  {
+    "term": "Java",
+    "definition": "Linguagem de programação orientada a objetos, compilada para bytecode que roda na JVM, amplamente usada em sistemas corporativos."
+  },
+  {
+    "term": "JVM",
+    "definition": "Java Virtual Machine — máquina virtual que executa bytecode Java, permitindo portabilidade entre diferentes sistemas operacionais."
+  },
+  {
+    "term": "Kotlin",
+    "definition": "Linguagem moderna que roda na JVM, concisa e segura contra null, linguagem oficial para desenvolvimento Android."
+  },
+  {
+    "term": "Swift",
+    "definition": "Linguagem de programação da Apple para desenvolvimento iOS, macOS, watchOS e tvOS, moderna e com foco em segurança."
+  },
+  {
+    "term": "Go",
+    "definition": "Linguagem de programação do Google, compilada e concorrente, projetada para simplicidade e alta performance em servidores."
+  },
+  {
+    "term": "Rust",
+    "definition": "Linguagem de programação focada em segurança de memória e performance, sem garbage collector, ideal para sistemas de baixo nível."
+  },
+  {
+    "term": "C",
+    "definition": "Linguagem de programação de baixo nível e procedural, base de muitas outras linguagens e sistemas operacionais."
+  },
+  {
+    "term": "C++",
+    "definition": "Extensão do C com suporte a POO e templates, usada em jogos, sistemas embarcados e software de alta performance."
+  },
+  {
+    "term": "C#",
+    "definition": "Linguagem de programação da Microsoft, orientada a objetos, usada com .NET para aplicações web, desktop e jogos (Unity)."
+  },
+  {
+    "term": "PHP",
+    "definition": "Linguagem de script server-side amplamente usada em desenvolvimento web, base de plataformas como WordPress e Laravel."
+  },
+  {
+    "term": "Dart",
+    "definition": "Linguagem de programação do Google, otimizada para construção de interfaces com Flutter em múltiplas plataformas."
+  },
+  {
+    "term": "Flutter",
+    "definition": "Framework do Google para criar aplicativos multiplataforma (mobile, web, desktop) a partir de um único código em Dart."
+  },
+  {
+    "term": "Garbage Collector",
+    "definition": "Mecanismo automático de gerenciamento de memória que libera objetos não mais referenciados pelo programa."
+  },
+  {
+    "term": "Thread",
+    "definition": "Unidade de execução dentro de um processo. Múltiplas threads permitem execução paralela de tarefas."
+  },
+  {
+    "term": "Processo",
+    "definition": "Instância de um programa em execução, com seu próprio espaço de memória, recursos e uma ou mais threads."
+  },
+  {
+    "term": "Deadlock",
+    "definition": "Situação onde dois ou mais processos ficam bloqueados indefinidamente, cada um esperando o recurso do outro."
+  },
+  {
+    "term": "Race Condition",
+    "definition": "Erro que ocorre quando o resultado de um programa depende da ordem de execução de threads concorrentes."
+  },
+  {
+    "term": "Async/Await",
+    "definition": "Sintaxe para programação assíncrona que permite escrever código não-bloqueante de forma legível, como se fosse síncrono."
+  },
+  {
+    "term": "Promise",
+    "definition": "Objeto que representa o resultado futuro de uma operação assíncrona, podendo ser resolvido (sucesso) ou rejeitado (erro)."
+  },
+  {
+    "term": "Callback",
+    "definition": "Função passada como argumento para outra função, para ser executada quando uma operação assíncrona é concluída."
+  },
+  {
+    "term": "Event Loop",
+    "definition": "Mecanismo que gerencia a execução de código assíncrono em ambientes single-threaded como Node.js e navegadores."
+  },
+  {
+    "term": "Imutabilidade",
+    "definition": "Princípio onde dados uma vez criados não podem ser alterados. Novas versões são criadas em vez de modificar o original."
+  },
+  {
+    "term": "Função Pura",
+    "definition": "Função que sempre retorna o mesmo resultado para os mesmos argumentos e não causa efeitos colaterais."
+  },
+  {
+    "term": "Hook",
+    "definition": "No React, funções especiais (useState, useEffect, etc.) que permitem usar estado e ciclo de vida em componentes funcionais."
+  },
+  {
+    "term": "State",
+    "definition": "Dados internos de um componente que, quando alterados, causam a re-renderização da interface."
+  },
+  {
+    "term": "Props",
+    "definition": "Propriedades passadas de um componente pai para um componente filho no React, formando a comunicação unidirecional."
+  },
+  {
+    "term": "Componente",
+    "definition": "Bloco de interface reutilizável que encapsula lógica e apresentação, podendo receber dados via props."
+  },
+  {
+    "term": "SPA",
+    "definition": "Single Page Application — aplicação web que carrega uma única página HTML e atualiza o conteúdo dinamicamente via JavaScript."
+  },
+  {
+    "term": "SSR",
+    "definition": "Server-Side Rendering — técnica onde o HTML é gerado no servidor a cada requisição, melhorando SEO e tempo de carregamento."
+  },
+  {
+    "term": "SSG",
+    "definition": "Static Site Generation — técnica onde as páginas são geradas em tempo de build, resultando em HTML estático ultra-rápido."
+  },
+  {
+    "term": "SEO",
+    "definition": "Search Engine Optimization — conjunto de técnicas para melhorar o posicionamento de uma página nos resultados de busca."
+  },
+  {
+    "term": "Responsive Design",
+    "definition": "Design responsivo — abordagem de design web que adapta o layout automaticamente a diferentes tamanhos de tela."
+  },
+  {
+    "term": "Expo",
+    "definition": "Plataforma e conjunto de ferramentas para criar, testar e publicar aplicativos React Native com rapidez."
+  },
+  {
+    "term": "npm",
+    "definition": "Node Package Manager — gerenciador de pacotes padrão do Node.js para instalar, compartilhar e gerenciar dependências."
+  },
+  {
+    "term": "Yarn",
+    "definition": "Gerenciador de pacotes alternativo ao npm, com foco em velocidade e confiabilidade na instalação de dependências."
+  },
+  {
+    "term": "Webpack",
+    "definition": "Bundler de módulos JavaScript que empacota código, estilos e assets em arquivos otimizados para produção."
+  },
+  {
+    "term": "Vite",
+    "definition": "Ferramenta moderna de build e dev server para projetos web, com hot module replacement ultrarrápido."
+  },
+  {
+    "term": "Linting",
+    "definition": "Análise estática de código que detecta erros, bugs e padrões inconsistentes antes da execução. Ex: ESLint, Pylint."
+  },
+  {
+    "term": "ESLint",
+    "definition": "Ferramenta de linting para JavaScript e TypeScript que identifica e corrige problemas de código automaticamente."
+  },
+  {
+    "term": "Prettier",
+    "definition": "Formatador de código automático que aplica estilo consistente (indentação, aspas, etc.) em arquivos de código."
+  },
+  {
+    "term": "Regex",
+    "definition": "Regular Expression — expressão regular, padrão de texto usado para busca, validação e manipulação de strings."
+  },
+  {
+    "term": "Base64",
+    "definition": "Esquema de codificação que converte dados binários em formato texto ASCII, usado para transmitir dados em URLs e e-mails."
+  },
+  {
+    "term": "UTF-8",
+    "definition": "Codificação de caracteres universal que suporta todos os caracteres do Unicode, compatível com ASCII."
+  },
+  {
+    "term": "ASCII",
+    "definition": "American Standard Code for Information Interchange — tabela de codificação com 128 caracteres básicos (letras, números, símbolos)."
+  },
+  {
+    "term": "Booleano",
+    "definition": "Tipo de dado que possui apenas dois valores possíveis: verdadeiro (true) ou falso (false)."
+  },
+  {
+    "term": "String",
+    "definition": "Tipo de dado que representa uma sequência de caracteres, como texto."
+  },
+  {
+    "term": "Integer",
+    "definition": "Tipo de dado que representa números inteiros, sem parte decimal."
+  },
+  {
+    "term": "Float",
+    "definition": "Tipo de dado que representa números com ponto flutuante (decimais). Ex: 3.14, -0.5."
+  },
+  {
+    "term": "Null",
+    "definition": "Valor especial que representa a ausência intencional de qualquer valor ou referência a objeto."
+  },
+  {
+    "term": "Undefined",
+    "definition": "Em JavaScript, valor atribuído automaticamente a variáveis declaradas mas não inicializadas."
+  },
+  {
+    "term": "Tipo Primitivo",
+    "definition": "Tipo de dado básico e imutável de uma linguagem, como number, string, boolean, null e undefined."
+  },
+  {
+    "term": "Variável",
+    "definition": "Nome simbólico associado a um espaço na memória que armazena um valor que pode mudar durante a execução."
+  },
+  {
+    "term": "Constante",
+    "definition": "Variável cujo valor não pode ser alterado após a inicialização. Em JS: const; em Python: convenção UPPER_CASE."
+  },
+  {
+    "term": "Escopo",
+    "definition": "Região do código onde uma variável é acessível. Pode ser global, de função ou de bloco."
+  },
+  {
+    "term": "Hoisting",
+    "definition": "Comportamento do JavaScript que move declarações de variáveis e funções para o topo do escopo antes da execução."
+  },
+  {
+    "term": "Closure",
+    "definition": "Função que mantém acesso às variáveis do escopo léxico onde foi criada, mesmo após esse escopo ter sido finalizado."
+  },
+  {
+    "term": "Map",
+    "definition": "Estrutura de dados que armazena pares chave-valor, permitindo acesso rápido a valores pela chave."
+  },
+  {
+    "term": "Set",
+    "definition": "Estrutura de dados que armazena valores únicos, sem duplicatas, com operações eficientes de inserção e busca."
+  },
+  {
+    "term": "Tuple",
+    "definition": "Estrutura de dados imutável que armazena uma sequência ordenada de elementos, comum em Python."
+  },
+  {
+    "term": "Iterator",
+    "definition": "Objeto que permite percorrer sequencialmente os elementos de uma coleção, um de cada vez."
+  },
+  {
+    "term": "Generator",
+    "definition": "Função especial que pode pausar e retomar sua execução, produzindo valores sob demanda com yield."
+  },
+  {
+    "term": "API Gateway",
+    "definition": "Ponto de entrada único para requisições de clientes em uma arquitetura de microserviços, gerenciando roteamento, autenticação e rate limiting."
+  },
+  {
+    "term": "Rate Limiting",
+    "definition": "Técnica de controle que limita o número de requisições que um cliente pode fazer em um período de tempo."
+  },
+  {
+    "term": "Idempotente",
+    "definition": "Propriedade de uma operação que produz o mesmo resultado independentemente de quantas vezes é executada."
+  },
+  {
+    "term": "Stateless",
+    "definition": "Propriedade de um sistema que não mantém estado entre requisições — cada requisição contém todas as informações necessárias."
+  },
+  {
+    "term": "Stateful",
+    "definition": "Propriedade de um sistema que mantém e depende de estado entre interações, como sessões de usuário."
+  },
+  {
+    "term": "Kafka",
+    "definition": "Plataforma de streaming distribuída para mensageria em tempo real, com alto throughput e persistência de eventos."
+  },
+  {
+    "term": "RabbitMQ",
+    "definition": "Message broker open-source que implementa o protocolo AMQP para comunicação assíncrona entre serviços."
+  },
+  {
+    "term": "Message Queue",
+    "definition": "Fila de mensagens — sistema que permite comunicação assíncrona entre serviços, desacoplando produtor e consumidor."
+  },
+  {
+    "term": "Event-Driven",
+    "definition": "Arquitetura orientada a eventos onde componentes se comunicam através de eventos publicados e consumidos de forma assíncrona."
+  },
+  {
+    "term": "CQRS",
+    "definition": "Command Query Responsibility Segregation — padrão que separa as operações de leitura (queries) das de escrita (commands)."
+  },
+  {
+    "term": "Event Sourcing",
+    "definition": "Padrão que armazena todas as mudanças de estado como uma sequência de eventos, permitindo reconstruir o estado em qualquer ponto."
+  },
+  {
+    "term": "DDD",
+    "definition": "Domain-Driven Design — abordagem de desenvolvimento que modela o software com base no domínio de negócio e sua linguagem."
+  },
+  {
+    "term": "Saga Pattern",
+    "definition": "Padrão para gerenciar transações distribuídas em microserviços, composto por uma sequência de transações locais com compensações."
+  },
+  {
+    "term": "Circuit Breaker",
+    "definition": "Padrão de resiliência que interrompe chamadas a um serviço com falhas, evitando cascata de erros no sistema."
+  },
+  {
+    "term": "Observabilidade",
+    "definition": "Capacidade de entender o estado interno de um sistema a partir de suas saídas externas: logs, métricas e traces."
+  },
+  {
+    "term": "Log",
+    "definition": "Registro textual de eventos, erros e atividades de um sistema, usado para depuração e monitoramento."
+  },
+  {
+    "term": "Métrica",
+    "definition": "Medida numérica que representa o estado de um sistema ao longo do tempo. Ex: tempo de resposta, uso de CPU."
+  },
+  {
+    "term": "Trace",
+    "definition": "Rastreamento distribuído que acompanha o percurso de uma requisição através de múltiplos serviços."
+  },
+  {
+    "term": "Prometheus",
+    "definition": "Sistema de monitoramento e alerta open-source que coleta e armazena métricas como séries temporais."
+  },
+  {
+    "term": "Grafana",
+    "definition": "Plataforma de visualização de dados e criação de dashboards para monitoramento de infraestrutura e aplicações."
+  },
+  {
+    "term": "Nginx",
+    "definition": "Servidor web de alta performance usado como proxy reverso, load balancer e servidor de arquivos estáticos."
+  },
+  {
+    "term": "Apache",
+    "definition": "Apache HTTP Server — servidor web open-source amplamente usado, com suporte a módulos e configuração flexível."
+  },
+  {
+    "term": "Variável de Ambiente",
+    "definition": "Variável definida no sistema operacional ou runtime que configura o comportamento de uma aplicação sem alterar o código."
+  },
+  {
+    "term": "CORS",
+    "definition": "Cross-Origin Resource Sharing — mecanismo que permite que recursos de um domínio sejam acessados por outro domínio diferente."
+  },
+  {
+    "term": "Cookie",
+    "definition": "Pequeno arquivo de dados armazenado no navegador pelo servidor, usado para manter estado, sessões e preferências."
+  },
+  {
+    "term": "Session",
+    "definition": "Período de interação de um usuário com um sistema, mantido através de cookies ou tokens do lado do servidor."
+  },
+  {
+    "term": "Local Storage",
+    "definition": "API do navegador que armazena dados localmente (até 5-10 MB) de forma persistente, sem prazo de expiração."
+  },
+  {
+    "term": "IndexedDB",
+    "definition": "API do navegador para armazenamento de grandes volumes de dados estruturados no lado do cliente."
+  },
+  {
+    "term": "Service Worker",
+    "definition": "Script que roda em segundo plano no navegador, permitindo cache offline, push notifications e sincronização."
+  },
+  {
+    "term": "PWA",
+    "definition": "Progressive Web App — aplicação web que oferece experiência similar a apps nativos, com suporte offline e instalação."
+  },
+  {
+    "term": "Agrupamento",
+    "definition": "Em ML, técnica de organizar dados em grupos (clusters) com base em similaridade, sem rótulos prévios."
+  },
+  {
+    "term": "Matriz de Confusão",
+    "definition": "Tabela que mostra as previsões corretas e incorretas de um modelo de classificação (VP, FP, VN, FN)."
+  },
+  {
+    "term": "Acurácia",
+    "definition": "Proporção de previsões corretas do total de previsões feitas por um modelo de ML."
+  },
+  {
+    "term": "Precisão",
+    "definition": "Em ML, proporção de verdadeiros positivos dentre todos os positivos previstos pelo modelo."
+  },
+  {
+    "term": "Recall",
+    "definition": "Em ML, proporção de verdadeiros positivos dentre todos os positivos reais no dataset."
+  },
+  {
+    "term": "F1-Score",
+    "definition": "Média harmônica entre precisão e recall, usada quando há desbalanceamento entre classes."
+  },
+  {
+    "term": "Cross-Validation",
+    "definition": "Técnica para avaliar modelos de ML dividindo o dataset em K partes, treinando e testando em rotação."
+  },
+  {
+    "term": "Hyperparâmetro",
+    "definition": "Configuração definida antes do treinamento de um modelo de ML que controla o processo de aprendizado. Ex: learning rate, epochs."
+  },
+  {
+    "term": "Transfer Learning",
+    "definition": "Técnica que reaproveita um modelo pré-treinado em uma tarefa para adaptá-lo a outra tarefa com menos dados."
+  },
+  {
+    "term": "Data Augmentation",
+    "definition": "Técnica que cria variações artificiais dos dados de treino (rotações, cortes, etc.) para aumentar o dataset."
+  },
+  {
+    "term": "GAN",
+    "definition": "Generative Adversarial Network — par de redes neurais (gerador + discriminador) que competem para gerar dados realistas."
+  },
+  {
+    "term": "Embedding",
+    "definition": "Representação numérica densa de dados (palavras, imagens) em um espaço vetorial de menor dimensão."
+  },
+  {
+    "term": "Tokenização",
+    "definition": "Processo de dividir texto em unidades menores (tokens), como palavras ou subpalavras, para processamento por modelos de NLP."
+  },
+  {
+    "term": "Normalização",
+    "definition": "Técnica de escalar valores de features para um intervalo padrão (ex: 0-1), melhorando a convergência do modelo."
+  },
+  {
+    "term": "Função de Perda",
+    "definition": "Função que mede o erro entre a previsão do modelo e o valor real, guiando o processo de otimização."
+  },
+  {
+    "term": "Learning Rate",
+    "definition": "Taxa de aprendizado — hyperparâmetro que controla o tamanho do passo na atualização dos pesos durante o treinamento."
+  },
+  {
+    "term": "Dropout",
+    "definition": "Técnica de regularização que desativa aleatoriamente neurônios durante o treino para reduzir overfitting."
+  },
+  {
+    "term": "Batch Normalization",
+    "definition": "Técnica que normaliza as ativações de cada camada em mini-batches, acelerando o treinamento e estabilizando o modelo."
+  },
+  {
+    "term": "Softmax",
+    "definition": "Função de ativação que converte valores em probabilidades (0-1) que somam 1, usada na camada de saída para classificação."
+  },
+  {
+    "term": "ReLU",
+    "definition": "Rectified Linear Unit — função de ativação f(x) = max(0, x), a mais popular em redes neurais por sua simplicidade."
+  },
+  {
+    "term": "Sigmoid",
+    "definition": "Função de ativação que comprime valores para o intervalo (0, 1), usada em classificação binária."
+  },
+  {
+    "term": "Parábola",
+    "definition": "Curva em formato de U (ou ∩) que é o gráfico de uma função do 2º grau f(x) = ax² + bx + c."
+  },
+  {
+    "term": "Vértice",
+    "definition": "Ponto máximo ou mínimo de uma parábola, com coordenadas xᵥ = −b/(2a) e yᵥ = −Δ/(4a)."
+  },
+  {
+    "term": "Domínio",
+    "definition": "Conjunto de todos os valores de x para os quais uma função está definida e produz resultado válido."
+  },
+  {
+    "term": "Imagem",
+    "definition": "Conjunto de todos os valores de y que uma função efetivamente assume (também chamado de contradomínio restrito)."
+  },
+  {
+    "term": "Raiz",
+    "definition": "Valor de x onde a função cruza o eixo x, ou seja, f(x) = 0. Também chamado de zero da função."
+  },
+  {
+    "term": "Bhaskara",
+    "definition": "Fórmula x = (−b ± √Δ) / 2a usada para encontrar as raízes de equações do 2º grau, onde Δ = b² − 4ac."
+  },
+  {
+    "term": "Exponencial",
+    "definition": "Função da forma f(x) = aˣ (a > 0, a ≠ 1). Cresce ou decresce rapidamente. Base e ≈ 2,718 define a exponencial natural."
+  },
+  {
+    "term": "Matriz",
+    "definition": "Tabela retangular de números organizada em linhas e colunas, usada em sistemas lineares, transformações e computação."
+  },
+  {
+    "term": "Determinante",
+    "definition": "Número escalar associado a uma matriz quadrada que indica se ela é inversível (det ≠ 0) e a escala de transformações."
+  },
+  {
+    "term": "Progressão Aritmética",
+    "definition": "Sequência numérica onde a diferença entre termos consecutivos é constante (razão r). Ex: 2, 5, 8, 11... (r = 3)."
+  },
+  {
+    "term": "Progressão Geométrica",
+    "definition": "Sequência numérica onde a razão entre termos consecutivos é constante (razão q). Ex: 3, 6, 12, 24... (q = 2)."
+  },
+  {
+    "term": "Fatorial",
+    "definition": "Produto de todos os inteiros positivos de 1 até n. Notação: n!. Ex: 5! = 5 × 4 × 3 × 2 × 1 = 120."
+  },
+  {
+    "term": "Probabilidade",
+    "definition": "Medida da chance de um evento ocorrer, expressa como P(E) = (casos favoráveis) / (casos possíveis), entre 0 e 1."
+  },
+  {
+    "term": "Média",
+    "definition": "Medida de tendência central calculada pela soma dos valores dividida pela quantidade de valores."
+  },
+  {
+    "term": "Mediana",
+    "definition": "Valor central de um conjunto de dados ordenado. Se há número par de elementos, é a média dos dois centrais."
+  },
+  {
+    "term": "Moda",
+    "definition": "Valor que aparece com maior frequência em um conjunto de dados. Pode haver mais de uma moda."
+  },
+  {
+    "term": "Desvio Padrão",
+    "definition": "Medida de dispersão que indica o quanto os valores se afastam da média. Raiz quadrada da variância."
+  },
+  {
+    "term": "Variância",
+    "definition": "Medida de dispersão que calcula a média dos quadrados das diferenças em relação à média do conjunto."
+  },
+  {
+    "term": "Radiano",
+    "definition": "Unidade de medida angular: 2π radianos = 360°. 1 rad = 180°/π ≈ 57,3°."
+  },
+  {
+    "term": "Polígono",
+    "definition": "Figura plana fechada formada por segmentos de reta (lados). Ex: triângulo (3 lados), quadrilátero (4), hexágono (6)."
+  },
+  {
+    "term": "Circunferência",
+    "definition": "Conjunto de pontos equidistantes de um ponto central. Comprimento = 2πr, área do círculo = πr²."
+  },
+  {
+    "term": "Volume",
+    "definition": "Medida do espaço tridimensional ocupado por um sólido. Ex: cubo = a³, esfera = (4/3)πr³."
+  },
+  {
+    "term": "Regra de Três",
+    "definition": "Método para encontrar um valor desconhecido quando há proporção direta ou inversa entre duas grandezas."
+  },
+  {
+    "term": "Razão",
+    "definition": "Comparação entre duas grandezas por meio de uma divisão. Ex: razão de 6 para 3 = 6/3 = 2."
+  },
+  {
+    "term": "Proporção",
+    "definition": "Igualdade entre duas razões. a/b = c/d, onde o produto dos meios é igual ao produto dos extremos."
+  },
+  {
+    "term": "Conjunto",
+    "definition": "Coleção bem definida de objetos (elementos). Operações: união (∪), interseção (∩), diferença (−), complementar."
+  },
+  {
+    "term": "Número Primo",
+    "definition": "Número natural maior que 1 que possui exatamente dois divisores: 1 e ele mesmo. Ex: 2, 3, 5, 7, 11."
+  },
+  {
+    "term": "MMC",
+    "definition": "Mínimo Múltiplo Comum — menor número positivo que é múltiplo de dois ou mais números ao mesmo tempo."
+  },
+  {
+    "term": "MDC",
+    "definition": "Máximo Divisor Comum — maior número que divide dois ou mais números sem deixar resto."
+  },
+  {
+    "term": "Equação",
+    "definition": "Sentença matemática com sinal de igualdade que contém uma ou mais incógnitas a serem determinadas."
+  },
+  {
+    "term": "Inequação",
+    "definition": "Sentença matemática com sinal de desigualdade (<, >, ≤, ≥) envolvendo incógnitas."
+  },
+  {
+    "term": "Vetor",
+    "definition": "Objeto matemático com magnitude (tamanho), direção e sentido. Usado em física e álgebra linear."
+  },
+  {
+    "term": "Plano Cartesiano",
+    "definition": "Sistema de coordenadas formado por dois eixos perpendiculares (x e y) que permite localizar pontos no plano."
+  },
+  {
+    "term": "Sujeito",
+    "definition": "Termo da oração sobre o qual se declara algo. Pode ser simples, composto, oculto, indeterminado ou inexistente."
+  },
+  {
+    "term": "Predicado",
+    "definition": "Tudo que se diz sobre o sujeito na oração. Pode ser verbal, nominal ou verbo-nominal."
+  },
+  {
+    "term": "Oração Subordinada",
+    "definition": "Oração que depende de outra (principal) para ter sentido completo. Pode ser substantiva, adjetiva ou adverbial."
+  },
+  {
+    "term": "Coesão",
+    "definition": "Ligação harmoniosa entre partes de um texto, feita por conectivos, pronomes e outros recursos linguísticos."
+  },
+  {
+    "term": "Coerência",
+    "definition": "Relação lógica entre as ideias de um texto, garantindo que o conteúdo faça sentido como um todo."
+  },
+  {
+    "term": "Figuras de Linguagem",
+    "definition": "Recursos expressivos que conferem ao texto sentidos além do literal, como metáfora, ironia, hipérbole e metonímia."
+  },
+  {
+    "term": "Metáfora",
+    "definition": "Figura de linguagem que substitui um termo por outro por relação de semelhança, sem usar 'como'. Ex: 'A vida é uma viagem'."
+  },
+  {
+    "term": "Metonímia",
+    "definition": "Figura de linguagem que troca um termo por outro com relação de contiguidade. Ex: 'Li Machado de Assis' (= a obra dele)."
+  },
+  {
+    "term": "Ironia",
+    "definition": "Figura de linguagem que expressa o contrário do que se pensa, geralmente com intenção crítica ou humorística."
+  },
+  {
+    "term": "CI/CD Pipeline",
+    "definition": "Fluxo automatizado de integração, teste e entrega de software, desde o commit até a produção."
+  },
+  {
+    "term": "Container Registry",
+    "definition": "Repositório para armazenar e distribuir imagens de containers Docker. Ex: Docker Hub, ECR, GCR."
+  },
+  {
+    "term": "Helm",
+    "definition": "Gerenciador de pacotes para Kubernetes que facilita o deploy e gerenciamento de aplicações com charts reutilizáveis."
+  },
+  {
+    "term": "Ingress",
+    "definition": "Recurso do Kubernetes que gerencia acesso HTTP/HTTPS externo aos serviços dentro do cluster."
+  },
+  {
+    "term": "Pod",
+    "definition": "Menor unidade implantável no Kubernetes, contendo um ou mais containers que compartilham rede e armazenamento."
+  },
+  {
+    "term": "Namespace",
+    "definition": "Mecanismo de isolamento lógico. Em Kubernetes, separa recursos em ambientes virtuais; em programação, evita conflitos de nomes."
+  },
+  {
+    "term": "IAM",
+    "definition": "Identity and Access Management — serviço de gerenciamento de identidades e permissões em plataformas de nuvem."
+  },
+  {
+    "term": "Zero Trust",
+    "definition": "Modelo de segurança que não confia automaticamente em nenhum usuário ou dispositivo, mesmo dentro da rede corporativa."
+  },
+  {
+    "term": "WAF",
+    "definition": "Web Application Firewall — firewall especializado em proteger aplicações web contra ataques como XSS e SQL Injection."
+  },
+  {
+    "term": "SOC",
+    "definition": "Security Operations Center — equipe e infraestrutura dedicada a monitorar, detectar e responder a incidentes de segurança."
+  },
+  {
+    "term": "SIEM",
+    "definition": "Security Information and Event Management — sistema que coleta, correlaciona e analisa logs de segurança em tempo real."
+  },
+  {
+    "term": "IDS",
+    "definition": "Intrusion Detection System — sistema que monitora tráfego de rede para detectar atividades suspeitas ou maliciosas."
+  },
+  {
+    "term": "IPS",
+    "definition": "Intrusion Prevention System — sistema que detecta e bloqueia automaticamente atividades maliciosas na rede."
+  },
+  {
+    "term": "gRPC",
+    "definition": "Google Remote Procedure Call — framework de comunicação de alto desempenho que usa HTTP/2 e Protocol Buffers para chamadas remotas entre serviços."
+  },
+  {
+    "term": "Protocol Buffers",
+    "definition": "Formato de serialização binária criado pelo Google, mais compacto e rápido que JSON, usado para definir contratos de APIs."
+  },
+  {
+    "term": "WebAssembly",
+    "definition": "Formato binário de baixo nível que permite executar código de alta performance no navegador, compilado a partir de linguagens como C, C++ e Rust."
+  },
+  {
+    "term": "Blob",
+    "definition": "Binary Large Object — tipo de dado usado para armazenar grandes volumes de dados binários, como imagens, vídeos e arquivos."
+  },
+  {
+    "term": "ACID",
+    "definition": "Atomicidade, Consistência, Isolamento, Durabilidade — conjunto de propriedades que garantem transações confiáveis em bancos de dados."
+  },
+  {
+    "term": "CAP Theorem",
+    "definition": "Teorema que afirma que um sistema distribuído não pode garantir simultaneamente Consistência, Disponibilidade e Tolerância a Partições."
+  },
+  {
+    "term": "Sharding",
+    "definition": "Técnica de particionamento horizontal de dados entre múltiplos servidores para distribuir carga e melhorar escalabilidade."
+  },
+  {
+    "term": "Replica Set",
+    "definition": "Conjunto de instâncias de banco de dados que mantêm cópias dos mesmos dados para garantir alta disponibilidade e redundância."
+  },
+  {
+    "term": "ETL",
+    "definition": "Extract, Transform, Load — processo de extração de dados de fontes diversas, transformação e carregamento em um data warehouse."
+  },
+  {
+    "term": "Data Warehouse",
+    "definition": "Repositório centralizado de dados estruturados, otimizado para consultas analíticas e geração de relatórios."
+  },
+  {
+    "term": "Data Lake",
+    "definition": "Repositório de armazenamento que mantém grandes volumes de dados brutos em seu formato nativo até serem necessários para análise."
+  },
+  {
+    "term": "Debounce",
+    "definition": "Técnica que atrasa a execução de uma função até que um período de inatividade ocorra, evitando chamadas excessivas."
+  },
+  {
+    "term": "Throttle",
+    "definition": "Técnica que limita a frequência de execução de uma função a no máximo uma vez por intervalo de tempo definido."
+  },
+  {
+    "term": "Memoization",
+    "definition": "Técnica de otimização que armazena resultados de chamadas de função para evitar recálculos com os mesmos parâmetros."
+  },
+  {
+    "term": "Lazy Loading",
+    "definition": "Estratégia de carregamento que adia a inicialização de um recurso até o momento em que ele é realmente necessário."
+  },
+  {
+    "term": "Hot Reload",
+    "definition": "Funcionalidade de desenvolvimento que aplica alterações de código em tempo real sem reiniciar a aplicação ou perder o estado."
+  },
+  {
+    "term": "Tree Shaking",
+    "definition": "Processo de eliminação de código morto (não utilizado) durante o bundling, reduzindo o tamanho final do pacote."
+  },
+  {
+    "term": "Code Splitting",
+    "definition": "Técnica de dividir o código em bundles menores que são carregados sob demanda, melhorando o tempo de carregamento inicial."
+  },
+  {
+    "term": "Polyfill",
+    "definition": "Código que implementa funcionalidades modernas em ambientes que não as suportam nativamente, garantindo compatibilidade."
+  },
+  {
+    "term": "Transpiler",
+    "definition": "Ferramenta que converte código de uma linguagem ou versão para outra, como Babel convertendo ES6+ para ES5."
+  },
+  {
+    "term": "Bundler",
+    "definition": "Ferramenta que combina múltiplos arquivos de código-fonte em um ou mais pacotes otimizados para produção."
+  },
+  {
+    "term": "Hydration",
+    "definition": "Processo de anexar event listeners e estado a HTML renderizado no servidor, tornando-o interativo no cliente."
+  },
+  {
+    "term": "Virtual DOM",
+    "definition": "Representação leve em memória do DOM real, usada por frameworks como React para calcular atualizações mínimas na interface."
+  },
+  {
+    "term": "Shadow DOM",
+    "definition": "Tecnologia do navegador que permite encapsular estrutura, estilo e comportamento de um componente web, isolando-o do DOM principal."
+  },
+  {
+    "term": "Web Component",
+    "definition": "Conjunto de APIs do navegador que permite criar elementos HTML reutilizáveis e encapsulados com Custom Elements, Shadow DOM e Templates."
+  },
+  {
+    "term": "Microfront-end",
+    "definition": "Arquitetura que divide o front-end em partes menores e independentes, cada uma desenvolvida e implantada por equipes diferentes."
+  },
+  {
+    "term": "BFF",
+    "definition": "Backend for Frontend — padrão de arquitetura onde cada front-end (web, mobile) tem seu próprio backend dedicado e otimizado."
+  },
+  {
+    "term": "Sidecar",
+    "definition": "Padrão de design em que um processo auxiliar roda ao lado do serviço principal, adicionando funcionalidades como logging e monitoramento."
+  },
+  {
+    "term": "Service Mesh",
+    "definition": "Camada de infraestrutura dedicada a gerenciar a comunicação entre microserviços, oferecendo observabilidade, segurança e controle de tráfego."
+  },
+  {
+    "term": "Istio",
+    "definition": "Plataforma open-source de service mesh que gerencia comunicação, segurança e observabilidade entre microserviços em Kubernetes."
+  },
+  {
+    "term": "Envoy",
+    "definition": "Proxy de alta performance usado como sidecar em service meshes para gerenciar tráfego de rede entre serviços."
+  },
+  {
+    "term": "Blue-Green Deployment",
+    "definition": "Estratégia de deploy que mantém dois ambientes idênticos (blue e green), alternando o tráfego entre eles para deploys sem downtime."
+  },
+  {
+    "term": "Canary Release",
+    "definition": "Estratégia de deploy gradual que direciona uma pequena porcentagem do tráfego para a nova versão antes de liberar para todos."
+  },
+  {
+    "term": "Feature Flag",
+    "definition": "Técnica que permite ativar ou desativar funcionalidades em produção sem novo deploy, controlando a exposição a usuários."
+  },
+  {
+    "term": "Chaos Engineering",
+    "definition": "Disciplina de experimentação em sistemas distribuídos para descobrir fraquezas e melhorar a resiliência injetando falhas controladas."
+  },
+  {
+    "term": "SRE",
+    "definition": "Site Reliability Engineering — disciplina que aplica princípios de engenharia de software a operações de infraestrutura e confiabilidade."
+  },
+  {
+    "term": "Toil",
+    "definition": "Trabalho operacional repetitivo, manual e sem valor duradouro que pode ser automatizado, conceito central em SRE."
+  },
+  {
+    "term": "SLI",
+    "definition": "Service Level Indicator — métrica quantitativa que mede um aspecto específico do nível de serviço, como latência ou disponibilidade."
+  },
+  {
+    "term": "SLO",
+    "definition": "Service Level Objective — meta interna definida para um SLI, como '99.9% das requisições devem responder em menos de 200ms'."
+  },
+  {
+    "term": "Error Budget",
+    "definition": "Quantidade tolerável de falhas ou indisponibilidade dentro de um período, calculada a partir do SLO, usada para equilibrar velocidade e confiabilidade."
+  },
+  {
+    "term": "Monorepo",
+    "definition": "Estratégia de organização onde múltiplos projetos ou pacotes são mantidos em um único repositório de controle de versão."
+  },
+  {
+    "term": "Polyrepo",
+    "definition": "Estratégia onde cada projeto ou serviço tem seu próprio repositório independente, oferecendo isolamento e autonomia de equipe."
+  },
+  {
+    "term": "Semver",
+    "definition": "Semantic Versioning — convenção de versionamento no formato MAJOR.MINOR.PATCH que comunica o tipo de mudança em cada release."
+  },
+  {
+    "term": "Changelog",
+    "definition": "Documento que registra as mudanças notáveis de cada versão de um projeto, incluindo adições, correções e breaking changes."
+  },
+  {
+    "term": "RFC",
+    "definition": "Request for Comments — documento formal que propõe padrões, protocolos ou processos técnicos para discussão e aprovação."
+  },
+  {
+    "term": "Idempotência",
+    "definition": "Propriedade de uma operação que produz o mesmo resultado independentemente de quantas vezes é executada."
+  },
+  {
+    "term": "Consistência Eventual",
+    "definition": "Modelo de consistência em que, dado tempo suficiente sem novas atualizações, todas as réplicas convergirão para o mesmo estado."
+  },
+  {
+    "term": "CRON",
+    "definition": "Agendador de tarefas baseado em tempo no Unix/Linux, que permite executar comandos ou scripts em intervalos definidos."
+  },
+  {
+    "term": "Daemon",
+    "definition": "Processo que roda em segundo plano no sistema operacional, sem interação direta com o usuário, geralmente iniciado no boot."
+  },
+  {
+    "term": "Socket",
+    "definition": "Ponto de comunicação bidirecional entre dois processos na rede, identificado por endereço IP e porta."
+  },
+  {
+    "term": "Handshake",
+    "definition": "Processo de negociação inicial entre dois sistemas para estabelecer uma conexão, definindo parâmetros de comunicação."
+  },
+  {
+    "term": "Heartbeat",
+    "definition": "Sinal periódico enviado entre sistemas para indicar que estão ativos e funcionando, usado para detectar falhas."
+  },
+  {
+    "term": "Failover",
+    "definition": "Processo automático de migração para um sistema de backup quando o sistema primário falha, garantindo continuidade."
+  },
+  {
+    "term": "Fallback",
+    "definition": "Mecanismo alternativo que é acionado quando o caminho principal falha, oferecendo uma resposta degradada mas funcional."
+  },
+  {
+    "term": "Graceful Degradation",
+    "definition": "Estratégia de design onde um sistema continua funcionando com capacidade reduzida quando componentes falham."
+  },
+  {
+    "term": "Backpressure",
+    "definition": "Mecanismo de controle de fluxo onde o consumidor sinaliza ao produtor para reduzir a taxa de envio de dados quando sobrecarregado."
+  },
+  {
+    "term": "Mutex",
+    "definition": "Mutual Exclusion — mecanismo de sincronização que garante que apenas uma thread por vez acesse um recurso compartilhado."
+  },
+  {
+    "term": "Semáforo",
+    "definition": "Mecanismo de sincronização que controla o acesso a recursos compartilhados permitindo um número limitado de acessos simultâneos."
+  },
+  {
+    "term": "Coroutine",
+    "definition": "Função que pode suspender sua execução e ser retomada posteriormente, permitindo concorrência cooperativa sem threads."
+  },
+  {
+    "term": "Concorrência",
+    "definition": "Capacidade de um sistema lidar com múltiplas tarefas ao mesmo tempo, alternando entre elas ou executando-as em paralelo."
+  },
+  {
+    "term": "Paralelismo",
+    "definition": "Execução simultânea real de múltiplas tarefas em diferentes núcleos de processamento, diferente de concorrência."
+  },
+  {
+    "term": "Serialização",
+    "definition": "Processo de converter um objeto em memória para um formato que pode ser armazenado ou transmitido, como JSON ou bytes."
+  },
+  {
+    "term": "Desserialização",
+    "definition": "Processo inverso da serialização, reconstruindo um objeto a partir de dados armazenados ou transmitidos."
+  },
+  {
+    "term": "Marshalling",
+    "definition": "Processo de transformar dados de uma representação em memória para um formato adequado para transferência entre sistemas."
+  },
+  {
+    "term": "Reflection",
+    "definition": "Capacidade de um programa inspecionar e modificar sua própria estrutura e comportamento em tempo de execução."
+  },
+  {
+    "term": "Annotation",
+    "definition": "Metadado adicionado ao código-fonte que fornece informações ao compilador ou framework sem alterar a lógica do programa."
+  },
+  {
+    "term": "Decorator",
+    "definition": "Padrão que permite adicionar comportamento a objetos ou funções de forma dinâmica, sem modificar o código original."
+  },
+  {
+    "term": "Dependency Injection",
+    "definition": "Padrão de design onde dependências são fornecidas externamente a um componente em vez de serem criadas internamente."
+  },
+  {
+    "term": "IoC",
+    "definition": "Inversion of Control — princípio onde o controle do fluxo do programa é delegado a um framework ou container."
+  },
+  {
+    "term": "Repository Pattern",
+    "definition": "Padrão que abstrai a camada de acesso a dados, mediando entre o domínio e a infraestrutura de persistência."
+  },
+  {
+    "term": "DTO",
+    "definition": "Data Transfer Object — objeto simples usado para transportar dados entre camadas ou sistemas, sem lógica de negócio."
+  },
+  {
+    "term": "VO",
+    "definition": "Value Object — objeto imutável que é definido por seus atributos e não possui identidade própria, conceito de DDD."
+  },
+  {
+    "term": "Aggregate",
+    "definition": "Cluster de entidades e value objects tratados como uma unidade para fins de mudanças de dados, conceito central de DDD."
+  },
+  {
+    "term": "Bounded Context",
+    "definition": "Limite explícito dentro do qual um modelo de domínio específico é definido e aplicável, conceito fundamental de DDD."
+  },
+  {
+    "term": "Ubiquitous Language",
+    "definition": "Linguagem comum compartilhada entre desenvolvedores e especialistas de negócio dentro de um bounded context em DDD."
+  },
+  {
+    "term": "HATEOAS",
+    "definition": "Hypermedia As The Engine Of Application State — princípio REST onde a API fornece links de navegação nas respostas."
+  },
+  {
+    "term": "OpenAPI",
+    "definition": "Especificação padrão para descrever APIs RESTful de forma legível por máquinas, anteriormente conhecida como Swagger."
+  },
+  {
+    "term": "Swagger",
+    "definition": "Conjunto de ferramentas para design, documentação e consumo de APIs REST, baseado na especificação OpenAPI."
+  },
+  {
+    "term": "Postman",
+    "definition": "Plataforma popular para desenvolvimento e teste de APIs que permite criar, enviar e documentar requisições HTTP."
+  },
+  {
+    "term": "cURL",
+    "definition": "Ferramenta de linha de comando para transferir dados via URLs, amplamente usada para testar requisições HTTP."
+  },
+  {
+    "term": "OCI",
+    "definition": "Open Container Initiative — padrão aberto que define especificações para formatos de imagens e runtimes de containers."
+  },
+  {
+    "term": "Container Runtime",
+    "definition": "Software responsável por executar containers, como containerd e CRI-O, gerenciando o ciclo de vida dos processos isolados."
+  },
+  {
+    "term": "Dockerfile",
+    "definition": "Arquivo de texto com instruções para construir uma imagem Docker, definindo sistema base, dependências e comandos."
+  },
+  {
+    "term": "Docker Compose",
+    "definition": "Ferramenta para definir e executar aplicações multi-container usando um arquivo YAML para configurar serviços."
+  },
+  {
+    "term": "Horizontal Scaling",
+    "definition": "Estratégia de escalabilidade que adiciona mais máquinas ao sistema para distribuir a carga de trabalho."
+  },
+  {
+    "term": "Vertical Scaling",
+    "definition": "Estratégia de escalabilidade que aumenta os recursos (CPU, RAM) de uma máquina existente."
+  },
+  {
+    "term": "Auto Scaling",
+    "definition": "Mecanismo que ajusta automaticamente o número de instâncias de um serviço baseado em métricas de carga."
+  },
+  {
+    "term": "Health Check",
+    "definition": "Verificação periódica do estado de um serviço para determinar se está funcionando corretamente e apto a receber tráfego."
+  },
+  {
+    "term": "Readiness Probe",
+    "definition": "Verificação em Kubernetes que indica se um pod está pronto para receber tráfego de rede."
+  },
+  {
+    "term": "Liveness Probe",
+    "definition": "Verificação em Kubernetes que indica se um pod está saudável; se falhar, o pod é reiniciado automaticamente."
+  },
+  {
+    "term": "ConfigMap",
+    "definition": "Recurso do Kubernetes que armazena dados de configuração não-sensíveis como pares chave-valor, injetados nos pods."
+  },
+  {
+    "term": "Secret",
+    "definition": "Recurso do Kubernetes para armazenar dados sensíveis como senhas e tokens, codificados em Base64."
+  },
+  {
+    "term": "Stateful Set",
+    "definition": "Controlador do Kubernetes para aplicações que requerem identidade de rede estável e armazenamento persistente."
+  },
+  {
+    "term": "DaemonSet",
+    "definition": "Controlador do Kubernetes que garante que uma cópia de um pod rode em cada nó do cluster."
+  },
+  {
+    "term": "CronJob",
+    "definition": "Recurso do Kubernetes que executa jobs em horários agendados, similar ao cron do Linux."
+  },
+  {
+    "term": "GitOps",
+    "definition": "Prática de usar repositórios Git como fonte de verdade para infraestrutura e configuração, com deploys automatizados por commits."
+  },
+  {
+    "term": "ArgoCD",
+    "definition": "Ferramenta de continuous delivery para Kubernetes que implementa GitOps, sincronizando o estado do cluster com repositórios Git."
+  },
+  {
+    "term": "Flux",
+    "definition": "Ferramenta de GitOps para Kubernetes que automatiza o deploy contínuo monitorando repositórios Git para mudanças."
+  },
+  {
+    "term": "Trunk-Based Development",
+    "definition": "Estratégia de branching onde desenvolvedores integram código frequentemente na branch principal, evitando branches de longa duração."
+  },
+  {
+    "term": "Git Flow",
+    "definition": "Modelo de branching que usa branches separadas para features, releases e hotfixes com regras definidas de merge."
+  },
+  {
+    "term": "Rebase",
+    "definition": "Operação Git que reaplica commits de uma branch sobre outra, criando um histórico linear sem merge commits."
+  },
+  {
+    "term": "Cherry-Pick",
+    "definition": "Operação Git que aplica um commit específico de uma branch em outra, sem trazer todo o histórico."
+  },
+  {
+    "term": "Stash",
+    "definition": "Funcionalidade do Git que salva temporariamente mudanças não commitadas para limpar o diretório de trabalho."
+  },
+  {
+    "term": "WASM",
+    "definition": "Abreviação de WebAssembly — formato de instrução binária que permite execução de código de alta performance em navegadores."
+  },
+  {
+    "term": "Edge Computing",
+    "definition": "Paradigma que processa dados próximo à fonte de geração, reduzindo latência e uso de banda em vez de enviar tudo ao cloud."
+  },
+  {
+    "term": "Edge Function",
+    "definition": "Função serverless executada em servidores de borda (CDN), oferecendo baixa latência por estar geograficamente próxima do usuário."
+  },
+  {
+    "term": "Terraform Module",
+    "definition": "Bloco reutilizável de configuração Terraform que encapsula recursos relacionados de infraestrutura para reuso e organização."
+  },
+  {
+    "term": "Pulumi",
+    "definition": "Ferramenta de IaC que permite definir infraestrutura usando linguagens de programação reais como TypeScript, Python e Go."
+  },
+  {
+    "term": "Twelve-Factor App",
+    "definition": "Metodologia de 12 princípios para construir aplicações SaaS modernas, escaláveis e fáceis de manter em ambientes cloud."
+  },
+  {
+    "term": "Substantivo",
+    "definition": "Classe de palavras que designa seres, objetos, lugares, sentimentos e conceitos; pode ser comum, próprio, concreto ou abstrato."
+  },
+  {
+    "term": "Adjetivo",
+    "definition": "Classe de palavras que qualifica ou caracteriza o substantivo, atribuindo-lhe uma propriedade, qualidade ou estado."
+  },
+  {
+    "term": "Advérbio",
+    "definition": "Classe de palavras invariável que modifica o verbo, o adjetivo ou outro advérbio, indicando circunstância como tempo, modo ou lugar."
+  },
+  {
+    "term": "Verbo",
+    "definition": "Classe de palavras que expressa ação, estado ou fenômeno da natureza, flexionando-se em tempo, modo, número e pessoa."
+  },
+  {
+    "term": "Pronome",
+    "definition": "Classe de palavras que substitui ou acompanha o substantivo, indicando pessoa do discurso, posse, posição etc."
+  },
+  {
+    "term": "Artigo",
+    "definition": "Classe de palavras que antecede o substantivo para determiná-lo (definido: o, a) ou indeterminá-lo (indefinido: um, uma)."
+  },
+  {
+    "term": "Preposição",
+    "definition": "Classe de palavras invariável que liga dois termos, estabelecendo relação de dependência entre eles (de, em, para, com, por etc.)."
+  },
+  {
+    "term": "Conjunção",
+    "definition": "Classe de palavras invariável que conecta orações ou termos de mesma função sintática, podendo ser coordenativa ou subordinativa."
+  },
+  {
+    "term": "Interjeição",
+    "definition": "Classe de palavras invariável que expressa emoções, sensações ou estados de espírito de forma abrupta (ah!, ufa!, eita!)."
+  },
+  {
+    "term": "Numeral",
+    "definition": "Classe de palavras que indica quantidade, ordem, fração ou multiplicação dos seres (dois, segundo, dobro, metade)."
+  },
+  {
+    "term": "Sujeito Oculto",
+    "definition": "Sujeito que não aparece explícito na oração, mas pode ser identificado pela desinência verbal (ex: 'Chegamos cedo' → nós)."
+  },
+  {
+    "term": "Sujeito Indeterminado",
+    "definition": "Sujeito que existe mas não pode ser identificado; ocorre com verbo na 3ª pessoa do plural ou com 'se' (ex: 'Dizem que...')."
+  },
+  {
+    "term": "Oração sem Sujeito",
+    "definition": "Oração cujo verbo é impessoal, não havendo sujeito (ex: 'Choveu muito', 'Há muitas pessoas', 'Faz dois anos')."
+  },
+  {
+    "term": "Objeto Direto",
+    "definition": "Complemento verbal que se liga ao verbo transitivo direto sem preposição obrigatória (ex: 'Leu o livro')."
+  },
+  {
+    "term": "Objeto Indireto",
+    "definition": "Complemento verbal que se liga ao verbo transitivo indireto por meio de preposição (ex: 'Gosta de música')."
+  },
+  {
+    "term": "Complemento Nominal",
+    "definition": "Termo que completa o sentido de um nome (substantivo, adjetivo ou advérbio) por meio de preposição (ex: 'Confiança em Deus')."
+  },
+  {
+    "term": "Adjunto Adnominal",
+    "definition": "Termo acessório que se refere ao substantivo para caracterizá-lo, determiná-lo ou especificá-lo (artigos, adjetivos, locuções adjetivas)."
+  },
+  {
+    "term": "Adjunto Adverbial",
+    "definition": "Termo acessório que indica circunstância em que ocorre a ação verbal: tempo, lugar, modo, causa, intensidade etc."
+  },
+  {
+    "term": "Aposto",
+    "definition": "Termo acessório que explica, resume ou especifica um substantivo anterior (ex: 'São Paulo, a maior cidade do país, ...')."
+  },
+  {
+    "term": "Vocativo",
+    "definition": "Termo usado para chamar ou interpelar o interlocutor, isolado por vírgula (ex: 'Maria, venha aqui!')."
+  },
+  {
+    "term": "Agente da Passiva",
+    "definition": "Termo que indica quem pratica a ação na voz passiva analítica, introduzido pela preposição 'por' (ex: 'O bolo foi feito por ela')."
+  },
+  {
+    "term": "Voz Ativa",
+    "definition": "Construção em que o sujeito pratica a ação expressa pelo verbo (ex: 'O gato comeu o peixe')."
+  },
+  {
+    "term": "Voz Passiva",
+    "definition": "Construção em que o sujeito sofre a ação; pode ser analítica (ser + particípio) ou sintética (verbo + se)."
+  },
+  {
+    "term": "Voz Reflexiva",
+    "definition": "Construção em que o sujeito pratica e sofre a ação ao mesmo tempo, usando pronome reflexivo (ex: 'Ela se machucou')."
+  },
+  {
+    "term": "Período Simples",
+    "definition": "Enunciado formado por apenas uma oração (uma única relação sujeito-predicado)."
+  },
+  {
+    "term": "Período Composto",
+    "definition": "Enunciado formado por duas ou mais orações, que podem se relacionar por coordenação ou subordinação."
+  },
+  {
+    "term": "Oração Coordenada",
+    "definition": "Oração sintaticamente independente dentro de um período composto, ligada por conjunções coordenativas ou justaposição."
+  },
+  {
+    "term": "Oração Subordinada Substantiva",
+    "definition": "Oração que exerce função de substantivo (sujeito, objeto direto, objeto indireto etc.) na oração principal."
+  },
+  {
+    "term": "Oração Subordinada Adjetiva",
+    "definition": "Oração que funciona como adjetivo, modificando um substantivo da oração principal; pode ser restritiva ou explicativa."
+  },
+  {
+    "term": "Oração Subordinada Adverbial",
+    "definition": "Oração que funciona como advérbio, indicando circunstância (tempo, causa, condição, concessão etc.) em relação à oração principal."
+  },
+  {
+    "term": "Regência Verbal",
+    "definition": "Relação de dependência entre o verbo e seu complemento, definindo se exige ou não preposição (ex: assistir ao filme)."
+  },
+  {
+    "term": "Regência Nominal",
+    "definition": "Relação de dependência entre um nome (substantivo, adjetivo, advérbio) e seu complemento preposicionado."
+  },
+  {
+    "term": "Transitividade Verbal",
+    "definition": "Classificação do verbo conforme a necessidade de complemento: transitivo direto, indireto, bitransitivo ou intransitivo."
+  },
+  {
+    "term": "Concordância Verbal",
+    "definition": "Regra gramatical que exige que o verbo concorde em número e pessoa com o sujeito da oração."
+  },
+  {
+    "term": "Concordância Nominal",
+    "definition": "Regra gramatical em que artigos, adjetivos, pronomes e numerais concordam em gênero e número com o substantivo."
+  },
+  {
+    "term": "Acentuação Gráfica",
+    "definition": "Conjunto de regras que determina o uso de acentos (agudo, circunflexo, grave) nas palavras da língua portuguesa."
+  },
+  {
+    "term": "Oxítona",
+    "definition": "Palavra cuja sílaba tônica é a última; acentuada quando terminada em a(s), e(s), o(s), em(ens) (ex: café, parabéns)."
+  },
+  {
+    "term": "Paroxítona",
+    "definition": "Palavra cuja sílaba tônica é a penúltima; acentuada quando NÃO termina em a(s), e(s), o(s), em(ens) (ex: fácil, caráter)."
+  },
+  {
+    "term": "Proparoxítona",
+    "definition": "Palavra cuja sílaba tônica é a antepenúltima; todas são acentuadas (ex: lâmpada, matemática, público)."
+  },
+  {
+    "term": "Hiato",
+    "definition": "Encontro de duas vogais em sílabas diferentes (ex: sa-ú-de, pa-ís); pode exigir acento em i ou u tônicos."
+  },
+  {
+    "term": "Ditongo",
+    "definition": "Encontro de uma vogal e uma semivogal na mesma sílaba; pode ser crescente (qual) ou decrescente (pai)."
+  },
+  {
+    "term": "Tritongo",
+    "definition": "Encontro de semivogal + vogal + semivogal na mesma sílaba (ex: Paraguai, quão)."
+  },
+  {
+    "term": "Dígrafo",
+    "definition": "Duas letras que representam um único fonema (ex: ch, lh, nh, rr, ss, qu, gu, sc, xc)."
+  },
+  {
+    "term": "Encontro Consonantal",
+    "definition": "Sequência de duas ou mais consoantes pronunciadas na mesma ou em sílabas diferentes (ex: pr em 'prato', bs em 'obs-táculo')."
+  },
+  {
+    "term": "Crase",
+    "definition": "Fusão da preposição 'a' com o artigo definido feminino 'a', indicada pelo acento grave (à); ex: 'Vou à escola'."
+  },
+  {
+    "term": "Elipse",
+    "definition": "Figura de linguagem que consiste na omissão de um termo facilmente identificável pelo contexto."
+  },
+  {
+    "term": "Pleonasmo",
+    "definition": "Figura de linguagem que reforça uma ideia por repetição; pode ser literário (estilístico) ou vicioso (redundância)."
+  },
+  {
+    "term": "Antítese",
+    "definition": "Figura de linguagem que opõe ideias ou palavras contrárias em uma mesma construção (ex: 'O amor é fogo que arde sem se ver')."
+  },
+  {
+    "term": "Paradoxo",
+    "definition": "Figura de linguagem que apresenta ideias contraditórias que coexistem na mesma afirmação (ex: 'Eu sou um morto que vive')."
+  },
+  {
+    "term": "Hipérbole",
+    "definition": "Figura de linguagem que utiliza exagero intencional para enfatizar uma ideia (ex: 'Chorei rios de lágrimas')."
+  },
+  {
+    "term": "Eufemismo",
+    "definition": "Figura de linguagem que suaviza uma expressão desagradável ou forte (ex: 'Ele partiu desta para melhor' em vez de 'morreu')."
+  },
+  {
+    "term": "Prosopopeia",
+    "definition": "Figura de linguagem que atribui características humanas a seres inanimados ou irracionais (ex: 'O vento sussurrava')."
+  },
+  {
+    "term": "Sinestesia",
+    "definition": "Figura de linguagem que mistura sensações de sentidos diferentes (ex: 'som doce', 'cheiro áspero')."
+  },
+  {
+    "term": "Catacrese",
+    "definition": "Figura de linguagem que usa uma palavra fora de seu sentido original por falta de termo específico (ex: 'pé da mesa')."
+  },
+  {
+    "term": "Anáfora",
+    "definition": "Figura de linguagem que repete palavras no início de frases ou versos sucessivos para dar ênfase."
+  },
+  {
+    "term": "Polissíndeto",
+    "definition": "Figura de linguagem que repete conjunções coordenativas para dar ritmo ou ênfase (ex: 'E chora, e ri, e grita, e pula')."
+  },
+  {
+    "term": "Assíndeto",
+    "definition": "Figura de linguagem que omite conjunções entre termos coordenados, usando vírgulas (ex: 'Vim, vi, venci')."
+  },
+  {
+    "term": "Gradação",
+    "definition": "Figura de linguagem que apresenta ideias em ordem crescente (clímax) ou decrescente (anticlímax) de intensidade."
+  },
+  {
+    "term": "Silepse",
+    "definition": "Figura de linguagem em que a concordância é feita com a ideia e não com a forma gramatical (de gênero, número ou pessoa)."
+  },
+  {
+    "term": "Denotação",
+    "definition": "Uso da palavra em seu sentido literal, objetivo e dicionarizado (ex: 'A cobra picou o homem')."
+  },
+  {
+    "term": "Conotação",
+    "definition": "Uso da palavra em sentido figurado, subjetivo ou metafórico (ex: 'Ela é uma cobra' = pessoa traiçoeira)."
+  },
+  {
+    "term": "Gênero Textual",
+    "definition": "Tipo de texto com características estruturais e comunicativas específicas: carta, crônica, editorial, receita, artigo etc."
+  },
+  {
+    "term": "Tipologia Textual",
+    "definition": "Classificação dos textos quanto à sua estrutura e objetivo: narração, descrição, dissertação, exposição e injunção."
+  },
+  {
+    "term": "Texto Dissertativo-Argumentativo",
+    "definition": "Tipo textual que defende uma tese por meio de argumentos, estruturado em introdução, desenvolvimento e conclusão."
+  },
+  {
+    "term": "Texto Narrativo",
+    "definition": "Tipo textual que relata uma sequência de acontecimentos com personagens, tempo, espaço, narrador, enredo e clímax."
+  },
+  {
+    "term": "Texto Descritivo",
+    "definition": "Tipo textual que detalha características de seres, objetos, ambientes ou situações, usando linguagem sensorial."
+  },
+  {
+    "term": "Texto Injuntivo",
+    "definition": "Tipo textual que instrui ou orienta o leitor a realizar uma ação, com verbos no imperativo (receitas, manuais, leis)."
+  },
+  {
+    "term": "Intertextualidade",
+    "definition": "Relação entre textos em que um faz referência a outro por citação, paráfrase, paródia ou alusão."
+  },
+  {
+    "term": "Paráfrase",
+    "definition": "Reescrita de um texto mantendo o sentido original com palavras diferentes, sem alterar a ideia central."
+  },
+  {
+    "term": "Paródia",
+    "definition": "Recriação cômica ou crítica de um texto ou obra conhecida, alterando seu sentido original de forma irônica."
+  },
+  {
+    "term": "Ambiguidade",
+    "definition": "Duplo sentido em uma frase, podendo ser vício de linguagem (indesejável) ou recurso estilístico intencional."
+  },
+  {
+    "term": "Redundância",
+    "definition": "Repetição desnecessária de uma informação já expressa, considerada vício de linguagem (ex: 'subir para cima')."
+  },
+  {
+    "term": "Barbarismo",
+    "definition": "Vício de linguagem que consiste em erro de pronúncia, grafia, morfologia ou uso de estrangeirismos desnecessários."
+  },
+  {
+    "term": "Solecismo",
+    "definition": "Vício de linguagem que consiste em erro de sintaxe: concordância, regência ou colocação pronominal inadequada."
+  },
+  {
+    "term": "Colocação Pronominal",
+    "definition": "Regras de posicionamento dos pronomes oblíquos átonos em relação ao verbo: próclise (antes), mesóclise (meio), ênclise (depois)."
+  },
+  {
+    "term": "Modo Indicativo",
+    "definition": "Modo verbal que expressa certeza ou fatos reais, com tempos como presente, pretérito e futuro."
+  },
+  {
+    "term": "Modo Subjuntivo",
+    "definition": "Modo verbal que expressa dúvida, desejo, hipótese ou possibilidade (ex: 'Se eu pudesse...', 'Espero que ele venha')."
+  },
+  {
+    "term": "Modo Imperativo",
+    "definition": "Modo verbal que expressa ordem, pedido, conselho ou súplica (ex: 'Faça isso!', 'Por favor, sente-se')."
+  },
+  {
+    "term": "Verbo Regular",
+    "definition": "Verbo que segue o paradigma de conjugação de seu grupo (-ar, -er, -ir) sem alteração no radical."
+  },
+  {
+    "term": "Verbo Irregular",
+    "definition": "Verbo que sofre alteração no radical ou nas desinências ao ser conjugado (ex: fazer → faço, fiz, faria)."
+  },
+  {
+    "term": "Verbo Defectivo",
+    "definition": "Verbo que não possui conjugação completa, faltando algumas formas (ex: abolir, falir, reaver, precaver)."
+  },
+  {
+    "term": "Verbo Abundante",
+    "definition": "Verbo que tem duas formas de particípio: regular (-ado, -ido) e irregular (ex: aceitar → aceitado/aceito)."
+  },
+  {
+    "term": "Gerúndio",
+    "definition": "Forma nominal do verbo terminada em -ndo que indica ação em andamento (ex: 'Estou estudando')."
+  },
+  {
+    "term": "Particípio",
+    "definition": "Forma nominal do verbo que indica ação concluída, usada em tempos compostos e voz passiva (ex: feito, comido, partido)."
+  },
+  {
+    "term": "Infinitivo",
+    "definition": "Forma nominal do verbo que expressa a ação de modo genérico, sem flexão de tempo (ex: cantar, correr, partir)."
+  },
+  {
+    "term": "Morfema",
+    "definition": "Menor unidade significativa da língua: radical, prefixo, sufixo, desinência, vogal temática e vogal de ligação."
+  },
+  {
+    "term": "Radical",
+    "definition": "Elemento base de uma palavra que contém o significado principal; comum a palavras da mesma família (ex: 'flor' em florir, florista)."
+  },
+  {
+    "term": "Prefixo",
+    "definition": "Morfema adicionado antes do radical que altera o sentido da palavra (ex: in- em infeliz, des- em desfazer)."
+  },
+  {
+    "term": "Sufixo",
+    "definition": "Morfema adicionado após o radical que altera o sentido ou a classe gramatical da palavra (ex: -mente em felizmente)."
+  },
+  {
+    "term": "Derivação",
+    "definition": "Processo de formação de palavras a partir de outra já existente, por adição de afixos (prefixal, sufixal, parassintética)."
+  },
+  {
+    "term": "Composição",
+    "definition": "Processo de formação de palavras pela junção de dois ou mais radicais: justaposição (guarda-chuva) ou aglutinação (planalto)."
+  },
+  {
+    "term": "Semântica",
+    "definition": "Área da linguística que estuda o significado das palavras, expressões e sentenças em um idioma."
+  },
+  {
+    "term": "Sinônimo",
+    "definition": "Palavra que possui significado igual ou semelhante a outra (ex: bonito/belo, casa/moradia)."
+  },
+  {
+    "term": "Antônimo",
+    "definition": "Palavra que possui significado oposto a outra (ex: bom/mau, claro/escuro, alto/baixo)."
+  },
+  {
+    "term": "Homônimo",
+    "definition": "Palavra que tem a mesma pronúncia e/ou grafia de outra, mas significado diferente (ex: banco → assento/instituição)."
+  },
+  {
+    "term": "Parônimo",
+    "definition": "Palavra com pronúncia ou grafia parecida com outra, mas significado diferente (ex: comprimento/cumprimento, tráfego/tráfico)."
+  },
+  {
+    "term": "Fonema",
+    "definition": "Menor unidade sonora da língua capaz de distinguir significado entre palavras (ex: /p/ e /b/ em pato e bato)."
+  },
+  {
+    "term": "Sílaba Tônica",
+    "definition": "Sílaba pronunciada com maior intensidade em uma palavra, base para a classificação em oxítona, paroxítona e proparoxítona."
+  },
+  {
+    "term": "Pontuação",
+    "definition": "Sistema de sinais gráficos (vírgula, ponto, ponto-e-vírgula, dois-pontos etc.) que organiza e dá sentido ao texto escrito."
+  },
+  {
+    "term": "Vírgula",
+    "definition": "Sinal de pontuação que indica pausa breve, usada para separar termos, orações intercaladas, apostos e vocativos."
+  },
+  {
+    "term": "Ponto-e-vírgula",
+    "definition": "Sinal de pontuação que indica pausa intermediária entre a vírgula e o ponto, separando orações coordenadas extensas."
+  },
+  {
+    "term": "Simple Present",
+    "definition": "Tempo verbal do inglês que expressa ações habituais, fatos e verdades gerais (ex: 'She works every day')."
+  },
+  {
+    "term": "Simple Past",
+    "definition": "Tempo verbal que expressa ações concluídas no passado, usando verbos regulares (-ed) ou irregulares (ex: 'I went home')."
+  },
+  {
+    "term": "Present Continuous",
+    "definition": "Tempo verbal formado por am/is/are + verbo-ing, que expressa ação ocorrendo no momento da fala (ex: 'I am studying')."
+  },
+  {
+    "term": "Past Continuous",
+    "definition": "Tempo verbal formado por was/were + verbo-ing, que expressa ação em progresso no passado (ex: 'I was reading when he called')."
+  },
+  {
+    "term": "Present Perfect",
+    "definition": "Tempo verbal formado por have/has + past participle, que liga uma ação passada ao presente (ex: 'I have lived here for 5 years')."
+  },
+  {
+    "term": "Past Perfect",
+    "definition": "Tempo verbal formado por had + past participle, que expressa ação anterior a outra no passado (ex: 'She had left before I arrived')."
+  },
+  {
+    "term": "Future Simple",
+    "definition": "Tempo verbal formado por will + verbo base, que expressa decisões instantâneas, previsões ou promessas (ex: 'I will help you')."
+  },
+  {
+    "term": "Going to Future",
+    "definition": "Estrutura am/is/are + going to + verbo que expressa planos ou intenções futuras (ex: 'I am going to travel next week')."
+  },
+  {
+    "term": "Present Perfect Continuous",
+    "definition": "Tempo verbal formado por have/has been + verbo-ing, que enfatiza a duração de uma ação que começou no passado e continua (ex: 'I have been waiting for two hours')."
+  },
+  {
+    "term": "Future Continuous",
+    "definition": "Tempo verbal formado por will be + verbo-ing, que expressa ação em progresso no futuro (ex: 'I will be working at 8pm')."
+  },
+  {
+    "term": "Future Perfect",
+    "definition": "Tempo verbal formado por will have + past participle, que expressa ação concluída antes de um ponto no futuro (ex: 'By 2030, I will have graduated')."
+  },
+  {
+    "term": "Conditional",
+    "definition": "Estrutura com would + verbo base usada para expressar situações hipotéticas ou resultados de condições (ex: 'I would go if I could')."
+  },
+  {
+    "term": "First Conditional",
+    "definition": "Estrutura condicional com if + Simple Present, will + verbo base, para situações reais/prováveis no futuro (ex: 'If it rains, I will stay home')."
+  },
+  {
+    "term": "Second Conditional",
+    "definition": "Estrutura condicional com if + Simple Past, would + verbo base, para situações imaginárias no presente (ex: 'If I were rich, I would travel')."
+  },
+  {
+    "term": "Third Conditional",
+    "definition": "Estrutura condicional com if + Past Perfect, would have + past participle, para situações irreais no passado (ex: 'If I had studied, I would have passed')."
+  },
+  {
+    "term": "Modal Verb",
+    "definition": "Verbos auxiliares que expressam habilidade (can), permissão (may), obrigação (must), possibilidade (might) etc., sem flexão."
+  },
+  {
+    "term": "Passive Voice",
+    "definition": "Construção em que o objeto da ação se torna sujeito: subject + be + past participle (ex: 'The book was written by her')."
+  },
+  {
+    "term": "Active Voice",
+    "definition": "Construção em que o sujeito pratica a ação diretamente (ex: 'She wrote the book'), oposta à voz passiva."
+  },
+  {
+    "term": "Reported Speech",
+    "definition": "Discurso indireto: forma de relatar o que alguém disse, com mudanças de tempo verbal e pronomes (ex: 'He said he was tired')."
+  },
+  {
+    "term": "Direct Speech",
+    "definition": "Discurso direto: reprodução exata das palavras de alguém, entre aspas (ex: He said, 'I am tired')."
+  },
+  {
+    "term": "Subject",
+    "definition": "Em inglês, o ser que pratica a ação na oração; normalmente aparece antes do verbo (ex: 'The cat' in 'The cat sleeps')."
+  },
+  {
+    "term": "Predicate",
+    "definition": "Parte da oração em inglês que contém o verbo e diz algo sobre o sujeito (ex: 'sleeps on the couch')."
+  },
+  {
+    "term": "Noun",
+    "definition": "Classe de palavras em inglês que nomeia pessoas, lugares, coisas ou ideias; pode ser countable ou uncountable."
+  },
+  {
+    "term": "Countable Noun",
+    "definition": "Substantivo contável em inglês que pode ser usado no singular e plural (ex: book/books, child/children)."
+  },
+  {
+    "term": "Uncountable Noun",
+    "definition": "Substantivo incontável em inglês que não tem forma plural e usa some/much (ex: water, information, advice)."
+  },
+  {
+    "term": "Adjective",
+    "definition": "Palavra em inglês que descreve ou qualifica um substantivo; precede o noun (ex: 'a tall building', 'the blue sky')."
+  },
+  {
+    "term": "Adverb",
+    "definition": "Palavra em inglês que modifica verbo, adjetivo ou outro advérbio, geralmente terminada em -ly (ex: quickly, carefully)."
+  },
+  {
+    "term": "Comparative",
+    "definition": "Forma do adjetivo/advérbio que compara dois elementos: -er para curtos (taller) ou more + adj para longos (more beautiful)."
+  },
+  {
+    "term": "Superlative",
+    "definition": "Forma do adjetivo/advérbio que indica o grau máximo: -est para curtos (tallest) ou most + adj para longos (most beautiful)."
+  },
+  {
+    "term": "Phrasal Verb",
+    "definition": "Verbo combinado com preposição ou advérbio que cria um significado diferente do verbo original (ex: give up = desistir, look after = cuidar)."
+  },
+  {
+    "term": "Idiom",
+    "definition": "Expressão idiomática cujo significado não é literal (ex: 'break the ice' = quebrar o gelo, 'piece of cake' = muito fácil)."
+  },
+  {
+    "term": "Collocation",
+    "definition": "Combinação natural de palavras em inglês que frequentemente aparecem juntas (ex: make a decision, do homework, take a shower)."
+  },
+  {
+    "term": "Linking Word",
+    "definition": "Palavra ou expressão que conecta ideias no texto: however, therefore, moreover, although, in addition, on the other hand."
+  },
+  {
+    "term": "Relative Clause",
+    "definition": "Oração subordinada introduzida por pronome relativo (who, which, that, where, when) que adiciona informação sobre um substantivo."
+  },
+  {
+    "term": "Relative Pronoun",
+    "definition": "Pronome usado para introduzir orações relativas em inglês: who (pessoas), which (coisas), that (ambos), whose (posse)."
+  },
+  {
+    "term": "Definite Article",
+    "definition": "O artigo 'the' em inglês, usado para se referir a algo específico e já conhecido pelo ouvinte/leitor."
+  },
+  {
+    "term": "Indefinite Article",
+    "definition": "Os artigos 'a' (antes de consoante) e 'an' (antes de vogal sonora) em inglês, usados para algo não específico."
+  },
+  {
+    "term": "Possessive Adjective",
+    "definition": "Determinante que indica posse em inglês: my, your, his, her, its, our, their (ex: 'my book', 'their house')."
+  },
+  {
+    "term": "Possessive Pronoun",
+    "definition": "Pronome que substitui o substantivo indicando posse: mine, yours, his, hers, ours, theirs (ex: 'The book is mine')."
+  },
+  {
+    "term": "Reflexive Pronoun",
+    "definition": "Pronome reflexivo em inglês: myself, yourself, himself, herself, itself, ourselves, themselves (ex: 'I taught myself')."
+  },
+  {
+    "term": "Gerund",
+    "definition": "Forma verbal em -ing usada como substantivo em inglês (ex: 'Swimming is fun', 'I enjoy reading')."
+  },
+  {
+    "term": "Infinitive",
+    "definition": "Forma base do verbo em inglês, geralmente precedida de 'to' (ex: 'to study', 'to work'); usada após certos verbos e adjetivos."
+  },
+  {
+    "term": "Tag Question",
+    "definition": "Pergunta curta adicionada ao final de uma frase para pedir confirmação (ex: 'It's cold, isn't it?', 'You like coffee, don't you?')."
+  },
+  {
+    "term": "False Friend",
+    "definition": "Palavra que parece similar em dois idiomas mas tem significado diferente (ex: actually ≠ atualmente, pretend ≠ pretender)."
+  },
+  {
+    "term": "Cognate",
+    "definition": "Palavra que tem forma e significado similares em dois idiomas (ex: telephone/telefone, music/música, chocolate/chocolate)."
+  },
+  {
+    "term": "Prefix",
+    "definition": "Afixo adicionado ao início de uma palavra em inglês para alterar seu significado (ex: un- = unhappy, re- = rewrite, pre- = preview)."
+  },
+  {
+    "term": "Suffix",
+    "definition": "Afixo adicionado ao final de uma palavra em inglês para alterar classe ou significado (ex: -tion, -ness, -able, -ly, -ment)."
+  },
+  {
+    "term": "Irregular Verb",
+    "definition": "Verbo em inglês que não segue o padrão regular -ed no passado (ex: go/went/gone, see/saw/seen, be/was/been)."
+  },
+  {
+    "term": "Regular Verb",
+    "definition": "Verbo em inglês que forma passado e particípio com -ed (ex: work/worked/worked, play/played/played)."
+  },
+  {
+    "term": "Question Word",
+    "definition": "Palavras interrogativas em inglês: What (o quê), Who (quem), Where (onde), When (quando), Why (por quê), How (como)."
+  },
+  {
+    "term": "Preposition of Time",
+    "definition": "Preposições usadas com tempo em inglês: at (horas), on (dias/datas), in (meses/anos/períodos) — ex: at 5pm, on Monday, in 2026."
+  },
+  {
+    "term": "Preposition of Place",
+    "definition": "Preposições usadas com lugar em inglês: in (dentro), on (sobre), at (ponto específico), between, behind, next to."
+  },
+  {
+    "term": "Quantifier",
+    "definition": "Palavras que indicam quantidade em inglês: some, any, many, much, few, little, a lot of, several, enough."
+  },
+  {
+    "term": "Função Afim",
+    "definition": "Função do tipo f(x) = ax + b, com a ≠ 0, cujo gráfico é uma reta; 'a' é o coeficiente angular e 'b' o linear."
+  },
+  {
+    "term": "Função Quadrática",
+    "definition": "Função do tipo f(x) = ax² + bx + c, com a ≠ 0, cujo gráfico é uma parábola com concavidade para cima (a > 0) ou para baixo (a < 0)."
+  },
+  {
+    "term": "Função Exponencial",
+    "definition": "Função do tipo f(x) = aˣ, com a > 0 e a ≠ 1; modela crescimento ou decaimento exponencial."
+  },
+  {
+    "term": "Função Logarítmica",
+    "definition": "Função inversa da exponencial, f(x) = logₐ(x), com a > 0 e a ≠ 1; transforma multiplicações em somas."
+  },
+  {
+    "term": "Função Modular",
+    "definition": "Função f(x) = |x| que retorna o valor absoluto de x; seu gráfico forma um 'V' com vértice na origem."
+  },
+  {
+    "term": "Função Composta",
+    "definition": "Função obtida pela aplicação sucessiva de duas funções: (f ∘ g)(x) = f(g(x)), onde g é aplicada primeiro."
+  },
+  {
+    "term": "Função Inversa",
+    "definition": "Função f⁻¹ que desfaz a operação de f, de modo que f(f⁻¹(x)) = x; existe quando f é bijetora."
+  },
+  {
+    "term": "Função Injetora",
+    "definition": "Função em que elementos distintos do domínio possuem imagens distintas: se x₁ ≠ x₂, então f(x₁) ≠ f(x₂)."
+  },
+  {
+    "term": "Função Sobrejetora",
+    "definition": "Função em que todo elemento do contradomínio é imagem de pelo menos um elemento do domínio."
+  },
+  {
+    "term": "Função Bijetora",
+    "definition": "Função que é simultaneamente injetora e sobrejetora, estabelecendo correspondência de um para um entre domínio e contradomínio."
+  },
+  {
+    "term": "Coeficiente Angular",
+    "definition": "Valor 'a' na função afim f(x) = ax + b que determina a inclinação da reta; positivo (crescente) ou negativo (decrescente)."
+  },
+  {
+    "term": "Coeficiente Linear",
+    "definition": "Valor 'b' na função afim f(x) = ax + b que indica onde a reta intercepta o eixo y (quando x = 0)."
+  },
+  {
+    "term": "Vértice da Parábola",
+    "definition": "Ponto de máximo ou mínimo da função quadrática; coordenadas: xᵥ = -b/2a e yᵥ = -Δ/4a."
+  },
+  {
+    "term": "Discriminante",
+    "definition": "Valor Δ = b² - 4ac da fórmula de Bhaskara que determina o número de raízes reais: Δ > 0 (duas), Δ = 0 (uma), Δ < 0 (nenhuma)."
+  },
+  {
+    "term": "Fórmula de Bhaskara",
+    "definition": "Fórmula x = (-b ± √Δ) / 2a usada para encontrar as raízes de uma equação do 2º grau ax² + bx + c = 0."
+  },
+  {
+    "term": "PA (Progressão Aritmética)",
+    "definition": "Sequência numérica em que cada termo é obtido somando uma razão constante 'r' ao anterior; termo geral: aₙ = a₁ + (n-1)·r."
+  },
+  {
+    "term": "PG (Progressão Geométrica)",
+    "definition": "Sequência numérica em que cada termo é obtido multiplicando o anterior por uma razão constante 'q'; termo geral: aₙ = a₁ · q^(n-1)."
+  },
+  {
+    "term": "Soma de PA",
+    "definition": "Soma dos n primeiros termos de uma PA: Sₙ = n · (a₁ + aₙ) / 2."
+  },
+  {
+    "term": "Soma de PG",
+    "definition": "Soma dos n primeiros termos de uma PG finita: Sₙ = a₁ · (qⁿ - 1) / (q - 1), com q ≠ 1."
+  },
+  {
+    "term": "Matriz Identidade",
+    "definition": "Matriz quadrada com 1 na diagonal principal e 0 nas demais posições; elemento neutro da multiplicação de matrizes."
+  },
+  {
+    "term": "Matriz Transposta",
+    "definition": "Matriz obtida trocando linhas por colunas da matriz original; se A é m×n, sua transposta Aᵀ é n×m."
+  },
+  {
+    "term": "Matriz Inversa",
+    "definition": "Matriz A⁻¹ tal que A · A⁻¹ = I (identidade); existe apenas quando det(A) ≠ 0."
+  },
+  {
+    "term": "Sistema Linear",
+    "definition": "Conjunto de equações lineares com múltiplas incógnitas; resolvido por escalonamento, substituição ou regra de Cramer."
+  },
+  {
+    "term": "Regra de Cramer",
+    "definition": "Método de resolução de sistemas lineares usando determinantes: xᵢ = det(Aᵢ) / det(A), válido quando det(A) ≠ 0."
+  },
+  {
+    "term": "Escalonamento",
+    "definition": "Método de resolver sistemas lineares transformando a matriz em forma escalonada por operações elementares entre linhas."
+  },
+  {
+    "term": "Princípio Fundamental da Contagem",
+    "definition": "Se um evento pode ocorrer de m maneiras e outro de n maneiras, ambos juntos podem ocorrer de m × n maneiras."
+  },
+  {
+    "term": "Arranjo",
+    "definition": "Agrupamento ordenado de p elementos escolhidos de n elementos: A(n,p) = n! / (n-p)!."
+  },
+  {
+    "term": "Combinação",
+    "definition": "Agrupamento não ordenado de p elementos escolhidos de n elementos: C(n,p) = n! / (p! · (n-p)!)."
+  },
+  {
+    "term": "Permutação",
+    "definition": "Arranjo de n elementos tomados n a n; permutação simples: P(n) = n!; com repetição: P(n) = n! / (n₁! · n₂! · ...)."
+  },
+  {
+    "term": "Binômio de Newton",
+    "definition": "Fórmula para expandir (a + b)ⁿ usando coeficientes binomiais: Σ C(n,k) · aⁿ⁻ᵏ · bᵏ para k de 0 a n."
+  },
+  {
+    "term": "Triângulo de Pascal",
+    "definition": "Disposição triangular dos coeficientes binomiais onde cada número é a soma dos dois acima; usado para expandir binômios."
+  },
+  {
+    "term": "Probabilidade Condicional",
+    "definition": "Probabilidade de um evento A ocorrer dado que B já ocorreu: P(A|B) = P(A ∩ B) / P(B)."
+  },
+  {
+    "term": "Eventos Independentes",
+    "definition": "Dois eventos são independentes quando a ocorrência de um não altera a probabilidade do outro: P(A ∩ B) = P(A) · P(B)."
+  },
+  {
+    "term": "Eventos Mutuamente Exclusivos",
+    "definition": "Eventos que não podem ocorrer simultaneamente; P(A ∩ B) = 0, portanto P(A ∪ B) = P(A) + P(B)."
+  },
+  {
+    "term": "Espaço Amostral",
+    "definition": "Conjunto de todos os resultados possíveis de um experimento aleatório; representado pela letra S ou Ω."
+  },
+  {
+    "term": "Distribuição Normal",
+    "definition": "Distribuição de probabilidade contínua em forma de sino, simétrica, definida pela média (μ) e desvio padrão (σ)."
+  },
+  {
+    "term": "Frequência Absoluta",
+    "definition": "Número de vezes que um determinado valor aparece em um conjunto de dados."
+  },
+  {
+    "term": "Frequência Relativa",
+    "definition": "Razão entre a frequência absoluta de um valor e o total de observações; expressa em fração, decimal ou porcentagem."
+  },
+  {
+    "term": "Quartil",
+    "definition": "Valores que dividem um conjunto de dados ordenados em quatro partes iguais: Q1 (25%), Q2/mediana (50%), Q3 (75%)."
+  },
+  {
+    "term": "Amplitude",
+    "definition": "Diferença entre o maior e o menor valor de um conjunto de dados; medida simples de dispersão."
+  },
+  {
+    "term": "Coeficiente de Variação",
+    "definition": "Medida de dispersão relativa: CV = (desvio padrão / média) × 100%; permite comparar variabilidades de conjuntos diferentes."
+  },
+  {
+    "term": "Seno",
+    "definition": "Razão trigonométrica: no triângulo retângulo, sen(θ) = cateto oposto / hipotenusa; no ciclo, coordenada y do ponto."
+  },
+  {
+    "term": "Cosseno",
+    "definition": "Razão trigonométrica: no triângulo retângulo, cos(θ) = cateto adjacente / hipotenusa; no ciclo, coordenada x do ponto."
+  },
+  {
+    "term": "Tangente",
+    "definition": "Razão trigonométrica: tg(θ) = sen(θ) / cos(θ) = cateto oposto / cateto adjacente."
+  },
+  {
+    "term": "Lei dos Senos",
+    "definition": "Em qualquer triângulo: a/sen(A) = b/sen(B) = c/sen(C) = 2R, onde R é o raio da circunferência circunscrita."
+  },
+  {
+    "term": "Lei dos Cossenos",
+    "definition": "Generalização do teorema de Pitágoras: a² = b² + c² - 2bc·cos(A), válida para qualquer triângulo."
+  },
+  {
+    "term": "Ciclo Trigonométrico",
+    "definition": "Circunferência de raio 1 centrada na origem do plano cartesiano, usada para definir as funções trigonométricas para qualquer ângulo."
+  },
+  {
+    "term": "Identidade Trigonométrica",
+    "definition": "Igualdade envolvendo funções trigonométricas válida para todo valor do ângulo; a fundamental é sen²(θ) + cos²(θ) = 1."
+  },
+  {
+    "term": "Teorema de Pitágoras",
+    "definition": "Em todo triângulo retângulo, o quadrado da hipotenusa é igual à soma dos quadrados dos catetos: a² = b² + c²."
+  },
+  {
+    "term": "Triângulo Retângulo",
+    "definition": "Triângulo que possui um ângulo reto (90°); base para as razões trigonométricas fundamentais."
+  },
+  {
+    "term": "Triângulo Equilátero",
+    "definition": "Triângulo com os três lados iguais e três ângulos de 60°; sua área é (l²√3)/4."
+  },
+  {
+    "term": "Triângulo Isósceles",
+    "definition": "Triângulo que possui dois lados iguais e dois ângulos da base iguais."
+  },
+  {
+    "term": "Área do Triângulo",
+    "definition": "A = (base × altura) / 2; pode também ser calculada por Herão: A = √[s(s-a)(s-b)(s-c)] onde s é o semiperímetro."
+  },
+  {
+    "term": "Área do Círculo",
+    "definition": "A = π · r², onde r é o raio do círculo e π ≈ 3,14159."
+  },
+  {
+    "term": "Comprimento da Circunferência",
+    "definition": "C = 2π · r, onde r é o raio; também pode ser expresso como C = π · d, onde d é o diâmetro."
+  },
+  {
+    "term": "Área do Trapézio",
+    "definition": "A = (B + b) × h / 2, onde B é a base maior, b a base menor e h a altura."
+  },
+  {
+    "term": "Área do Paralelogramo",
+    "definition": "A = base × altura; o paralelogramo tem lados opostos paralelos e iguais."
+  },
+  {
+    "term": "Polígono Regular",
+    "definition": "Polígono com todos os lados e ângulos iguais; a soma dos ângulos internos é (n - 2) × 180°."
+  },
+  {
+    "term": "Ângulo Interno",
+    "definition": "Ângulo formado por dois lados consecutivos de um polígono; em polígono regular de n lados: (n - 2) × 180° / n."
+  },
+  {
+    "term": "Ângulo Externo",
+    "definition": "Ângulo formado por um lado do polígono e o prolongamento do lado adjacente; a soma dos externos é sempre 360°."
+  },
+  {
+    "term": "Semelhança de Triângulos",
+    "definition": "Dois triângulos são semelhantes quando têm ângulos correspondentes iguais e lados proporcionais; critérios: AA, LAL, LLL."
+  },
+  {
+    "term": "Congruência de Triângulos",
+    "definition": "Dois triângulos são congruentes quando possuem mesma forma e tamanho; critérios: LLL, LAL, ALA, LAAo."
+  },
+  {
+    "term": "Teorema de Tales",
+    "definition": "Se retas paralelas são cortadas por transversais, os segmentos correspondentes são proporcionais."
+  },
+  {
+    "term": "Volume do Cilindro",
+    "definition": "V = π · r² · h, onde r é o raio da base circular e h é a altura."
+  },
+  {
+    "term": "Volume do Cone",
+    "definition": "V = (π · r² · h) / 3, equivalendo a um terço do volume do cilindro de mesma base e altura."
+  },
+  {
+    "term": "Volume da Esfera",
+    "definition": "V = (4/3) · π · r³, onde r é o raio da esfera."
+  },
+  {
+    "term": "Volume do Prisma",
+    "definition": "V = Área da base × altura; para prisma retangular (paralelepípedo): V = comprimento × largura × altura."
+  },
+  {
+    "term": "Volume da Pirâmide",
+    "definition": "V = (Área da base × altura) / 3, equivalendo a um terço do volume do prisma de mesma base e altura."
+  },
+  {
+    "term": "Área Lateral do Cilindro",
+    "definition": "A_lat = 2π · r · h; a área total inclui as duas bases: A_total = 2π · r · (r + h)."
+  },
+  {
+    "term": "Área da Esfera",
+    "definition": "A = 4π · r², onde r é o raio da esfera."
+  },
+  {
+    "term": "Número Complexo",
+    "definition": "Número da forma z = a + bi, onde a é a parte real, b a parte imaginária e i = √(-1)."
+  },
+  {
+    "term": "Plano de Argand-Gauss",
+    "definition": "Representação geométrica dos números complexos no plano, com eixo real (horizontal) e eixo imaginário (vertical)."
+  },
+  {
+    "term": "Módulo de Número Complexo",
+    "definition": "Distância do número complexo z = a + bi à origem: |z| = √(a² + b²)."
+  },
+  {
+    "term": "Equação do 1º Grau",
+    "definition": "Equação da forma ax + b = 0, com a ≠ 0; possui uma única solução: x = -b/a."
+  },
+  {
+    "term": "Equação do 2º Grau",
+    "definition": "Equação da forma ax² + bx + c = 0, com a ≠ 0; resolvida pela fórmula de Bhaskara ou por soma e produto."
+  },
+  {
+    "term": "Inequação do 1º Grau",
+    "definition": "Desigualdade da forma ax + b > 0 (ou <, ≥, ≤); ao multiplicar por negativo, inverte-se o sinal da desigualdade."
+  },
+  {
+    "term": "Inequação do 2º Grau",
+    "definition": "Desigualdade envolvendo expressão quadrática; resolvida analisando o sinal da parábola nos intervalos das raízes."
+  },
+  {
+    "term": "Logaritmo",
+    "definition": "Operação inversa da exponenciação: logₐ(b) = c significa que aᶜ = b, com a > 0, a ≠ 1 e b > 0."
+  },
+  {
+    "term": "Propriedades dos Logaritmos",
+    "definition": "Regras fundamentais: log(a·b) = log(a)+log(b); log(a/b) = log(a)-log(b); log(aⁿ) = n·log(a)."
+  },
+  {
+    "term": "Logaritmo Natural",
+    "definition": "Logaritmo de base e (número de Euler ≈ 2,718): ln(x) = logₑ(x); fundamental em cálculo e modelagem."
+  },
+  {
+    "term": "Juros Simples",
+    "definition": "Regime em que os juros incidem apenas sobre o capital inicial: J = C · i · t; montante M = C · (1 + i·t)."
+  },
+  {
+    "term": "Juros Compostos",
+    "definition": "Regime em que os juros incidem sobre o montante acumulado: M = C · (1 + i)ᵗ, gerando crescimento exponencial."
+  },
+  {
+    "term": "Porcentagem",
+    "definition": "Razão centesimal que expressa uma proporção em relação a 100: x% = x/100; usada em descontos, acréscimos e taxas."
+  },
+  {
+    "term": "Regra de Três Simples",
+    "definition": "Método para encontrar um valor desconhecido quando duas grandezas são diretamente ou inversamente proporcionais."
+  },
+  {
+    "term": "Regra de Três Composta",
+    "definition": "Método para resolver problemas envolvendo três ou mais grandezas proporcionais simultaneamente."
+  },
+  {
+    "term": "Razão Áurea",
+    "definition": "Proporção irracional φ ≈ 1,618, encontrada quando a/b = (a+b)/a; aparece na natureza, arte e arquitetura."
+  },
+  {
+    "term": "Sequência de Fibonacci",
+    "definition": "Sequência em que cada termo é a soma dos dois anteriores: 1, 1, 2, 3, 5, 8, 13, 21...; relacionada à razão áurea."
+  },
+  {
+    "term": "Lógica Proposicional",
+    "definition": "Ramo da lógica que estuda proposições (sentenças verdadeiras ou falsas) e suas combinações com conectivos lógicos."
+  },
+  {
+    "term": "Tabela-Verdade",
+    "definition": "Tabela que mostra todos os valores lógicos possíveis de uma proposição composta para cada combinação de valores das simples."
+  },
+  {
+    "term": "Conectivo Lógico",
+    "definition": "Operador que combina proposições: conjunção (∧/e), disjunção (∨/ou), negação (¬/não), condicional (→/se...então), bicondicional (↔)."
+  },
+  {
+    "term": "Tautologia",
+    "definition": "Proposição composta que é sempre verdadeira, independentemente dos valores lógicos das proposições simples."
+  },
+  {
+    "term": "Contradição",
+    "definition": "Proposição composta que é sempre falsa, independentemente dos valores lógicos das proposições simples."
+  },
+  {
+    "term": "Contingência",
+    "definition": "Proposição composta que pode ser verdadeira ou falsa, dependendo dos valores lógicos das proposições componentes."
+  },
+  {
+    "term": "Conjuntos Numéricos",
+    "definition": "Classificação dos números: Naturais (ℕ) ⊂ Inteiros (ℤ) ⊂ Racionais (ℚ) ⊂ Irracionais (𝕀) — todos dentro dos Reais (ℝ)."
+  },
+  {
+    "term": "Operações com Conjuntos",
+    "definition": "União (A ∪ B), interseção (A ∩ B), diferença (A - B) e complementar (Aᶜ) — representadas por diagramas de Venn."
+  },
+  {
+    "term": "Diagrama de Venn",
+    "definition": "Representação gráfica usando círculos sobrepostos para visualizar relações entre conjuntos (união, interseção, diferença)."
+  },
+  {
+    "term": "Notação Científica",
+    "definition": "Forma de escrever números muito grandes ou muito pequenos: a × 10ⁿ, onde 1 ≤ |a| < 10 (ex: 3,5 × 10⁶ = 3.500.000)."
+  },
+  {
+    "term": "Potenciação",
+    "definition": "Operação aⁿ = a multiplicado por si mesmo n vezes; propriedades: aᵐ · aⁿ = aᵐ⁺ⁿ, (aᵐ)ⁿ = aᵐⁿ, a⁰ = 1."
+  },
+  {
+    "term": "Radiciação",
+    "definition": "Operação inversa da potenciação: ⁿ√a = a^(1/n); propriedades derivadas das regras de potenciação."
+  },
+  {
+    "term": "Racionalização",
+    "definition": "Processo de eliminar radicais do denominador de uma fração, multiplicando numerador e denominador pelo conjugado."
+  },
+  {
+    "term": "Produto Notável",
+    "definition": "Multiplicações frequentes com resultados padronizados: (a+b)² = a²+2ab+b², (a-b)² = a²-2ab+b², (a+b)(a-b) = a²-b²."
+  },
+  {
+    "term": "Fatoração",
+    "definition": "Processo de decompor uma expressão algébrica em produto de fatores: fator comum, agrupamento, trinômio quadrado perfeito etc."
+  },
+  {
+    "term": "Polinômio",
+    "definition": "Expressão algébrica formada pela soma de monômios: P(x) = aₙxⁿ + aₙ₋₁xⁿ⁻¹ + ... + a₁x + a₀; o grau é o maior expoente."
+  },
+  {
+    "term": "Geometria Analítica",
+    "definition": "Ramo da matemática que estuda figuras geométricas usando coordenadas no plano cartesiano e equações algébricas."
+  },
+  {
+    "term": "Distância entre Dois Pontos",
+    "definition": "d = √[(x₂-x₁)² + (y₂-y₁)²] — fórmula derivada do Teorema de Pitágoras aplicado ao plano cartesiano."
+  },
+  {
+    "term": "Ponto Médio",
+    "definition": "Ponto que divide um segmento ao meio: M = ((x₁+x₂)/2, (y₁+y₂)/2)."
+  },
+  {
+    "term": "Equação da Reta",
+    "definition": "Formas principais: y = mx + n (reduzida), ax + by + c = 0 (geral); m é a inclinação e n o intercepto em y."
+  },
+  {
+    "term": "Equação da Circunferência",
+    "definition": "Forma reduzida: (x - a)² + (y - b)² = r², onde (a, b) é o centro e r é o raio."
+  },
+  {
+    "term": "Cônicas",
+    "definition": "Curvas obtidas pela interseção de um plano com um cone: circunferência, elipse, hipérbole e parábola."
+  }
+]

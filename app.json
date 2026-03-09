@@ -1,0 +1,65 @@
+{
+  "expo": {
+    "name": "QuizMaster",
+    "slug": "cardmaster",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icone.png",
+    "scheme": "quizmaster",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.n2ilva.cardmaster",
+      "googleServicesFile": "./google-services.json",
+      "usesCleartextTraffic": true,
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/images/icone.png",
+        "backgroundImage": "./assets/images/icone.png",
+        "monochromeImage": "./assets/images/icone.png"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/icone.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-notifications",
+        {
+          "sounds": []
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/icone.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#151718",
+          "dark": {
+            "backgroundColor": "#151718"
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "baseUrl": "/QuizMaster",
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "451aa6ec-2fc9-4260-b12d-323a1cd9e018"
+      }
+    },
+    "owner": "n2ilva"
+  }
+}
