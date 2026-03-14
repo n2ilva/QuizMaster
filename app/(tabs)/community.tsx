@@ -84,7 +84,8 @@ export default function CommunityScreen() {
           paddingBottom: bottomPadding,
         }}>
 
-        {/* Desktop Header */}
+        {/* Max-width wrapper */}
+        {/* Desktop Header — fora do wrapper, ocupa 100% */}
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 28, gap: 16 }}>
           <View style={{ flex: 1 }}>
             <Text style={{ color: '#ECEDEE', fontSize: 26, fontWeight: '700' }}>Comunidade</Text>
@@ -104,6 +105,8 @@ export default function CommunityScreen() {
             </View>
           )}
         </View>
+
+        <View style={{ maxWidth: 960, width: '100%', alignSelf: 'center' }}>
 
         {loading ? (
           <View style={{ alignItems: 'center', marginTop: 80 }}>
@@ -254,6 +257,7 @@ export default function CommunityScreen() {
             </View>
           </>
         )}
+        </View>
       </ScrollView>
     );
   }

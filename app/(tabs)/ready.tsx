@@ -226,6 +226,7 @@ export default function ReadyCardsScreen() {
         </View>
 
         {/* Divider */}
+        <View style={{ maxWidth: 720, width: '100%', alignSelf: 'center' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 28 }}>
           <View style={{ flex: 1, height: 1, backgroundColor: '#1E2328' }} />
           <Text style={{ color: '#6B7280', fontSize: 12 }}>Todos os temas</Text>
@@ -249,14 +250,14 @@ export default function ReadyCardsScreen() {
                     <Pressable
                       style={({ pressed }) => ({
                         width: '100%',
-                        height: 60,
+                        height: 110,
                         alignItems: 'center',
                         justifyContent: 'center',
                         backgroundColor: pressed ? '#17191C' : '#111316',
                         borderRadius: 12,
-                        paddingHorizontal: 12,
+                        paddingHorizontal: 4,
                       })}>
-                      <Text style={{ color: '#ECEDEE', fontSize: 16, fontWeight: '700', textAlign: 'center', padding: 10 }} numberOfLines={2}>
+                      <Text style={{ color: '#ECEDEE', fontSize: 17, fontWeight: '700', textAlign: 'center', padding: 10 }} numberOfLines={2}>
                         {t.label}
                       </Text>
                     </Pressable>
@@ -265,6 +266,7 @@ export default function ReadyCardsScreen() {
               ))}
             </View>
           ))}
+        </View>
         </View>
       </ScrollView>
     );
@@ -380,14 +382,14 @@ export default function ReadyCardsScreen() {
                   <Pressable
                     style={({ pressed }) => ({
                       width: '100%',
-                      height: 60,
+                      height: 80,
                       alignItems: 'center',
                       justifyContent: 'center',
                       backgroundColor: pressed ? '#17191C' : '#111316',
                       borderRadius: 12,
                       paddingHorizontal: 4,
                     })}>
-                    <Text style={{ color: '#ECEDEE', fontSize: 14, fontWeight: '700', textAlign: 'center', padding: 10 }} numberOfLines={2}>
+                    <Text style={{ color: '#ECEDEE', fontSize: 16, fontWeight: '700', textAlign: 'center', padding: 10 }} numberOfLines={2}>
                       {t.label}
                     </Text>
                   </Pressable>

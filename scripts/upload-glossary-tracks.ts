@@ -27,13 +27,14 @@ async function main() {
   const clean = process.argv.includes("--clean");
   const db = new Firestore({ projectId: PROJECT_ID });
 
-  const tracks = ["matematica", "portugues", "ingles"];
+  const tracks = ["glossary","matematica", "portugues", "ingles"];
 
   for (const track of tracks) {
     const filePath = resolve(
       __dirname,
       "..",
       "data",
+      "cards",
       "glossary",
       `${track}.json`,
     );

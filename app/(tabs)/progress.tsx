@@ -5,16 +5,17 @@ import { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, Platform, Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
 import { SCORE_LEVEL_EMOJIS } from '@/constants/score-levels';
+import { TRACK_STYLE_FALLBACK, trackStyles } from '@/constants/track-styles';
 import { trackLabels } from '@/data/tracks';
 import { useScreenSize } from '@/hooks/use-screen-size';
 import { useTabContentPadding } from '@/hooks/use-tab-content-padding';
 import {
-  type CategoryProgress,
-  fetchUserProgress,
-  formatDuration,
-  getScoreLevel,
-  resetUserProgress,
-  type ScoreLevel,
+    type CategoryProgress,
+    fetchUserProgress,
+    formatDuration,
+    getScoreLevel,
+    resetUserProgress,
+    type ScoreLevel,
 } from '@/lib/api';
 import { useAuth } from '@/providers/auth-provider';
 import { useData } from '@/providers/data-provider';
@@ -56,58 +57,67 @@ function ResetProgressButton({
 
 function CategoryCard({ cat }: { cat: CategoryProgress }) {
   const acc = cat.accuracyPercent;
-  const accentColor = acc === 100 ? '#22C55E' : acc >= 80 ? '#F59E0B' : acc >= 50 ? '#EAB308' : '#EF4444';
+  const accentColor = acc === 100 ? '#22C55E' : acc >= 80 ? '#10B981' : acc >= 50 ? '#F59E0B' : '#EF4444';
+  const trackStyle = trackStyles[cat.track] ?? TRACK_STYLE_FALLBACK;
+  const trackLabel = trackLabels[cat.track] ?? cat.track;
+
   return (
-    <View style={{ backgroundColor: accentColor, borderRadius: 14, padding: 2, overflow: 'hidden' }}>
-      <View style={{ backgroundColor: '#111316', borderRadius: 12, padding: 12 }}>
-        <Text style={{ color: '#ECEDEE', fontSize: 13, fontWeight: '700', marginBottom: 8 }}>
-          {(trackLabels[cat.track] ?? cat.track) ? `${trackLabels[cat.track] ?? cat.track} · ${cat.category}` : cat.category}
-        </Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-          <Text style={{ color: '#9BA1A6', fontSize: 12 }}>
-            Estudo: {cat.studyPercent}%
-          </Text>
-          <Text style={{ color: accentColor, fontSize: 12, fontWeight: '700' }}>
-            Acertos: {cat.accuracyPercent}%
-          </Text>
+    <View style={{ backgroundColor: accentColor, borderRadius: 16, padding: 2, overflow: 'hidden' }}>
+      <View style={{ backgroundColor: '#111316', borderRadius: 14, padding: 14 }}>
+
+        {/* Header: ícone + nome + % acerto */}
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 10 }}>
+          <View style={{ backgroundColor: trackStyle.color + '22', borderRadius: 9, padding: 7, marginTop: 1 }}>
+            <MaterialIcons name={trackStyle.icon} size={14} color={trackStyle.color} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: '#6B7280', fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.8 }} numberOfLines={1}>
+              {trackLabel}
+            </Text>
+            <Text style={{ color: '#ECEDEE', fontSize: 13, fontWeight: '700', marginTop: 2, lineHeight: 18 }} numberOfLines={2}>
+              {cat.category}
+            </Text>
+          </View>
+          <View style={{ alignItems: 'flex-end' }}>
+            <Text style={{ color: accentColor, fontSize: 20, fontWeight: '800', lineHeight: 22 }}>
+              {acc}%
+            </Text>
+            <Text style={{ color: '#6B7280', fontSize: 10, marginTop: 1 }}>acertos</Text>
+          </View>
         </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
-          <Text style={{ color: '#9BA1A6', fontSize: 12 }}>
-            Tempo/questão: {formatDuration(cat.avgTimePerQuestionMs)}
+
+        {/* Barra de progresso de estudo */}
+        <View style={{ height: 5, backgroundColor: '#1E2328', borderRadius: 4, overflow: 'hidden', marginBottom: 8 }}>
+          <View style={{ height: '100%', borderRadius: 4, width: `${cat.studyPercent}%`, backgroundColor: accentColor, opacity: 0.65 }} />
+        </View>
+
+        {/* Stats secundárias */}
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+          <Text style={{ color: '#6B7280', fontSize: 11 }}>
+            {cat.studyPercent}% estudado · {cat.uniqueQuestionsAnswered} {cat.uniqueQuestionsAnswered === 1 ? 'questão' : 'questões'}
           </Text>
-          <Text style={{ color: '#9BA1A6', fontSize: 12 }}>
-            {cat.uniqueQuestionsAnswered} {cat.uniqueQuestionsAnswered === 1 ? 'pergunta' : 'perguntas'}
+          <Text style={{ color: '#6B7280', fontSize: 11 }}>
+            {formatDuration(cat.avgTimePerQuestionMs)}/q
           </Text>
         </View>
 
         {cat.hasInProgressLesson ? (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#F59E0B', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 5, marginBottom: 8 }}>
-            <MaterialIcons name="schedule" size={12} color="#1A1000" />
-            <Text style={{ color: '#1A1000', fontSize: 11, fontWeight: '700' }}>
-              Em andamento: {cat.inProgressAnswered} {cat.inProgressAnswered === 1 ? 'pergunta respondida' : 'perguntas respondidas'}
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#F59E0B22', borderWidth: 1, borderColor: '#F59E0B44', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 5, marginBottom: 8 }}>
+            <MaterialIcons name="schedule" size={12} color="#F59E0B" />
+            <Text style={{ color: '#F59E0B', fontSize: 11, fontWeight: '600' }}>
+              Em andamento · {cat.inProgressAnswered} {cat.inProgressAnswered === 1 ? 'resposta' : 'respostas'}
             </Text>
           </View>
         ) : null}
 
         {acc < 50 ? (
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#EF4444', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 5, marginBottom: 8 }}>
-            <MaterialIcons name="warning" size={12} color="#FFFFFF" />
-            <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '700' }}>
-              Taxa de acerto muito baixa! Revise este tema.
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#EF444422', borderWidth: 1, borderColor: '#EF444444', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 5, marginBottom: 8 }}>
+            <MaterialIcons name="warning" size={12} color="#EF4444" />
+            <Text style={{ color: '#EF4444', fontSize: 11, fontWeight: '600' }}>
+              Taxa baixa — revise este tema
             </Text>
           </View>
         ) : null}
-
-        <View style={{ height: 4, backgroundColor: '#1E2328', borderRadius: 4, overflow: 'hidden', marginBottom: 10 }}>
-          <View
-            style={{
-              height: '100%',
-              borderRadius: 4,
-              width: `${cat.studyPercent}%`,
-              backgroundColor: accentColor,
-            }}
-          />
-        </View>
 
         <Link
           href={cat.hasInProgressLesson
@@ -121,9 +131,9 @@ function CategoryCard({ cat }: { cat: CategoryProgress }) {
               alignItems: 'center',
               justifyContent: 'center',
               gap: 6,
-              backgroundColor: pressed ? '#1e2a5e22' : 'transparent',
+              backgroundColor: pressed ? '#1e2a5e33' : '#1A1D21',
               borderWidth: 1,
-              borderColor: '#3F51B5',
+              borderColor: '#3F51B580',
               borderRadius: 10,
               paddingVertical: 9,
             })}>
@@ -153,7 +163,7 @@ export default function ProgressScreen() {
   const catGridGap = 12;
   const catItemWidth = isDesktop
     ? (windowWidth - 344 - (catGridCols - 1) * catGridGap) / catGridCols
-    : undefined;
+    : (windowWidth - 104 - (catGridCols - 1) * catGridGap) / catGridCols;
 
   const [loading, setLoading] = useState(!cachedProgress);
   const [resetting, setResetting] = useState(false);
@@ -339,68 +349,95 @@ export default function ProgressScreen() {
                   style={{ maxHeight: 500 }}
                   showsVerticalScrollIndicator={false}
                   nestedScrollEnabled>
-                  <View style={{ padding: 16, flexDirection: 'row', flexWrap: 'wrap', gap: catGridGap }}>
+                  <View style={{ padding: 16, flexDirection: 'row', flexWrap: 'wrap', gap: catGridGap, alignContent: 'flex-start', justifyContent: 'center' }}>
                   {[...categories].sort((a, b) => b.lastStudiedAt - a.lastStudiedAt).map((cat) => {
                     const acc = cat.accuracyPercent;
-                    const accentColor = acc === 100 ? '#22C55E' : acc >= 80 ? '#F59E0B' : acc >= 50 ? '#EAB308' : '#EF4444';
-                    const accentBg = acc === 100 ? 'rgba(34,197,94,0.1)' : acc >= 80 ? 'rgba(245,158,11,0.1)' : acc >= 50 ? 'rgba(234,179,8,0.1)' : 'rgba(239,68,68,0.1)';
+                    const accentColor = acc === 100 ? '#22C55E' : acc >= 80 ? '#10B981' : acc >= 50 ? '#F59E0B' : '#EF4444';
+                    const trackStyle = trackStyles[cat.track] ?? TRACK_STYLE_FALLBACK;
                     return (
                       <View key={`${cat.track}__${cat.category}`} style={{
                         width: catItemWidth,
-                        minWidth: 180,
-                        minHeight: 140,
-                        borderRadius: 14,
-                        borderWidth: 1.5,
-                        borderStyle: 'solid',
-                        borderColor: accentColor,
-                        backgroundColor: '#111316',
+                        borderRadius: 16,
+                        backgroundColor: accentColor,
+                        padding: 2,
                         overflow: 'hidden',
-                        padding: 14,
                       }}>
-                      <Link
-                        href={cat.hasInProgressLesson
-                          ? `/ready/study?track=${encodeURIComponent(cat.track)}&category=${encodeURIComponent(cat.category)}`
-                          : `/ready/${encodeURIComponent(cat.track)}`}
-                        asChild>
-                        <Pressable style={({ pressed }) => ({
-                          width: '100%',
-                          flex: 1,
-                          justifyContent: 'space-between',
-                          backgroundColor: pressed ? '#17191C' : 'transparent',
-                          borderRadius: 8,
-                        })}>
-                          {/* Nome + % acerto */}
-                          <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
-                            <Text style={{ color: '#ECEDEE', fontSize: 13, fontWeight: '600', flex: 1, lineHeight: 18 }} numberOfLines={2}>{cat.category}</Text>
-                            <View style={{ backgroundColor: accentBg, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
-                              <Text style={{ color: accentColor, fontSize: 13, fontWeight: '800' }}>{acc}%</Text>
+                        <View style={{ backgroundColor: '#111316', borderRadius: 14, padding: 14, flex: 1 }}>
+                          {/* Header: ícone + nomes + % */}
+                          <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 10 }}>
+                            <View style={{ backgroundColor: trackStyle.color + '25', borderRadius: 9, padding: 7, marginTop: 1 }}>
+                              <MaterialIcons name={trackStyle.icon} size={14} color={trackStyle.color} />
+                            </View>
+                            <View style={{ flex: 1 }}>
+                              <Text style={{ color: '#6B7280', fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.8 }} numberOfLines={1}>
+                                {trackLabels[cat.track] ?? cat.track}
+                              </Text>
+                              <Text style={{ color: '#ECEDEE', fontSize: 13, fontWeight: '700', marginTop: 2, lineHeight: 18 }} numberOfLines={2}>
+                                {cat.category}
+                              </Text>
+                            </View>
+                            <View style={{ alignItems: 'flex-end' }}>
+                              <Text style={{ color: accentColor, fontSize: 20, fontWeight: '800', lineHeight: 22 }}>
+                                {acc}%
+                              </Text>
+                              <Text style={{ color: '#6B7280', fontSize: 10, marginTop: 1 }}>acertos</Text>
                             </View>
                           </View>
-                          {/* Trilha */}
-                          <Text style={{ color: '#6B7280', fontSize: 11, marginBottom: 10 }} numberOfLines={1}>
-                            {trackLabels[cat.track] ?? cat.track}
-                          </Text>
+
                           {/* Barra de progresso */}
-                          <View style={{ height: 3, backgroundColor: '#1E2328', borderRadius: 4, overflow: 'hidden' }}>
-                            <View style={{ height: '100%', width: `${cat.studyPercent}%`, backgroundColor: accentColor, borderRadius: 4, opacity: 0.8 }} />
+                          <View style={{ height: 5, backgroundColor: '#1E2328', borderRadius: 4, overflow: 'hidden', marginBottom: 8 }}>
+                            <View style={{ height: '100%', width: `${cat.studyPercent}%`, backgroundColor: accentColor, borderRadius: 4, opacity: 0.65 }} />
                           </View>
-                          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
-                            <Text style={{ color: '#4B5563', fontSize: 10 }}>{cat.studyPercent}% visto</Text>
-                            {cat.hasInProgressLesson && (
-                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
-                                <MaterialIcons name="play-arrow" size={10} color="#F59E0B" />
-                                <Text style={{ color: '#F59E0B', fontSize: 9, fontWeight: '600' }}>Em andamento</Text>
-                              </View>
-                            )}
+
+                          {/* Stats */}
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                            <Text style={{ color: '#6B7280', fontSize: 11 }}>
+                              {cat.studyPercent}% estudado · {cat.uniqueQuestionsAnswered} {cat.uniqueQuestionsAnswered === 1 ? 'questão' : 'questões'}
+                            </Text>
+                            <Text style={{ color: '#6B7280', fontSize: 11 }}>
+                              {formatDuration(cat.avgTimePerQuestionMs)}/q
+                            </Text>
                           </View>
-                          {acc < 50 && (
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 8, backgroundColor: 'rgba(239,68,68,0.1)', borderRadius: 6, borderWidth: 1, borderColor: 'rgba(239,68,68,0.35)', paddingHorizontal: 7, paddingVertical: 4 }}>
-                              <MaterialIcons name="warning" size={10} color="#EF4444" />
-                              <Text style={{ color: '#EF4444', fontSize: 9, fontWeight: '600' }}>Taxa de acerto muito baixa! Revise este tema.</Text>
+
+                          {cat.hasInProgressLesson && (
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#F59E0B22', borderWidth: 1, borderColor: '#F59E0B44', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 5, marginBottom: 8 }}>
+                              <MaterialIcons name="schedule" size={12} color="#F59E0B" />
+                              <Text style={{ color: '#F59E0B', fontSize: 11, fontWeight: '600' }}>
+                                Em andamento · {cat.inProgressAnswered} {cat.inProgressAnswered === 1 ? 'resposta' : 'respostas'}
+                              </Text>
                             </View>
                           )}
-                        </Pressable>
-                      </Link>
+
+                          {acc < 50 && (
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: '#EF444422', borderWidth: 1, borderColor: '#EF444444', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 5, marginBottom: 8 }}>
+                              <MaterialIcons name="warning" size={12} color="#EF4444" />
+                              <Text style={{ color: '#EF4444', fontSize: 11, fontWeight: '600' }}>Taxa baixa — revise este tema</Text>
+                            </View>
+                          )}
+
+                          <Link
+                            href={cat.hasInProgressLesson
+                              ? `/ready/study?track=${encodeURIComponent(cat.track)}&category=${encodeURIComponent(cat.category)}`
+                              : `/ready/${encodeURIComponent(cat.track)}`}
+                            asChild>
+                            <Pressable style={({ pressed }) => ({
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              gap: 6,
+                              backgroundColor: pressed ? '#1e2a5e33' : '#1A1D21',
+                              borderWidth: 1,
+                              borderColor: '#3F51B580',
+                              borderRadius: 10,
+                              paddingVertical: 9,
+                            })}>
+                              <MaterialIcons name={cat.hasInProgressLesson ? 'play-arrow' : 'replay'} size={15} color="#818CF8" />
+                              <Text style={{ color: '#818CF8', fontSize: 13, fontWeight: '700' }}>
+                                {cat.hasInProgressLesson ? 'Continuar' : 'Estudar'}
+                              </Text>
+                            </Pressable>
+                          </Link>
+                        </View>
                       </View>
                     );
                   })}
