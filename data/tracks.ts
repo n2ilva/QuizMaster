@@ -9,6 +9,10 @@ export const trackLabels: Record<string, string> = {
   "seguranca-da-informacao": "Segurança da Informação",
   "banco-de-dados": "Banco de Dados",
   ingles: "Inglês",
+  linux: "Linux",
+  "windows-server": "Windows Server",
+  "itil-4": "ITIL 4",
+  cobit: "COBIT",
 };
 
 export const trackCategories: Record<string, string[]> = {
@@ -171,6 +175,34 @@ export const trackCategories: Record<string, string[]> = {
     "Redis",
     "SQL Server",
   ],
+  linux: [
+    "Comandos Básicos do Terminal",
+    "Gerenciamento de Arquivos e Permissões",
+    "Gerenciamento de Processos",
+    "Gerenciamento de Usuários e Grupos",
+    "Shell Script e Automação",
+  ],
+  "windows-server": [
+    "Active Directory",
+    "Serviços de Rede",
+    "Hyper-V",
+    "Group Policy Objects",
+    "Backup e Recuperação",
+  ],
+  "itil-4": [
+    "Conceitos Fundamentais",
+    "Cadeia de Valor de Serviço",
+    "Práticas de Gerenciamento",
+    "Quatro Dimensões",
+    "Melhoria Contínua",
+  ],
+  cobit: [
+    "Framework e Princípios",
+    "Objetivos de Governança",
+    "Componentes do Sistema",
+    "Métricas e Maturidade",
+    "Implementação e Design",
+  ],
 };
 
 // ─── Rótulo de tipo por categoria ────────────────────────────────────────────
@@ -240,4 +272,28 @@ export const CATEGORY_TYPE_LABEL: Record<string, string> = {
   "Visão Computacional": "Computer Vision",
   "Estatística para ML": "Estatística",
   "Pré-processamento de Dados": "Engenharia de Dados",
+  // Linux
+  "Comandos Básicos do Terminal": "Administração Linux",
+  "Gerenciamento de Arquivos e Permissões": "Administração Linux",
+  "Gerenciamento de Processos": "Administração Linux",
+  "Gerenciamento de Usuários e Grupos": "Administração Linux",
+  "Shell Script e Automação": "Automação",
+  // Windows Server
+  "Active Directory": "Serviço de Diretório",
+  "Serviços de Rede": "Infraestrutura",
+  "Hyper-V": "Virtualização",
+  "Group Policy Objects": "Gerenciamento de Políticas",
+  "Backup e Recuperação": "Continuidade",
+  // ITIL 4
+  "Conceitos Fundamentais": "Fundamentos ITIL",
+  "Cadeia de Valor de Serviço": "Gestão de Serviços",
+  "Práticas de Gerenciamento": "Gestão de Serviços",
+  "Quatro Dimensões": "Gestão de Serviços",
+  "Melhoria Contínua": "Gestão de Serviços",
+  // COBIT
+  "Framework e Princípios": "Governança de TI",
+  "Objetivos de Governança": "Governança de TI",
+  "Componentes do Sistema": "Governança de TI",
+  "Métricas e Maturidade": "Governança de TI",
+  "Implementação e Design": "Governança de TI",
 };
