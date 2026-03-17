@@ -13340,6 +13340,1079 @@ happy×sad | old×new | easy×difficult | expensive×cheap`,
       ],
     },
   },
+
+  "sistemas-operacionais": {
+    "Linux — Comandos Básicos do Terminal": {
+      title: "Comandos Básicos do Terminal",
+      introduction:
+        "O terminal Linux é a interface de linha de comando que dá acesso direto ao poder do sistema operacional. Diferente de interfaces gráficas, o terminal permite automação, acesso remoto (SSH) e controle granular sobre o sistema. Dominar os comandos básicos é o primeiro passo para administração de servidores, DevOps e qualquer carreira em infraestrutura de TI.",
+      sections: [
+        {
+          heading: "🧭 Navegação e Exploração",
+          content: `**Comandos essenciais de navegação:**
+
+\`pwd\` → mostra o diretório atual (print working directory)
+\`ls\` → lista arquivos e diretórios (\`-la\` mostra ocultos + detalhes)
+\`cd\` → muda de diretório (\`cd ~\` = home, \`cd -\` = anterior)
+\`tree\` → visualiza estrutura de diretórios em árvore
+
+**Caminhos:** absolutos começam com \`/\` (ex: \`/home/user\`), relativos partem do diretório atual (\`./docs\`, \`../\`).
+
+**Curingas (wildcards):** \`*\` = qualquer sequência, \`?\` = um caractere, \`[abc]\` = a, b ou c.`,
+        },
+        {
+          heading: "📁 Manipulação de Arquivos",
+          content: `**Criar, copiar, mover e remover:**
+
+\`touch arquivo.txt\` → cria arquivo vazio
+\`mkdir -p pasta/sub\` → cria diretórios (com -p cria pais)
+\`cp -r origem destino\` → copia (-r para diretórios)
+\`mv origem destino\` → move ou renomeia
+\`rm -rf pasta\` → remove recursivamente (⚠️ sem confirmação!)
+
+**Visualizar conteúdo:**
+\`cat\` → exibe tudo | \`less\` → paginado | \`head -n 20\` → primeiras linhas
+\`tail -f log.txt\` → acompanha em tempo real (ideal para logs)
+
+**Buscar:** \`find / -name "*.conf"\` encontra arquivos; \`grep -r "padrão" /etc\` busca conteúdo dentro de arquivos.`,
+        },
+        {
+          heading: "🔗 Redirecionamento e Pipes",
+          content: `**Redirecionamento de I/O:**
+
+\`comando > arquivo\` → redireciona saída (sobrescreve)
+\`comando >> arquivo\` → redireciona saída (acrescenta)
+\`comando 2> erros.log\` → redireciona erros (stderr)
+\`comando &> tudo.log\` → redireciona stdout + stderr
+
+**Pipes (\`|\`)** conectam a saída de um comando à entrada de outro:
+\`cat /var/log/syslog | grep "error" | wc -l\` → conta linhas com "error"
+
+**Comandos de filtro:** \`sort\`, \`uniq\`, \`cut\`, \`awk\`, \`sed\` — formam o toolkit de processamento de texto no terminal.`,
+        },
+      ],
+      keyTopics: [
+        "pwd, ls, cd",
+        "cp, mv, rm, mkdir",
+        "cat, less, head, tail",
+        "find e grep",
+        "Pipes e Redirecionamento",
+        "Wildcards",
+        "man e --help",
+        "Caminhos Absolutos vs Relativos",
+      ],
+    },
+
+    "Linux — Gerenciamento de Arquivos e Permissões": {
+      title: "Gerenciamento de Arquivos e Permissões",
+      introduction:
+        "O sistema de permissões do Linux é um pilar fundamental de segurança. Cada arquivo e diretório possui um dono (owner), um grupo e permissões para leitura (r), escrita (w) e execução (x). Entender esse modelo é essencial para administração segura de servidores, controle de acesso e hardening de sistemas.",
+      sections: [
+        {
+          heading: "🔐 Modelo de Permissões Unix",
+          content: `**Três categorias de acesso:** owner (u) | group (g) | others (o)
+**Três tipos de permissão:** read (r=4) | write (w=2) | execute (x=1)
+
+Exemplo: \`-rwxr-xr--\` = owner (rwx=7), group (r-x=5), others (r--=4) → **754**
+
+**Comandos:**
+\`chmod 755 script.sh\` → define permissões numéricas
+\`chmod u+x,g-w arquivo\` → modo simbólico
+\`chown user:group arquivo\` → muda dono e grupo
+\`chgrp devs projeto/\` → muda apenas o grupo
+
+**Permissões em diretórios:** r = listar conteúdo, w = criar/deletar arquivos, x = acessar (entrar no diretório).`,
+        },
+        {
+          heading: "⚡ Permissões Especiais",
+          content: `**SUID (Set User ID) — 4xxx:**
+Arquivo executa com as permissões do dono, não de quem executou.
+Ex: \`/usr/bin/passwd\` tem SUID para alterar \`/etc/shadow\`.
+\`chmod u+s programa\` ou \`chmod 4755 programa\`
+
+**SGID (Set Group ID) — 2xxx:**
+Em arquivos: executa com grupo do dono. Em diretórios: novos arquivos herdam o grupo do diretório (ideal para pastas compartilhadas).
+
+**Sticky Bit — 1xxx:**
+Em diretórios: apenas o dono pode deletar seus próprios arquivos.
+Exemplo clássico: \`/tmp\` tem sticky bit (\`drwxrwxrwt\`).
+\`chmod +t /shared\` ou \`chmod 1777 /shared\``,
+        },
+        {
+          heading: "📋 ACLs e umask",
+          content: `**ACLs (Access Control Lists)** — permissões granulares além do modelo Unix:
+\`setfacl -m u:joao:rwx projeto/\` → permissão específica para um usuário
+\`getfacl projeto/\` → visualiza ACLs
+\`setfacl -m g:devs:rx projeto/\` → permissão para grupo específico
+\`setfacl -d -m g:devs:rwx projeto/\` → ACL padrão para novos arquivos
+
+**umask** define permissões padrão de novos arquivos:
+umask 022 → arquivos criados com 644, diretórios com 755
+umask 077 → arquivos com 600, diretórios com 700 (mais restritivo)
+Configurado em \`/etc/profile\` ou \`~/.bashrc\`.`,
+        },
+      ],
+      keyTopics: [
+        "chmod e Notação Octal",
+        "chown e chgrp",
+        "SUID, SGID, Sticky Bit",
+        "ACLs (setfacl / getfacl)",
+        "umask",
+        "Permissões em Diretórios",
+        "Links Simbólicos e Hard Links",
+        "Sistemas de Arquivos (ext4, xfs)",
+      ],
+    },
+
+    "Linux — Gerenciamento de Processos": {
+      title: "Gerenciamento de Processos",
+      introduction:
+        "Um processo é uma instância de um programa em execução no Linux. O kernel gerencia processos com PIDs únicos, hierarquia pai-filho, prioridades e sinais. Entender processos é fundamental para diagnosticar problemas de performance, gerenciar recursos do servidor e manter serviços funcionando de forma estável.",
+      sections: [
+        {
+          heading: "📊 Monitoramento de Processos",
+          content: `**Comandos de visualização:**
+
+\`ps aux\` → lista todos os processos (snapshot estático)
+\`top\` → monitor interativo em tempo real (CPU, memória)
+\`htop\` → versão aprimorada do top (com cores e interação)
+\`pstree\` → exibe hierarquia de processos em árvore
+
+**Colunas importantes do \`ps\`:**
+PID = ID do processo | PPID = ID do processo pai
+%CPU / %MEM = uso de recursos
+STAT: S (sleeping), R (running), Z (zombie), D (uninterruptible)
+TIME = tempo total de CPU consumido
+
+\`ps aux --sort=-%mem | head\` → top 10 por uso de memória`,
+        },
+        {
+          heading: "🎯 Controle de Processos",
+          content: `**Foreground vs Background:**
+\`comando &\` → executa em background
+\`Ctrl+Z\` → suspende processo | \`bg\` → continua em background
+\`fg\` → traz de volta ao foreground | \`jobs\` → lista processos do shell
+
+**Sinais (signals):**
+\`kill PID\` → envia SIGTERM (15) — encerramento gracioso
+\`kill -9 PID\` → SIGKILL — força encerramento (último recurso!)
+\`kill -HUP PID\` → SIGHUP — recarrega configuração
+\`killall nome\` → mata por nome | \`pkill -f padrao\` → mata por padrão
+
+**Prioridade (nice):**
+Valores de -20 (máxima) a 19 (mínima). Padrão = 0.
+\`nice -n 10 comando\` → inicia com prioridade baixa
+\`renice -5 -p PID\` → altera prioridade de processo existente`,
+        },
+        {
+          heading: "🔧 Serviços e systemd",
+          content: `**systemd** é o sistema de init padrão nas distros modernas:
+
+\`systemctl start nginx\` → inicia serviço
+\`systemctl stop nginx\` → para serviço
+\`systemctl restart nginx\` → reinicia
+\`systemctl enable nginx\` → habilita no boot
+\`systemctl status nginx\` → verifica estado detalhado
+
+**Journald (logs do sistema):**
+\`journalctl -u nginx\` → logs de um serviço
+\`journalctl -f\` → segue logs em tempo real
+\`journalctl --since "1 hour ago"\` → filtra por tempo
+
+**Daemons** são processos em background sem terminal associado. Nomes tipicamente terminam com \`d\` (sshd, httpd, crond).`,
+        },
+      ],
+      keyTopics: [
+        "ps, top, htop",
+        "kill e Sinais (SIGTERM, SIGKILL)",
+        "Foreground vs Background",
+        "nice e renice",
+        "systemctl e systemd",
+        "journalctl",
+        "Processos Zombie e Orphan",
+        "cron e crontab",
+      ],
+    },
+
+    "Linux — Gerenciamento de Usuários e Grupos": {
+      title: "Gerenciamento de Usuários e Grupos",
+      introduction:
+        "A administração de usuários e grupos é a base do controle de acesso no Linux. Cada usuário possui um UID, pertence a pelo menos um grupo e tem um diretório home. Arquivos como /etc/passwd, /etc/shadow e /etc/group controlam identidades e credenciais. Gerenciar corretamente usuários e grupos é essencial para segurança e organização de servidores multi-usuário.",
+      sections: [
+        {
+          heading: "👤 Gerenciamento de Usuários",
+          content: `**Criar e modificar usuários:**
+
+\`useradd -m -s /bin/bash joao\` → cria usuário com home e shell
+\`passwd joao\` → define/altera senha
+\`usermod -aG sudo joao\` → adiciona ao grupo sudo (-a = append!)
+\`userdel -r joao\` → remove usuário e seu home
+
+**Arquivos de configuração:**
+\`/etc/passwd\` → info do usuário (UID, GID, shell, home)
+\`/etc/shadow\` → senhas criptografadas + políticas de expiração
+\`/etc/skel/\` → template para novos diretórios home
+
+**Comandos úteis:**
+\`whoami\` → usuário atual | \`id\` → UID, GID e grupos
+\`su - user\` → troca de usuário (com ambiente)
+\`sudo comando\` → executa como root (configurado em \`/etc/sudoers\`)`,
+        },
+        {
+          heading: "👥 Gerenciamento de Grupos",
+          content: `**Criar e administrar grupos:**
+
+\`groupadd devs\` → cria grupo
+\`groupmod -n developers devs\` → renomeia grupo
+\`groupdel devs\` → remove grupo
+\`gpasswd -a joao devs\` → adiciona usuário ao grupo
+\`gpasswd -d joao devs\` → remove usuário do grupo
+
+**Arquivo \`/etc/group\`:** lista grupos, GIDs e membros.
+Cada usuário tem um grupo primário (GID no \`/etc/passwd\`) e pode ter múltiplos grupos secundários.
+
+**Verificar:** \`groups joao\` ou \`id joao\` mostra todos os grupos.
+⚠️ Mudanças de grupo só valem no próximo login (use \`newgrp\` para aplicar imediatamente).`,
+        },
+        {
+          heading: "🔑 Políticas de Senha e Segurança",
+          content: `**Configuração de políticas com \`chage\`:**
+
+\`chage -M 90 joao\` → senha expira em 90 dias
+\`chage -m 7 joao\` → mínimo 7 dias entre trocas
+\`chage -W 14 joao\` → avisa 14 dias antes de expirar
+\`chage -l joao\` → lista políticas do usuário
+
+**PAM (Pluggable Authentication Modules):**
+Configura regras de autenticação em \`/etc/pam.d/\`.
+Módulos úteis: \`pam_pwquality\` (complexidade de senha), \`pam_faillock\` (bloqueio após tentativas falhas).
+
+**Boas práticas:**
+• Desabilitar login root via SSH (\`PermitRootLogin no\`)
+• Usar chaves SSH em vez de senhas
+• Configurar \`sudo\` com privilégios mínimos necessários
+• Auditar contas inativas regularmente`,
+        },
+      ],
+      keyTopics: [
+        "useradd, usermod, userdel",
+        "groupadd e gpasswd",
+        "/etc/passwd e /etc/shadow",
+        "sudo e /etc/sudoers",
+        "Políticas de Senha (chage)",
+        "PAM",
+        "UID e GID",
+        "su vs sudo",
+      ],
+    },
+
+    "Linux — Shell Script e Automação": {
+      title: "Shell Script e Automação",
+      introduction:
+        "Shell scripting é a arte de automatizar tarefas no Linux combinando comandos em scripts executáveis. Com Bash (Bourne Again Shell), você pode criar desde backups automatizados até pipelines de deploy complexos. É a habilidade que separa um usuário Linux de um administrador eficiente — qualquer tarefa repetitiva pode (e deve) ser automatizada.",
+      sections: [
+        {
+          heading: "📝 Fundamentos de Shell Script",
+          content: `**Estrutura básica de um script Bash:**
+
+\`\`\`bash
+#!/bin/bash
+# Shebang (primeira linha) indica o interpretador
+
+NOME="Mundo"              # Variável (sem espaços no =)
+echo "Olá, \${NOME}!"      # Interpolação com \${}
+readonly PI=3.14           # Constante (não pode alterar)
+\`\`\`
+
+**Variáveis especiais:**
+\`$0\` = nome do script | \`$1, $2...\` = argumentos
+\`$#\` = número de argumentos | \`$?\` = exit code do último comando
+\`$@\` = todos os argumentos | \`$$\` = PID do script
+
+**Tornar executável:** \`chmod +x script.sh\` e executar com \`./script.sh\``,
+        },
+        {
+          heading: "🔀 Estruturas de Controle",
+          content: `**Condicionais:**
+\`\`\`bash
+if [[ -f "/etc/hosts" ]]; then
+    echo "Arquivo existe"
+elif [[ -d "/tmp" ]]; then
+    echo "É um diretório"
+else
+    echo "Não encontrado"
+fi
+\`\`\`
+
+**Testes:** \`-f\` (arquivo), \`-d\` (diretório), \`-z\` (string vazia), \`-eq\` (igual numérico), \`==\` (igual string)
+
+**Loops:**
+\`\`\`bash
+for file in *.log; do
+    gzip "\$file"        # Compacta cada arquivo .log
+done
+
+while read -r linha; do
+    echo "\$linha"
+done < arquivo.txt   # Lê arquivo linha por linha
+\`\`\`
+
+**Case:** ideal para menus e múltiplas opções (similar a switch).`,
+        },
+        {
+          heading: "⚙️ Automação com cron",
+          content: `**crontab** agenda tarefas periódicas:
+
+\`crontab -e\` → edita tarefas do usuário atual
+\`crontab -l\` → lista tarefas agendadas
+
+**Formato:** \`minuto hora dia mês dia_semana comando\`
+\`0 2 * * * /backup.sh\` → diariamente às 2h
+\`*/5 * * * * /monitor.sh\` → a cada 5 minutos
+\`0 0 * * 0 /weekly.sh\` → domingo à meia-noite
+
+**Boas práticas de scripts:**
+• Sempre use \`set -euo pipefail\` (falha rápido em erros)
+• Redirecione saída para logs: \`>> /var/log/script.log 2>&1\`
+• Use \`trap\` para cleanup em caso de erro
+• Valide inputs e use \`exit 1\` para erros com mensagem clara
+• Teste com \`bash -x script.sh\` (modo debug)`,
+        },
+      ],
+      keyTopics: [
+        "Shebang e Variáveis",
+        "if/elif/else e case",
+        "for, while e until",
+        "Variáveis Especiais ($?, $@)",
+        "cron e crontab",
+        "set -euo pipefail",
+        "Funções em Bash",
+        "sed e awk",
+        "trap para Cleanup",
+      ],
+    },
+
+    "Windows Server — Active Directory": {
+      title: "Active Directory",
+      introduction:
+        "O Active Directory Domain Services (AD DS) é o serviço de diretório da Microsoft que centraliza a administração de identidades, autenticação e recursos em redes corporativas. Com autenticação via Kerberos, políticas de grupo (GPO) e estrutura hierárquica (floresta → domínio → OU), o AD é a espinha dorsal de praticamente toda infraestrutura Windows enterprise.",
+      sections: [
+        {
+          heading: "🏗️ Estrutura Lógica do AD",
+          content: `**Hierarquia do Active Directory:**
+
+**Floresta (Forest)** → fronteira máxima de segurança e replicação
+  └─ **Árvore (Tree)** → domínios com namespace DNS contíguo
+       └─ **Domínio (Domain)** → unidade administrativa básica
+            └─ **OU (Organizational Unit)** → container organizacional
+
+**Objetos principais:**
+• **Usuários** → contas com atributos (nome, email, departamento)
+• **Grupos** → Security Groups (ACLs) e Distribution Groups (email)
+• **Computadores** → machines ingressadas no domínio
+• **GPOs** → políticas aplicadas a OUs, domínios ou sites
+
+**Domain Controller (DC):** servidor que hospeda o AD, autentica usuários e replica dados. Mínimo recomendado: 2 DCs por domínio.`,
+        },
+        {
+          heading: "🔑 Autenticação e Protocolos",
+          content: `**Kerberos** (padrão no AD):
+1. Usuário autentica no KDC (Key Distribution Center)
+2. Recebe TGT (Ticket-Granting Ticket)
+3. TGT solicita ticket de serviço para cada recurso
+4. Ticket de serviço autentica no servidor de destino
+→ Senha NUNCA trafega pela rede!
+
+**LDAP** (Lightweight Directory Access Protocol):
+Protocolo de consulta ao diretório. Porta 389 (LDAP) / 636 (LDAPS).
+Base DN: \`DC=empresa,DC=com\`
+Filtros: \`(&(objectClass=user)(department=TI))\`
+
+**NTLM:** protocolo legado, menos seguro que Kerberos. Usado como fallback quando Kerberos não é possível (ex: acesso por IP em vez de hostname).`,
+        },
+        {
+          heading: "🔄 Replicação e Sites",
+          content: `**Replicação multi-master:** todo DC pode receber alterações.
+**FSMO Roles** (operações de mestre único):
+• **Schema Master** → modifica schema do AD (1/floresta)
+• **Domain Naming Master** → adiciona/remove domínios (1/floresta)
+• **PDC Emulator** → sincronismo de hora, senha (1/domínio)
+• **RID Master** → distribui blocos de RIDs para SIDs (1/domínio)
+• **Infrastructure Master** → referências entre domínios (1/domínio)
+
+**Sites do AD:** representam topologia física da rede.
+Replicação intra-site: automática, rápida (15 segundos).
+Replicação inter-site: agendada, usa links de site com custo para otimizar banda WAN.`,
+        },
+      ],
+      keyTopics: [
+        "Floresta, Árvore e Domínio",
+        "OU e Objetos do AD",
+        "Domain Controllers",
+        "Kerberos e LDAP",
+        "FSMO Roles",
+        "Replicação e Sites",
+        "Relações de Confiança (Trusts)",
+        "DNS integrado ao AD",
+      ],
+    },
+
+    "Windows Server — Serviços de Rede": {
+      title: "Serviços de Rede",
+      introduction:
+        "O Windows Server oferece uma suíte completa de serviços de rede que formam a infraestrutura essencial de ambientes corporativos. DNS, DHCP, IIS, WSUS, File Server e Print Server — cada um desempenha um papel vital na conectividade, resolução de nomes, distribuição de configurações e disponibilização de recursos compartilhados na rede.",
+      sections: [
+        {
+          heading: "🌐 DNS no Windows Server",
+          content: `**DNS integrado ao Active Directory** — replicação automática entre DCs:
+
+**Zonas DNS:**
+• **Zona de pesquisa direta** → nome → IP (A/AAAA)
+• **Zona de pesquisa inversa** → IP → nome (PTR)
+• **Integrada ao AD** → armazenada no AD, replicação segura
+• **Zona stub** → aponta para servidores autoritativos
+
+**Registros essenciais:**
+A (IPv4) | AAAA (IPv6) | CNAME (alias) | MX (email) | SRV (serviços)
+**SRV records do AD:** \`_ldap._tcp.dc._msdcs.dominio.com\` — DCs registram serviços automaticamente.
+
+**DNS Scavenging:** limpeza automática de registros obsoletos (stale records). Configure aging + scavenging para manter a zona saudável.`,
+        },
+        {
+          heading: "📡 DHCP e IPAM",
+          content: `**DHCP** distribui configurações IP automaticamente:
+
+**Processo DORA:**
+**D**iscover → cliente envia broadcast procurando servidor
+**O**ffer → servidor oferece IP disponível
+**R**equest → cliente aceita a oferta
+**A**ck → servidor confirma e registra a lease
+
+**Configurações:**
+• **Escopo (Scope):** range de IPs + máscara + gateway + DNS
+• **Reservas:** IP fixo por MAC address (impressoras, servidores)
+• **Opções:** gateway padrão (003), servidores DNS (006), domínio (015)
+• **DHCP Failover:** alta disponibilidade com hot standby ou load balance
+
+**IPAM (IP Address Management):** gerenciamento centralizado de espaços IP, integrado com DNS e DHCP do Windows Server.`,
+        },
+        {
+          heading: "🖥️ IIS, File Server e WSUS",
+          content: `**IIS (Internet Information Services):**
+Servidor web da Microsoft. Hospeda sites, APIs e aplicações ASP.NET.
+Application Pools isolam processos. Bindings configuram IP/porta/hostname.
+
+**File Server:**
+• **Compartilhamentos (SMB):** \`\\\\server\\share\` com permissões NTFS + Share
+• **DFS (Distributed File System):** namespace unificado + replicação entre servidores
+• **FSRM:** cotas, triagem de arquivos e relatórios de armazenamento
+• **Shadow Copies (VSS):** snapshots de versões anteriores de arquivos
+
+**WSUS (Windows Server Update Services):**
+Gerencia distribuição de atualizações Microsoft na rede.
+Centraliza aprovações, agenda instalações e reporta compliance.
+Reduz banda WAN — downloads feitos uma vez do Microsoft Update.`,
+        },
+      ],
+      keyTopics: [
+        "DNS Integrado ao AD",
+        "DHCP e Processo DORA",
+        "DHCP Failover",
+        "IIS e Application Pools",
+        "Compartilhamentos SMB",
+        "DFS e Replicação",
+        "WSUS",
+        "IPAM",
+      ],
+    },
+
+    "Windows Server — Hyper-V": {
+      title: "Hyper-V",
+      introduction:
+        "Hyper-V é o hypervisor nativo da Microsoft para virtualização de servidores. Como hypervisor Type-1 (bare-metal), ele roda diretamente sobre o hardware, oferecendo performance próxima ao nativo. Permite consolidação de servidores, ambientes de teste isolados, alta disponibilidade e disaster recovery — pilares da infraestrutura moderna.",
+      sections: [
+        {
+          heading: "⚙️ Arquitetura e Tipos de Hypervisor",
+          content: `**Hyper-V é Type-1 (bare-metal):**
+Roda diretamente no hardware, sem SO host intermediário.
+A partição pai (management OS) gerencia, mas não é host — o hypervisor está abaixo.
+
+**Type-1 vs Type-2:**
+• **Type-1:** Hyper-V, VMware ESXi, KVM → produção, melhor performance
+• **Type-2:** VirtualBox, VMware Workstation → desktop, desenvolvimento
+
+**Gerações de VMs:**
+• **Gen 1:** BIOS legado, IDE boot, compatibilidade máxima
+• **Gen 2:** UEFI, Secure Boot, boot via SCSI, PXE via synthetic NIC
+→ Sempre use Gen 2 para Windows 8+/Server 2012+ e Linux moderno
+
+**Requisitos:** CPU com virtualização (Intel VT-x / AMD-V), SLAT, 64 bits.`,
+        },
+        {
+          heading: "💾 Armazenamento e Rede Virtual",
+          content: `**Discos virtuais (VHD/VHDX):**
+• **Dinâmico:** cresce conforme uso (economia de espaço)
+• **Fixo:** alocado integralmente (melhor performance)
+• **Differencing:** herda de pai, armazena apenas diferenças (snapshots)
+VHDX suporta até 64 TB vs 2 TB do VHD.
+
+**Checkpoints (Snapshots):**
+• **Standard:** captura estado completo (memória + disco)
+• **Production:** usa VSS/fsfreeze, consistente para aplicações (recomendado!)
+
+**Virtual Switch:**
+• **External:** conecta VMs à rede física
+• **Internal:** comunicação VM ↔ host (sem rede física)
+• **Private:** apenas entre VMs (isolamento total)
+
+**NIC Teaming:** combina adaptadores para redundância e agregação de banda.`,
+        },
+        {
+          heading: "🔄 Alta Disponibilidade e Migração",
+          content: `**Live Migration:** move VM entre hosts sem downtime!
+Requisitos: processadores compatíveis, rede dedicada, armazenamento compartilhado (ou SMB/Storage Migration).
+
+**Failover Clustering:**
+Cluster de Hyper-V com failover automático — se um host cai, VMs reiniciam em outro nó automaticamente.
+Quorum: determina quantos nós precisam estar online.
+
+**Hyper-V Replica:**
+Replicação assíncrona de VMs para disaster recovery.
+RPO configurável: 30 segundos, 5 ou 15 minutos.
+Failover planejado (zero perda) ou não planejado (usa último ponto).
+
+**Resource Metering:** monitora CPU, memória, rede e disco por VM para chargeback/showback.`,
+        },
+      ],
+      keyTopics: [
+        "Type-1 vs Type-2",
+        "VMs Gen 1 vs Gen 2",
+        "VHD vs VHDX",
+        "Virtual Switch (External/Internal/Private)",
+        "Checkpoints Standard vs Production",
+        "Live Migration",
+        "Failover Clustering",
+        "Hyper-V Replica",
+      ],
+    },
+
+    "Windows Server — GPO": {
+      title: "Group Policy Objects (GPO)",
+      introduction:
+        "Group Policy Objects (GPOs) são o mecanismo central de gerenciamento de configurações no Active Directory. Permitem definir políticas de segurança, configurações de software, scripts de logon e restrições de desktop para milhares de máquinas e usuários de forma centralizada. Uma GPO bem estruturada transforma horas de configuração manual em regras automáticas e auditáveis.",
+      sections: [
+        {
+          heading: "📋 Estrutura e Processamento de GPOs",
+          content: `**Onde GPOs são vinculadas (linkadas):**
+**Site** → **Domínio** → **OU** (ordem de processamento LSDOU)
+→ Última GPO processada vence (mais próxima do objeto)!
+
+**Partes de uma GPO:**
+• **Computer Configuration:** aplica ao boot, antes do login
+• **User Configuration:** aplica no logon do usuário
+
+**Processamento:**
+1. GPOs de Site (raramente usado)
+2. GPOs de Domínio (Default Domain Policy)
+3. GPOs de OUs pai → OUs filhas
+4. **Enforcement (No Override):** impede que GPOs inferiores sobrescrevam
+5. **Block Inheritance:** OU bloqueia herança (Enforcement vence!)
+
+**Atualização:** a cada ~90 minutos + offset aleatório de 0-30 min.
+Forçar: \`gpupdate /force\` no cliente.`,
+        },
+        {
+          heading: "🔒 Políticas de Segurança",
+          content: `**Políticas de senha (Default Domain Policy):**
+• Comprimento mínimo, complexidade, histórico, idade máxima
+• Fine-Grained Password Policies (PSOs): políticas diferentes por grupo!
+
+**Account Lockout:** bloqueio após N tentativas, duração, reset counter.
+
+**Audit Policy:** registra eventos de logon, acesso a objetos e alterações. Essencial para compliance e forense.
+
+**User Rights Assignment:**
+• Log on locally, Log on as a service
+• Shut down the system
+• Deny log on through Remote Desktop
+
+**Restricted Groups:** força membros de grupos (ex: apenas Admins no grupo local Administrators).
+
+**AppLocker / Software Restriction Policies:** controla quais executáveis, scripts e instaladores podem rodar.`,
+        },
+        {
+          heading: "🛠️ Configurações e Preferences",
+          content: `**Administrative Templates (ADMX):**
+Configuram registry do Windows — milhares de opções!
+• Desabilitar USB, configurar proxy, ocultar painel de controle
+• Templates customizados para apps (Chrome, Office, etc.)
+
+**GPO Preferences** (mais flexível que Policies):
+• **Drive Maps:** mapear unidades de rede por grupo/OU
+• **Printers:** instalar impressoras automaticamente
+• **Scheduled Tasks:** criar tarefas agendadas remotamente
+• **Registry:** modificar chaves do registro
+• **Item-Level Targeting:** aplicar com condições (IP, grupo, SO)
+
+**Diagnóstico:**
+\`gpresult /r\` → GPOs aplicadas no computador/usuário
+\`gpresult /h relatorio.html\` → relatório completo
+RSOP (Resultant Set of Policy) no MMC → simulação visual`,
+        },
+      ],
+      keyTopics: [
+        "Processamento LSDOU",
+        "Computer vs User Configuration",
+        "Enforcement e Block Inheritance",
+        "Políticas de Senha e Lockout",
+        "Administrative Templates (ADMX)",
+        "GPO Preferences",
+        "gpresult e RSOP",
+        "AppLocker",
+        "Audit Policy",
+      ],
+    },
+
+    "Windows Server — Backup e Recuperação": {
+      title: "Backup e Recuperação",
+      introduction:
+        "Backup e recuperação são a última linha de defesa contra perda de dados — seja por falha de hardware, ransomware, erro humano ou desastre natural. O Windows Server oferece ferramentas nativas (Windows Server Backup, VSS) e integra com soluções enterprise. Um plano de backup sólido é tão importante quanto firewalls e antivírus: se tudo falhar, o backup é a salvação.",
+      sections: [
+        {
+          heading: "📦 Estratégias de Backup",
+          content: `**Tipos de backup:**
+• **Full (Completo):** copia todos os dados. Base para os outros tipos.
+• **Incremental:** apenas o que mudou desde o ÚLTIMO backup (qualquer tipo).
+  → Restauração: precisa do full + todos os incrementais em ordem.
+• **Differential:** o que mudou desde o último FULL.
+  → Restauração: precisa do full + último diferencial. Mais rápido que incremental.
+
+**Regra 3-2-1:**
+**3** cópias dos dados | **2** mídias diferentes | **1** cópia offsite
+
+**RPO vs RTO:**
+• **RPO (Recovery Point Objective):** máxima perda de dados aceitável → define frequência do backup
+• **RTO (Recovery Time Objective):** tempo máximo para restaurar o serviço → define o método de recovery
+
+**Retenção:** defina por quanto tempo guardar backups (diário por 7 dias, semanal por 4 semanas, mensal por 12 meses).`,
+        },
+        {
+          heading: "🔧 Windows Server Backup e VSS",
+          content: `**Windows Server Backup (wbadmin):**
+Feature nativa para backup de volumes, system state e bare-metal recovery.
+\`wbadmin start backup -backupTarget:E: -include:C: -allCritical\`
+Suporta agendamento, backup para disco local, compartilhamento ou Azure.
+
+**VSS (Volume Shadow Copy Service):**
+Cria snapshots point-in-time consistentes, mesmo com arquivos abertos.
+**Requestor** (app de backup) → **Writer** (app garante consistência) → **Provider** (cria snapshot)
+
+**Shadow Copies para compartilhamentos:**
+Usuários restauram versões anteriores de arquivos via "Previous Versions" — sem precisar de admin!
+
+**System State Backup:** inclui AD (em DCs), Registry, Boot files, COM+ Class Registration. Essencial para restaurar um DC.`,
+        },
+        {
+          heading: "🔄 Disaster Recovery e AD Restore",
+          content: `**Bare-Metal Recovery (BMR):**
+Restaura sistema completo em hardware novo — SO, configurações, dados.
+Requer backup com flag \`-allCritical\` e media de boot (USB/ISO do Windows).
+
+**Restauração do Active Directory:**
+• **Non-Authoritative:** restaura DC, depois replica as mudanças recentes de outros DCs (padrão)
+• **Authoritative:** após non-authoritative, marca objetos como autoritativos com \`ntdsutil\` → eles "vencem" a replicação. Usado para restaurar objetos deletados.
+
+**AD Recycle Bin:** recupera objetos deletados com todos os atributos, sem precisar de restore! Habilite no AD (forest functional level 2008 R2+).
+
+**Boas práticas:**
+• Teste restaurações regularmente (backup não testado = sem backup)
+• Mantenha pelo menos 2 DCs — se um morre, o outro mantém o AD
+• Documente o procedimento de recovery (runbook)
+• Monitore alertas de falha de backup com SCOM ou scripts`,
+        },
+      ],
+      keyTopics: [
+        "Full, Incremental, Differential",
+        "Regra 3-2-1",
+        "RPO e RTO",
+        "Windows Server Backup (wbadmin)",
+        "VSS e Shadow Copies",
+        "Bare-Metal Recovery",
+        "AD Restore (Authoritative)",
+        "AD Recycle Bin",
+        "System State Backup",
+      ],
+    },
+    "Conceitos de Sistemas Operacionais": {
+      title: "Conceitos de Sistemas Operacionais",
+      introduction:
+        "Os conceitos fundamentais de sistemas operacionais são a base teórica que sustenta toda a computação moderna. Compreender gerenciamento de processos, memória, escalonamento de CPU, sincronização e sistemas de arquivos é essencial para qualquer profissional de TI — seja para concursos, certificações, entrevistas técnicas ou para entender profundamente como Linux e Windows funcionam por baixo dos panos.",
+      sections: [
+        {
+          heading: "⚙️ Processos, Threads e Escalonamento",
+          content:
+            "Um processo é um programa em execução com seu próprio espaço de endereçamento, registradores e recursos. Threads são unidades leves de execução dentro de um processo, compartilhando memória. O escalonador de CPU decide qual processo/thread usa a CPU e por quanto tempo. Algoritmos incluem FCFS (simples, sem preempção), SJF (menor tempo médio de espera), Round Robin (quantum fixo, justo), Prioridade (pode causar starvation) e MLFQ (filas multinível com feedback, usado em SOs modernos). Conceitos como troca de contexto, estados de processo (pronto, execução, bloqueado) e PCB são fundamentais.",
+        },
+        {
+          heading: "🧠 Gerenciamento de Memória",
+          content:
+            "O SO gerencia a hierarquia de memória: registradores → cache → RAM → disco. Memória virtual permite executar programas maiores que a RAM usando paginação (blocos fixos) ou segmentação (blocos lógicos variáveis). A MMU traduz endereços virtuais em físicos, acelerada pela TLB (cache de traduções). Page faults ocorrem quando uma página não está na RAM. Algoritmos de substituição (LRU, FIFO, Clock) decidem qual página remover. Thrashing acontece quando há paginação excessiva. O modelo de Working Set ajuda a preveni-lo.",
+        },
+        {
+          heading: "🔒 Sincronização e Deadlocks",
+          content:
+            "Quando processos/threads compartilham recursos, surgem problemas como race conditions. Seções críticas devem garantir exclusão mútua, progresso e espera limitada. Mecanismos incluem mutex (acesso exclusivo), semáforos (contador de acessos) e monitores. Deadlocks ocorrem quando quatro condições de Coffman são satisfeitas simultaneamente: exclusão mútua, posse e espera, não preempção e espera circular. Estratégias: prevenção (negar uma condição), detecção (grafo de alocação) e recuperação. Inversão de prioridade é um problema em sistemas de tempo real.",
+        },
+        {
+          heading: "💾 Sistemas de Arquivos e Kernel",
+          content:
+            "Sistemas de arquivos organizam dados em dispositivos de armazenamento. Estruturas como inodes (Unix/Linux) armazenam metadados e ponteiros para blocos. Formatos incluem ext4, NTFS, APFS e FAT32. O kernel é o núcleo do SO, operando em modo privilegiado. Arquiteturas incluem kernel monolítico (Linux — tudo no kernel, rápido mas menos isolado), microkernel (QNX — mínimo no kernel, mais estável mas overhead de IPC) e híbrido (Windows NT). O boot segue: firmware → bootloader → kernel → init/systemd → serviços.",
+        },
+      ],
+      keyTopics: [
+        "Processos e Threads",
+        "Escalonamento de CPU (FCFS, SJF, Round Robin, MLFQ)",
+        "Memória Virtual e Paginação",
+        "TLB e MMU",
+        "Page Fault e Substituição de Páginas (LRU)",
+        "Deadlocks e Condições de Coffman",
+        "Semáforos, Mutex e Seção Crítica",
+        "Kernel Monolítico vs Microkernel",
+        "Inodes e Sistemas de Arquivos",
+        "Copy-on-Write e fork()",
+      ],
+    },
+  },
+
+  // ─── Governança de TI ──────────────────────────────────────────────────────
+  "governanca-de-ti": {
+    "ITIL 4 — Conceitos Fundamentais": {
+      title: "ITIL 4 — Conceitos Fundamentais",
+      introduction:
+        "O ITIL 4 (Information Technology Infrastructure Library) é o framework mais adotado no mundo para gerenciamento de serviços de TI (ITSM). A versão 4, lançada em 2019, trouxe uma abordagem holística centrada na co-criação de valor, integrando práticas ágeis, DevOps e governança. Compreender seus conceitos fundamentais é a base para qualquer profissional que deseja atuar com eficiência na entrega e suporte de serviços de TI.",
+      sections: [
+        {
+          heading: "📘 O que é ITIL 4?",
+          content:
+            "ITIL 4 é um conjunto de boas práticas para planejar, entregar e melhorar serviços de TI. Ele define conceitos-chave como **Serviço** (meio de co-criar valor entregando resultados desejados sem que o cliente gerencie riscos e custos específicos), **Valor** (benefício percebido, utilidade e garantia), **Organização**, **Consumidor de Serviço** (que engloba os papéis de Usuário, Cliente e Patrocinador) e **Provedor de Serviço**. A filosofia central gira em torno do **Sistema de Valor de Serviço (SVS)**, que descreve como todos os componentes e atividades de uma organização trabalham juntos para facilitar a criação de valor.",
+        },
+        {
+          heading: "🔑 Princípios Orientadores",
+          content:
+            "O ITIL 4 estabelece 7 Princípios Orientadores que guiam todas as decisões e ações:\n\n• **Foco no Valor** — tudo deve mapear para valor ao stakeholder\n• **Comece de Onde Você Está** — avalie o estado atual antes de mudar\n• **Progrida Iterativamente com Feedback** — mudanças pequenas e mensuráveis\n• **Colabore e Promova Visibilidade** — elimine silos, compartilhe informação\n• **Pense e Trabalhe Holisticamente** — nenhum componente funciona isoladamente\n• **Mantenha Simples e Prático** — evite complexidade desnecessária\n• **Otimize e Automatize** — maximize valor dos recursos, automatize o repetitivo",
+        },
+        {
+          heading: "⚙️ Sistema de Valor de Serviço (SVS)",
+          content:
+            "O SVS é o modelo central do ITIL 4, conectando: **Demanda** e **Oportunidade** como entradas; a **Cadeia de Valor de Serviço** como mecanismo operacional; **Práticas**, **Princípios Orientadores**, **Governança** e **Melhoria Contínua** como elementos de suporte; e **Valor** como saída. O SVS garante que a organização co-crie valor por meio de serviços de TI, respondendo de forma flexível a diferentes cenários de demanda.",
+        },
+      ],
+      keyTopics: [
+        "Definição de Serviço e Valor",
+        "7 Princípios Orientadores",
+        "Sistema de Valor de Serviço (SVS)",
+        "Utilidade e Garantia",
+        "Co-criação de Valor",
+        "Consumidor vs Provedor de Serviço",
+        "Governança no ITIL 4",
+        "Oportunidade e Demanda",
+      ],
+    },
+    "ITIL 4 — Cadeia de Valor de Serviço": {
+      title: "ITIL 4 — Cadeia de Valor de Serviço",
+      introduction:
+        "A Cadeia de Valor de Serviço (Service Value Chain) é o elemento operacional central do SVS no ITIL 4. Ela descreve seis atividades interconectadas que transformam demanda em valor real para os stakeholders. Ao contrário de modelos lineares, a Cadeia de Valor é flexível e pode ser combinada em diferentes fluxos de valor para atender cenários variados.",
+      sections: [
+        {
+          heading: "🔗 As 6 Atividades da Cadeia de Valor",
+          content:
+            "As seis atividades são:\n\n• **Planejar (Plan)** — garantir entendimento compartilhado da visão, status atual e direção de melhoria para todas as quatro dimensões e todos os produtos e serviços\n• **Melhorar (Improve)** — assegurar melhoria contínua de produtos, serviços e práticas\n• **Engajar (Engage)** — proporcionar bom entendimento das necessidades dos stakeholders, transparência e engajamento contínuo\n• **Desenhar e Transicionar (Design & Transition)** — garantir que produtos e serviços atendam continuamente às expectativas de qualidade, custo e time-to-market\n• **Obter/Construir (Obtain/Build)** — garantir que componentes de serviço estejam disponíveis quando e onde necessários e atendam às especificações\n• **Entregar e Suportar (Deliver & Support)** — garantir que serviços sejam entregues e suportados conforme especificações e expectativas dos stakeholders",
+        },
+        {
+          heading: "🔄 Fluxos de Valor",
+          content:
+            "Um Fluxo de Valor é uma combinação específica de atividades da Cadeia de Valor projetada para um cenário particular. Por exemplo, o fluxo de valor para resolver um incidente pode ser: Engajar → Entregar e Suportar → Melhorar. Já o fluxo para lançar um novo serviço pode ser: Engajar → Planejar → Desenhar e Transicionar → Obter/Construir → Entregar e Suportar. A flexibilidade de combinar atividades diferencia o ITIL 4 de modelos processo-lineares anteriores.",
+        },
+        {
+          heading: "📊 Relação com Práticas",
+          content:
+            "Cada atividade da Cadeia de Valor utiliza diferentes práticas do ITIL 4. Por exemplo, a atividade 'Entregar e Suportar' utiliza práticas como Gerenciamento de Incidentes, Service Desk e Gerenciamento de Problemas. A atividade 'Planejar' utiliza Gerenciamento de Portfólio e Gerenciamento de Arquitetura. Essa integração entre atividades da cadeia e práticas dá ao ITIL 4 enorme adaptabilidade.",
+        },
+      ],
+      keyTopics: [
+        "Planejar (Plan)",
+        "Melhorar (Improve)",
+        "Engajar (Engage)",
+        "Desenhar e Transicionar (Design & Transition)",
+        "Obter/Construir (Obtain/Build)",
+        "Entregar e Suportar (Deliver & Support)",
+        "Fluxos de Valor (Value Streams)",
+        "Integração com Práticas",
+      ],
+    },
+    "ITIL 4 — Práticas de Gerenciamento": {
+      title: "ITIL 4 — Práticas de Gerenciamento",
+      introduction:
+        "O ITIL 4 define 34 práticas de gerenciamento (substituindo os antigos 'processos' do ITIL v3), organizadas em três grupos: Práticas de Gerenciamento Geral (14), Práticas de Gerenciamento de Serviço (17) e Práticas de Gerenciamento Técnico (3). Cada prática inclui recursos, atividades e informações necessárias para lidar com um tipo específico de trabalho.",
+      sections: [
+        {
+          heading: "🛠️ Práticas de Gerenciamento de Serviço",
+          content:
+            "As práticas mais cobradas incluem:\n\n• **Gerenciamento de Incidentes** — restaurar operação normal o mais rápido possível, minimizando impacto\n• **Gerenciamento de Problemas** — reduzir probabilidade e impacto de incidentes, identificando causas-raiz e erros conhecidos\n• **Service Desk** — ponto único de contato entre provedor e usuários para comunicação e coordenação\n• **Gerenciamento de Mudanças** — maximizar número de mudanças bem-sucedidas, avaliando riscos com modelos como CAB\n• **Gerenciamento de Nível de Serviço** — definir metas claras de desempenho (SLA, SLO, SLI)\n• **Gerenciamento de Catálogo de Serviço** — manter informação precisa sobre serviços disponíveis",
+        },
+        {
+          heading: "📋 Práticas de Gerenciamento Geral",
+          content:
+            "Incluem práticas aplicáveis a toda organização:\n\n• **Melhoria Contínua** — alinhar práticas e serviços às necessidades em evolução\n• **Gerenciamento de Segurança da Informação** — proteger informação confidencial, íntegra e disponível\n• **Gerenciamento de Relacionamento** — manter vínculos construtivos com stakeholders\n• **Gerenciamento de Risco** — identificar, avaliar e tratar ameaças\n• **Gerenciamento de Fornecedor** — garantir desempenho adequado de terceiros\n• **Gerenciamento de Portfólio** — garantir mix correto de programas, projetos e serviços",
+        },
+        {
+          heading: "🖥️ Práticas de Gerenciamento Técnico",
+          content:
+            "São três práticas focadas em aspectos técnicos:\n\n• **Gerenciamento de Implantação (Deployment Management)** — mover componentes para ambientes de produção\n• **Gerenciamento de Infraestrutura e Plataforma** — supervisionar infraestrutura tecnológica\n• **Gerenciamento e Desenvolvimento de Software** — garantir que aplicações atendam às necessidades",
+        },
+      ],
+      keyTopics: [
+        "Gerenciamento de Incidentes",
+        "Gerenciamento de Problemas",
+        "Gerenciamento de Mudanças",
+        "Service Desk",
+        "SLA, SLO e SLI",
+        "Gerenciamento de Risco",
+        "Gerenciamento de Implantação",
+        "Catálogo de Serviço",
+        "Melhoria Contínua (prática)",
+      ],
+    },
+    "ITIL 4 — Quatro Dimensões do Gerenciamento": {
+      title: "ITIL 4 — Quatro Dimensões do Gerenciamento de Serviço",
+      introduction:
+        "O ITIL 4 define Quatro Dimensões que devem ser consideradas para garantir uma abordagem holística ao gerenciamento de serviços. Negligenciar qualquer uma delas pode resultar em serviços que não atendem às expectativas de qualidade. Essas dimensões se aplicam ao SVS como um todo e a cada serviço individualmente.",
+      sections: [
+        {
+          heading: "👥 Organizações e Pessoas",
+          content:
+            "Esta dimensão abrange estrutura organizacional, papéis e responsabilidades, cultura, capacitação e competências. Perguntas-chave: a organização está estruturada para suportar sua estratégia? As pessoas têm as competências certas? A cultura incentiva colaboração e transparência? Inclui aspectos como liderança, comunicação, habilidades de gerenciamento e conhecimento técnico. Uma organização pode ter processos perfeitos mas falhar se as pessoas não estiverem capacitadas ou engajadas.",
+        },
+        {
+          heading: "📡 Informação e Tecnologia",
+          content:
+            "Cobre tanto a informação gerenciada (dados, conhecimento) quanto a tecnologia utilizada. Inclui: sistemas de ITSM, bancos de dados de configuração (CMDB), ferramentas de monitoramento, automação, IA, cloud computing, blockchain e outras tecnologias emergentes. Também aborda questões como quais informações são necessárias, como protegê-las, como disponibilizá-las e como usar tecnologia para suportá-las. A escolha tecnológica deve sempre ser guiada pela estratégia de negócio.",
+        },
+        {
+          heading: "🤝 Parceiros e Fornecedores",
+          content:
+            "Aborda os relacionamentos com outras organizações envolvidas na entrega de serviços. Inclui estratégias de sourcing (insourcing, outsourcing, partnership, multisourcing), gerenciamento de contratos, SLAs com fornecedores e integração de serviços. Uma organização deve decidir quais componentes construir internamente e quais adquirir de terceiros, considerando fatores estratégicos, de custo e de risco.",
+        },
+        {
+          heading: "🔄 Fluxos de Valor e Processos",
+          content:
+            "Define como as atividades são organizadas para criar valor. Um fluxo de valor é uma série de passos que uma organização usa para criar e entregar produtos e serviços. Processos são conjuntos de atividades interrelacionadas que transformam entradas em saídas. Esta dimensão foca em: como o trabalho flui? Quais atividades são necessárias? Como eliminar desperdícios? Como otimizar? Conceitos de Lean e Agile são especialmente relevantes aqui.",
+        },
+      ],
+      keyTopics: [
+        "Organizações e Pessoas",
+        "Informação e Tecnologia",
+        "Parceiros e Fornecedores",
+        "Fluxos de Valor e Processos",
+        "CMDB",
+        "Estratégias de Sourcing",
+        "Fatores Externos (PESTLE)",
+        "Abordagem Holística",
+      ],
+    },
+    "ITIL 4 — Melhoria Contínua": {
+      title: "ITIL 4 — Melhoria Contínua",
+      introduction:
+        "A Melhoria Contínua é um dos componentes-chave do SVS do ITIL 4 e também uma prática de gerenciamento geral. Ela atua em todos os níveis da organização — estratégico, tático e operacional — com o objetivo de alinhar práticas e serviços às necessidades em constante mudança do negócio. É o motor de evolução de qualquer organização que adota ITIL.",
+      sections: [
+        {
+          heading: "📈 Modelo de Melhoria Contínua",
+          content:
+            "O ITIL 4 propõe um modelo de melhoria contínua com 7 passos:\n\n1. **Qual é a visão?** — definir direção de alto nível alinhada à missão e objetivos\n2. **Onde estamos agora?** — avaliar estado atual com avaliações (assessments) e métricas\n3. **Onde queremos estar?** — definir metas mensuráveis e KPIs\n4. **Como chegamos lá?** — criar plano de melhoria com ações, responsáveis e prazos\n5. **Agir** — executar o plano de melhoria\n6. **Chegamos lá?** — avaliar resultados contra as metas definidas\n7. **Como mantemos o ritmo?** — incorporar lições aprendidas e manter momentum",
+        },
+        {
+          heading: "📊 Registro de Melhoria Contínua (CIR)",
+          content:
+            "O Continual Improvement Register (CIR) é um banco de dados ou documento estruturado que registra e gerencia oportunidades de melhoria. Cada entrada inclui: descrição, justificativa de negócio, prioridade, status, métricas de sucesso e responsável. O CIR é alimentado por múltiplas fontes: análise de incidentes, feedback de clientes, auditorias, avaliações de maturidade e sugestões da equipe. Ele permite priorizar investimentos em melhoria e rastrear progresso.",
+        },
+        {
+          heading: "🔗 Relação com Outros Elementos do ITIL",
+          content:
+            "A Melhoria Contínua conecta-se a todos os outros elementos do SVS. Ela utiliza os Princípios Orientadores (especialmente 'Progrida Iterativamente com Feedback'), alimenta e é alimentada por todas as atividades da Cadeia de Valor, e interage com práticas como Gerenciamento de Problemas, Gerenciamento de Nível de Serviço e Gerenciamento de Conhecimento. Metodologias como Lean, Kaizen, PDCA e Six Sigma complementam a abordagem ITIL.",
+        },
+      ],
+      keyTopics: [
+        "7 Passos da Melhoria Contínua",
+        "Registro de Melhoria Contínua (CIR)",
+        "KPIs e CSFs",
+        "Ciclo PDCA",
+        "Lean e Kaizen",
+        "Avaliação de Maturidade",
+        "Gestão de Mudanças Organizacionais",
+        "Lições Aprendidas",
+      ],
+    },
+    "COBIT — Framework e Princípios": {
+      title: "COBIT — Framework e Princípios",
+      introduction:
+        "O COBIT (Control Objectives for Information and Related Technologies) é um framework de governança e gestão de TI corporativa criado e mantido pela ISACA. Atualmente na versão 2019, o COBIT fornece um modelo abrangente que ajuda organizações a alcançar objetivos de governança e gestão de informação e tecnologia corporativa. Ele é amplamente utilizado para auditoria, conformidade regulatória e alinhamento de TI com negócios.",
+      sections: [
+        {
+          heading: "🏛️ Visão Geral do COBIT",
+          content:
+            "O COBIT é baseado em seis princípios fundamentais de governança:\n\n1. **Prover Valor aos Stakeholders** — a governança de TI existe para criar valor para o negócio\n2. **Abordagem Holística** — governança requer uma visão de ponta a ponta\n3. **Sistema de Governança Dinâmico** — deve se adaptar a mudanças no ambiente\n4. **Governança Distinta de Gestão** — governança define direção; gestão executa\n5. **Ajustado às Necessidades da Organização** — customizado via fatores de design\n6. **Sistema de Governança de Ponta a Ponta** — cobre toda a empresa, não apenas TI\n\nO COBIT integra-se com outros frameworks como ITIL, TOGAF, PMBOK e ISO 27001, servindo como guarda-chuva de governança.",
+        },
+        {
+          heading: "🎯 Cascata de Objetivos",
+          content:
+            "A Cascata de Objetivos do COBIT conecta necessidades de stakeholders a objetivos concretos de TI:\n\nNecessidades dos Stakeholders → Objetivos de Governança/Gestão → Objetivos de Alinhamento → Objetivos de Governança e Gestão de TI. Essa cascata garante rastreabilidade desde o valor de negócio até processos operacionais de TI. O COBIT 2019 define 13 objetivos de governança/gestão alinhados ao Balanced Scorecard (financeiro, cliente, interno, aprendizado/crescimento).",
+        },
+        {
+          heading: "🔧 Fatores de Design",
+          content:
+            "O COBIT 2019 introduziu 11 Fatores de Design que permitem customizar o sistema de governança para cada organização. Incluem: estratégia da empresa, modelo de sourcing, ambiente regulatório, tamanho da empresa, modelo de entrega de TI, cenário de ameaças, entre outros. Esses fatores orientam quais objetivos priorizar e quais processos enfatizar, tornando o COBIT altamente adaptável a diferentes contextos organizacionais.",
+        },
+      ],
+      keyTopics: [
+        "6 Princípios do COBIT",
+        "Governança vs Gestão",
+        "Cascata de Objetivos",
+        "Fatores de Design (11)",
+        "ISACA",
+        "COBIT 2019",
+        "Integração com ITIL, TOGAF, ISO",
+        "Balanced Scorecard de TI",
+      ],
+    },
+    "COBIT — Objetivos de Governança": {
+      title: "COBIT — Objetivos de Governança",
+      introduction:
+        "O COBIT estrutura seus processos em Objetivos de Governança e Gestão organizados em 5 domínios. O domínio de Governança (EDM) foca em avaliar, direcionar e monitorar. Os quatro domínios de Gestão cobrem alinhar/planejar/organizar (APO), construir/adquirir/implementar (BAI), entregar/servir/suportar (DSS) e monitorar/avaliar/analisar (MEA). Juntos, totalizam 40 objetivos de governança e gestão.",
+      sections: [
+        {
+          heading: "👁️ EDM — Avaliar, Direcionar e Monitorar",
+          content:
+            "O domínio de governança contém 5 processos EDM:\n\n• **EDM01 — Framework de Governança Definido e Mantido** — estabelecer e manter o framework e princípios\n• **EDM02 — Entrega de Benefícios Garantida** — otimizar contribuição de valor dos processos de TI\n• **EDM03 — Otimização de Riscos Garantida** — assegurar que riscos de TI não excedam o apetite da organização\n• **EDM04 — Otimização de Recursos Garantida** — garantir que capacidades adequadas de TI estejam disponíveis\n• **EDM05 — Transparência aos Stakeholders Garantida** — garantir que a medição e o reporte estejam alinhados",
+        },
+        {
+          heading: "📐 APO — Alinhar, Planejar e Organizar",
+          content:
+            "São 14 processos que cobrem estratégia e organização de TI:\n\n• APO01 — Gerenciar o Framework de Gestão de TI\n• APO02 — Gerenciar Estratégia\n• APO03 — Gerenciar Arquitetura Corporativa\n• APO04 — Gerenciar Inovação\n• APO05 — Gerenciar Portfólio\n• APO06 — Gerenciar Orçamento e Custos\n• APO07 — Gerenciar Recursos Humanos\n• APO08 — Gerenciar Relacionamentos\n• APO09 — Gerenciar Acordos de Serviço\n• APO10 — Gerenciar Fornecedores\n• APO11 — Gerenciar Qualidade\n• APO12 — Gerenciar Risco\n• APO13 — Gerenciar Segurança\n• APO14 — Gerenciar Dados",
+        },
+        {
+          heading: "🏗️ BAI, DSS e MEA",
+          content:
+            "• **BAI (Construir, Adquirir e Implementar)** — 11 processos focados em definir, construir, testar e implementar soluções: gerenciamento de programas, projetos, requisitos, mudanças, transição, testes, configuração, conhecimento e ativos\n\n• **DSS (Entregar, Servir e Suportar)** — 6 processos focados na operação contínua: gerenciamento de operações, requisições de serviço, problemas, continuidade, serviços de segurança e controles de processos de negócio\n\n• **MEA (Monitorar, Avaliar e Analisar)** — 4 processos focados em conformidade e desempenho: monitoramento de desempenho, avaliação de controles internos, conformidade com requisitos externos e garantia de conformidade",
+        },
+      ],
+      keyTopics: [
+        "EDM (Avaliar, Direcionar, Monitorar)",
+        "APO (Alinhar, Planejar, Organizar)",
+        "BAI (Construir, Adquirir, Implementar)",
+        "DSS (Entregar, Servir, Suportar)",
+        "MEA (Monitorar, Avaliar, Analisar)",
+        "40 Objetivos de Governança/Gestão",
+        "RACI Charts",
+        "Matriz de Responsabilidades",
+      ],
+    },
+    "COBIT — Componentes do Sistema": {
+      title: "COBIT — Componentes do Sistema de Governança",
+      introduction:
+        "O COBIT 2019 define 7 componentes (anteriormente chamados de 'habilitadores' no COBIT 5) que sustentam o sistema de governança. Esses componentes são os pilares necessários para que a governança de TI funcione efetivamente em uma organização. Cada objetivo de governança/gestão interage com todos os 7 componentes.",
+      sections: [
+        {
+          heading: "📦 Os 7 Componentes do Sistema de Governança",
+          content:
+            "Os componentes são:\n\n1. **Processos** — conjuntos organizados de práticas e atividades para atingir objetivos e produzir saídas\n2. **Estruturas Organizacionais** — entidades-chave de tomada de decisão (Comitê de TI, Board, CIO)\n3. **Princípios, Políticas e Frameworks** — orientações práticas para gestão do dia a dia\n4. **Informação** — informação produzida e usada pelo sistema de governança (relatórios, dashboards, KPIs)\n5. **Cultura, Ética e Comportamento** — fator frequentemente subestimado que influencia sucesso da governança\n6. **Pessoas, Habilidades e Competências** — necessárias para decisões corretas, ações corretivas e conclusão de atividades\n7. **Serviços, Infraestrutura e Aplicações** — infraestrutura e tecnologia que suportam o processamento de informação",
+        },
+        {
+          heading: "🔄 Interação entre Componentes",
+          content:
+            "Os componentes trabalham de forma integrada. Por exemplo, um Processo de Gerenciamento de Risco (componente 1) requer uma Estrutura Organizacional definida com um Comitê de Risco (componente 2), Políticas de Risco documentadas (componente 3), Informações de risco atualizadas como registros de risco (componente 4), uma Cultura que valorize gestão de risco (componente 5), Pessoas capacitadas em análise de risco (componente 6) e Ferramentas de GRC (componente 7). A falha em qualquer componente compromete o sistema inteiro.",
+        },
+        {
+          heading: "📊 Modelo de Capacidade de Processos (CMMI)",
+          content:
+            "O COBIT utiliza um modelo de capacidade baseado no CMMI para avaliar maturidade dos processos em 6 níveis:\n\n• **Nível 0 — Incompleto** — processo não implementado ou não atinge seu propósito\n• **Nível 1 — Realizado** — processo atinge seu propósito mas de forma não gerenciada\n• **Nível 2 — Gerenciado** — processo planejado, monitorado e ajustado\n• **Nível 3 — Definido** — processo padronizado em toda a organização\n• **Nível 4 — Quantitativo** — processo medido e controlado com métricas quantitativas\n• **Nível 5 — Otimizado** — processo é continuamente melhorado para atender objetivos de negócio relevantes",
+        },
+      ],
+      keyTopics: [
+        "7 Componentes do Sistema de Governança",
+        "Processos e Práticas",
+        "Estruturas Organizacionais",
+        "Princípios, Políticas e Frameworks",
+        "Cultura e Comportamento",
+        "Modelo de Capacidade (CMMI)",
+        "Níveis de Maturidade (0-5)",
+        "Integração dos Componentes",
+      ],
+    },
+    "COBIT — Métricas e Maturidade": {
+      title: "COBIT — Métricas e Maturidade",
+      introduction:
+        "A medição de desempenho e a avaliação de maturidade são elementos centrais do COBIT para garantir que a governança de TI gere resultados tangíveis. O framework fornece métricas em cascata alinhadas a objetivos e um modelo estruturado para avaliar a evolução dos processos de governança ao longo do tempo.",
+      sections: [
+        {
+          heading: "📏 Sistema de Métricas do COBIT",
+          content:
+            "O COBIT estrutura métricas em três níveis:\n\n• **Métricas de Resultado (Outcome Metrics/Lag)** — medem se objetivos de governança/gestão foram atingidos (ex: % de projetos entregues no prazo e orçamento)\n• **Métricas de Desempenho (Performance Metrics/Lead)** — medem se as práticas estão sendo executadas corretamente (ex: % de riscos identificados e avaliados)\n• **Indicadores de Alinhamento** — verificam se a governança de TI está alinhada aos objetivos de negócio\n\nCada objetivo de governança/gestão possui métricas específicas documentadas no framework. A seleção de métricas deve seguir o princípio SMART (Specific, Measurable, Achievable, Relevant, Time-bound).",
+        },
+        {
+          heading: "📊 Avaliação de Maturidade e Capacidade",
+          content:
+            "O COBIT 2019 suporta dois tipos de avaliação:\n\n• **Avaliação de Capacidade de Processo** — avalia processos individuais nos níveis 0 a 5, baseado no modelo CMMI. Usa evidências objetivas e pode ser feita internamente ou por auditores externos\n\n• **Avaliação de Maturidade Organizacional** — visão agregada que considera múltiplos processos e componentes. Responde: 'quão madura é nossa governança de TI como um todo?'\n\nAssessments podem ser formais (usando ISO 15504/33001) ou informais (autoavaliação com checklists). O resultado orienta prioridades de investimento em melhoria.",
+        },
+        {
+          heading: "🎯 Balanced Scorecard de TI",
+          content:
+            "O COBIT conecta-se ao conceito de IT Balanced Scorecard (BSC) com quatro perspectivas:\n\n• **Contribuição Corporativa** — como TI contribui para o negócio?\n• **Orientação ao Usuário** — como os usuários veem TI?\n• **Excelência Operacional** — quão eficientes são os processos de TI?\n• **Orientação Futura** — TI está preparada para demandas futuras?\n\nAs métricas do COBIT alimentam o BSC de TI, permitindo uma visão equilibrada do desempenho que vai além de indicadores puramente financeiros ou técnicos.",
+        },
+      ],
+      keyTopics: [
+        "Métricas Lag vs Lead",
+        "CMMI Níveis 0-5",
+        "Avaliação de Capacidade",
+        "Avaliação de Maturidade",
+        "IT Balanced Scorecard",
+        "Indicadores SMART",
+        "ISO 15504/33001",
+        "Auditoria e Conformidade",
+      ],
+    },
+    "COBIT — Implementação e Design": {
+      title: "COBIT — Implementação e Design",
+      introduction:
+        "Implementar um sistema de governança de TI baseado no COBIT requer planejamento estruturado, considerando os fatores de design da organização e um roteiro de implementação em fases. O COBIT 2019 fornece orientação detalhada para customizar, implantar e melhorar continuamente o sistema de governança.",
+      sections: [
+        {
+          heading: "🗺️ Roteiro de Implementação",
+          content:
+            "O COBIT propõe um ciclo de implementação em 7 fases:\n\n1. **Quais são os motivadores?** — identificar pontos de dor, eventos gatilho e mudanças regulatórias que justificam a implementação\n2. **Onde estamos agora?** — avaliar estado atual usando assessments de capacidade e maturidade\n3. **Onde queremos estar?** — definir metas e capacidade-alvo para processos priorizados\n4. **O que precisa ser feito?** — identificar gaps e criar projetos de melhoria\n5. **Como chegamos lá?** — implementar melhorias, gerenciar mudanças, comunicar\n6. **Chegamos lá?** — medir resultados, comparar com metas, ajustar\n7. **Como mantemos o ritmo?** — incorporar lições aprendidas, institucionalizar\n\nEsse ciclo é iterativo e pode ser repetido continuamente.",
+        },
+        {
+          heading: "🎨 Design do Sistema de Governança",
+          content:
+            "O design uses os 11 Fatores de Design para customizar o sistema:\n\n• **Estratégia da Empresa** — crescimento/inovação, estabilidade, custo/otimização\n• **Objetivos da Empresa** — quais objetivos do BSC são prioritários\n• **Perfil de Risco** — quais riscos de TI são mais relevantes\n• **Questões de TI** — problemas atuais (shadow IT, complexidade, custos)\n• **Cenário de Ameaças** — nível de ameaças cibernéticas\n• **Requisitos de Conformidade** — regulamentos aplicáveis (LGPD, SOX, PCI)\n• **Papel de TI** — suporte, fábrica, reviravolta ou estratégico\n• **Modelo de Sourcing** — terceirizado, cloud, híbrido\n• **Métodos de TI** — ágil, DevOps, tradicional\n• **Estratégia de Adoção de Tecnologia** — first mover, follower, slow adopter\n• **Tamanho da Empresa** — pequena, média, grande, multinacional\n\nCada fator influencia a prioridade dos 40 objetivos de governança/gestão.",
+        },
+        {
+          heading: "⚠️ Desafios e Boas Práticas",
+          content:
+            "Desafios comuns na implementação:\n\n• Resistência à mudança — equipes veem governança como burocracia\n• Falta de patrocínio executivo — sem apoio do board a iniciativa falha\n• Tentativa de implementar tudo de uma vez — excesso de escopo\n• Foco excessivo em compliance — governança deve criar valor, não apenas conformidade\n\nBoas práticas:\n\n• Começar com quick wins (processos de alto impacto e baixa complexidade)\n• Obter patrocínio executivo desde o início\n• Comunicar benefícios em linguagem de negócio\n• Usar abordagem incremental e iterativa\n• Medir e reportar progresso regularmente\n• Alinhar com outros frameworks já existentes (ITIL, ISO 27001)",
+        },
+      ],
+      keyTopics: [
+        "7 Fases de Implementação",
+        "11 Fatores de Design",
+        "Análise de Gap",
+        "Gestão de Mudança Organizacional",
+        "Quick Wins",
+        "Patrocínio Executivo",
+        "Priorização de Processos",
+        "Abordagem Incremental",
+      ],
+    },
+  },
 };
 
 /**

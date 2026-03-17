@@ -20,4 +20,6 @@ export const trackStyles: Record<string, { icon: TrackIcon; color: string }> = {
   "rede-de-computadores": { icon: "lan", color: "#10B981" },
   "seguranca-da-informacao": { icon: "shield", color: "#EC4899" },
   "banco-de-dados": { icon: "storage", color: "#F97316" },
+  "sistemas-operacionais": { icon: "computer", color: "#6D28D9" },
+  "governanca-de-ti": { icon: "account-balance", color: "#0D9488" },
 };
