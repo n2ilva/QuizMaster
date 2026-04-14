@@ -6,6 +6,22 @@ Instruções para executar o projeto localmente.
 - Node.js instalado
 - Expo CLI (ou utilize via npx)
 
+### Estrutura do Projeto
+
+```text
+app/                 → Roteamento principal (Expo Router)
+  (features)/        → Funcionalidades e módulos do sistema
+    (main)/          → Layout principal com navegação lateral/tabs
+    coding-practice/ → Prática de código interativa
+    quiz/            → Sistema de simulados e questões
+    ...              → Outros módulos (estatísticas, temas, etc)
+components/          → Componentes reutilizáveis (UI/Botões/Cards)
+constants/           → Configurações de tema, cores e padrões
+hooks/               → Hooks customizados (autenticação, tema, dados)
+lib/                 → Configurações externas (Firebase, APIs)
+providers/           → Contextos globais (Auth e Estados)
+```
+
 ### Instalação e Execução
 
 1. Instale as dependências:
