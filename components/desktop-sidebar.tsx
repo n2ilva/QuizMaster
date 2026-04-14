@@ -13,6 +13,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { href: '/(features)/(main)', label: 'Início', icon: 'house' },
+  { href: '/(features)/(main)/coding-practice', label: 'Praticar', icon: 'extension' },
   { href: '/(features)/(main)/quiz', label: 'Quiz', icon: 'library-books' },
   { href: '/(features)/(main)/progress', label: 'Progresso', icon: 'bar-chart' },
   { href: '/(features)/(main)/community', label: 'Comunidade', icon: 'groups' },

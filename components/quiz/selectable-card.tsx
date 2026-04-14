@@ -1,4 +1,5 @@
-import { Text, View, type ReactNode, type StyleProp, type ViewStyle } from 'react-native';
+import { type ReactNode } from 'react';
+import { Text, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { QUIZ_COLORS, QUIZ_RADII } from '@/constants/quiz-ui';
 import { InteractiveCard } from '@/components/quiz/interactive-card';

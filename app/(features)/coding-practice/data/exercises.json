@@ -1,0 +1,559 @@
+{
+  "exercises": [
+
+    {
+      "id": "js_class_constructor",
+      "title": "Classe com Construtor",
+      "description": "Crie uma classe Animal com um construtor que recebe 'nome' como parâmetro e atribui ao this.nome.",
+      "language": "javascript",
+      "difficulty": "iniciante",
+      "exerciseType": "Classe",
+      "availableTokenIds": [
+        "kw_class", "kw_constructor", "kw_this",
+        "id_classname", "id_param", "id_propname",
+        "sym_open_brace", "sym_close_brace",
+        "sym_open_paren", "sym_close_paren",
+        "sym_dot", "sym_equals", "sym_semicolon"
+      ],
+      "solution": [
+        "kw_class", "id_classname", "sym_open_brace",
+        "kw_constructor", "sym_open_paren", "id_param", "sym_close_paren",
+        "sym_open_brace",
+        "kw_this", "sym_dot", "id_propname", "sym_equals", "id_param", "sym_semicolon",
+        "sym_close_brace",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "Dica 1 (Início): A declaração principal deve ser 'class' seguida do nome 'Animal', abrindo com a chave '{'.",
+        "Dica 2 (Estrutura): Dentro da classe, usamos 'constructor' seguido por '(' 'nome' ')' e abrindo um novo bloco '{'.",
+        "Dica 3 (Erro comum): Você não usou chaves ( { e } ) suficientes! Uma chave fecha o bloco do constructor, e uma segunda chave finaliza a classe inteira."
+      ]
+    },
+
+    {
+      "id": "js_class_extends",
+      "title": "Herança de Classe",
+      "description": "Declare uma classe Cachorro que herda de Animal. Use extends e defina um construtor com o parâmetro nome.",
+      "language": "javascript",
+      "difficulty": "intermediário",
+      "exerciseType": "Classe",
+      "availableTokenIds": [
+        "kw_class", "kw_extends", "kw_constructor", "kw_this",
+        "id_classname", "id_varname", "id_param", "id_propname",
+        "sym_open_brace", "sym_close_brace",
+        "sym_open_paren", "sym_close_paren",
+        "sym_dot", "sym_equals", "sym_semicolon"
+      ],
+      "solution": [
+        "kw_class", "id_classname", "kw_extends", "id_varname",
+        "sym_open_brace",
+        "kw_constructor", "sym_open_paren", "id_param", "sym_close_paren",
+        "sym_open_brace",
+        "kw_this", "sym_dot", "id_propname", "sym_equals", "id_param", "sym_semicolon",
+        "sym_close_brace",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "O padrão de herança é: `class ClasseFilha extends ClasseMae { ... }`. Cheque se a ordem está exata.",
+        "Você declarou o constructor? Ele precisa de parênteses para os parâmetros '()'.",
+        "Atenção com o travamento das chaves. O constructor abre e fecha dentro da classe; não se esqueça de fechar a classe ao final."
+      ]
+    },
+
+    {
+      "id": "js_func_parameters",
+      "title": "Função com Dois Parâmetros",
+      "description": "Crie uma função que recebe dois parâmetros e retorna o primeiro deles.",
+      "language": "javascript",
+      "difficulty": "iniciante",
+      "exerciseType": "Função",
+      "availableTokenIds": [
+        "kw_function", "kw_return",
+        "id_funcname", "id_param",
+        "sym_open_brace", "sym_close_brace",
+        "sym_open_paren", "sym_close_paren",
+        "sym_semicolon", "sym_comma"
+      ],
+      "solution": [
+        "kw_function", "id_funcname",
+        "sym_open_paren", "id_param", "sym_comma", "id_param", "sym_close_paren",
+        "sym_open_brace",
+        "kw_return", "id_param", "sym_semicolon",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "O cabeçalho exige: `function` + NomeDaFunção + `( param1 , param2 )`. Você separou por vírgulas corretas?",
+        "Após o parênteses, certifique-se de introduzir o corpo com as chaves grandes '{' e terminadas com '}'.",
+        "Para retornar use `return parametro1;`. Não esqueça o ponto-e-vírgula ';' após a linha de desfecho do return!"
+      ]
+    },
+
+    {
+      "id": "js_arrow_two_params",
+      "title": "Arrow Function com Dois Parâmetros",
+      "description": "Declare uma constante 'calcular' usando arrow function com dois parâmetros, retornando o primeiro.",
+      "language": "javascript",
+      "difficulty": "intermediário",
+      "exerciseType": "Função",
+      "availableTokenIds": [
+        "kw_const", "kw_return",
+        "id_varname", "id_param",
+        "sym_open_paren", "sym_close_paren",
+        "sym_open_brace", "sym_close_brace",
+        "sym_equals", "sym_arrow", "sym_semicolon", "sym_comma"
+      ],
+      "solution": [
+        "kw_const", "id_varname", "sym_equals",
+        "sym_open_paren", "id_param", "sym_comma", "id_param", "sym_close_paren",
+        "sym_arrow",
+        "sym_open_brace",
+        "kw_return", "id_param", "sym_semicolon",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "A estrutura inicial de uma Arrow Function é uma variável comum: `const calcular = `.",
+        "Logo após a igualdade, vêm os parâmetros entre parênteses: `( param1 , param2 )` seguidos pela seta grossa `=>`.",
+        "Revisão: A flecha '=>' nunca vai dentro da chave '{}'. O bloco '{' só abre DEPOIS da seta."
+      ]
+    },
+
+    {
+      "id": "js_array_declaration",
+      "title": "Declarar um Array",
+      "description": "Declare uma constante contendo um array com dois textos (strings).",
+      "language": "javascript",
+      "difficulty": "iniciante",
+      "exerciseType": "Variável",
+      "availableTokenIds": [
+        "kw_const",
+        "id_varname",
+        "sym_open_bracket", "sym_close_bracket",
+        "sym_equals", "sym_semicolon", "sym_comma",
+        "lit_string"
+      ],
+      "solution": [
+        "kw_const", "id_varname", "sym_equals",
+        "sym_open_bracket", "lit_string", "sym_comma", "lit_string", "sym_close_bracket",
+        "sym_semicolon"
+      ],
+      "hints": [
+        "O começo é sempre a atribuição: const NomedoVetor = ...",
+        "Arrays em JavaScript devem necessariamente usar Colchetes '[' e ']'. Eles dão erro com parênteses.",
+        "Separe os dois elementos ('strings') através de uma vírgula; caso contrário o javascript concatenaria eles sem aviso."
+      ]
+    },
+
+    {
+      "id": "js_if_else",
+      "title": "Condicional if / else",
+      "description": "Monte um bloco if/else: se o parâmetro for verdadeiro, retorne true; caso contrário, retorne false.",
+      "language": "javascript",
+      "difficulty": "iniciante",
+      "exerciseType": "Condicional",
+      "availableTokenIds": [
+        "kw_if", "kw_else", "kw_return",
+        "id_param",
+        "sym_open_paren", "sym_close_paren",
+        "sym_open_brace", "sym_close_brace",
+        "sym_semicolon",
+        "lit_true", "lit_false"
+      ],
+      "solution": [
+        "kw_if", "sym_open_paren", "id_param", "sym_close_paren",
+        "sym_open_brace",
+        "kw_return", "lit_true", "sym_semicolon",
+        "sym_close_brace",
+        "kw_else",
+        "sym_open_brace",
+        "kw_return", "lit_false", "sym_semicolon",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "Erro de estrutura: o IF exige seus parâmetros nos parênteses: `if ( condicao ) { ... }`",
+        "O encerramento do primeiro bloco `}` deve vir logo antes da palavra mágica `else`.",
+        "Confira as conclusões internas: Você enviou os returns no meio das chaves? Eles precisam sempre acabar em `;`"
+      ]
+    },
+
+    {
+      "id": "js_while_loop",
+      "title": "Loop while",
+      "description": "Monte a estrutura de um loop while que, enquanto o parâmetro for verdadeiro, executa e retorna uma variável.",
+      "language": "javascript",
+      "difficulty": "intermediário",
+      "exerciseType": "Loop",
+      "availableTokenIds": [
+        "kw_while", "kw_return",
+        "id_param", "id_varname",
+        "sym_open_paren", "sym_close_paren",
+        "sym_open_brace", "sym_close_brace",
+        "sym_semicolon"
+      ],
+      "solution": [
+        "kw_while", "sym_open_paren", "id_param", "sym_close_paren",
+        "sym_open_brace",
+        "kw_return", "id_varname", "sym_semicolon",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "O loop while tem a mesma forma do IF. Ele precisa de parênteses seguidos pelas chaves.",
+        "Se o app avisar de erro, note que a estrutura correta tem que ser exata: `while` + `(` condicao `)` + `{` corpo `}`",
+        "Não se esqueça que dentro do corpo do while é o seu único ambiente restrito para usar o bloco return!"
+      ]
+    },
+
+    {
+      "id": "java_class_private_field",
+      "title": "Classe com Campo Privado",
+      "description": "Crie uma classe pública Carro com um campo privado 'marca' do tipo String.",
+      "language": "java",
+      "difficulty": "iniciante",
+      "exerciseType": "Classe",
+      "availableTokenIds": [
+        "kw_public", "kw_private", "kw_class",
+        "type_string",
+        "id_classname", "id_varname",
+        "sym_open_brace", "sym_close_brace",
+        "sym_semicolon"
+      ],
+      "solution": [
+        "kw_public", "kw_class", "id_classname", "sym_open_brace",
+        "kw_private", "type_string", "id_varname", "sym_semicolon",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "Cuidado com a ordem em Java: a visão é declarada primeiro com `public class` e depois Nome.",
+        "Os campos do escopo vão dentro da classe `{ ... }`. Fique de olho de colocar as coisas DENTRO.",
+        "Dica de sintaxe: Em java, variáveis usam Visibilidade seguido de Tipo (com letra Maiuscula) e Nome. Ex: `private String marca;`"
+      ]
+    },
+
+    {
+      "id": "java_class_extends",
+      "title": "Herança de Classe",
+      "description": "Declare uma classe pública Carro que herda (extends) da classe Veiculo. O corpo pode ficar vazio.",
+      "language": "java",
+      "difficulty": "intermediário",
+      "exerciseType": "Classe",
+      "availableTokenIds": [
+        "kw_public", "kw_class", "kw_extends",
+        "id_classname", "id_varname",
+        "sym_open_brace", "sym_close_brace"
+      ],
+      "solution": [
+        "kw_public", "kw_class", "id_classname",
+        "kw_extends", "id_varname",
+        "sym_open_brace", "sym_close_brace"
+      ],
+      "hints": [
+        "Você trocou a classe filha pela classe pai? A classe filha é que fica adjunta ao modelo principal: `public class Filha extends Mae`.",
+        "Não há necessidade de construir conteúdo no corpo, mas você obrigatoriamente deve abrir e fechar chaves para a classe. `{ }`."
+      ]
+    },
+
+    {
+      "id": "java_interface_declare",
+      "title": "Declarar uma Interface",
+      "description": "Declare uma interface pública chamada Veiculo com um método void sem implementação.",
+      "language": "java",
+      "difficulty": "intermediário",
+      "exerciseType": "Interface",
+      "availableTokenIds": [
+        "kw_public", "kw_interface", "kw_void",
+        "id_classname", "id_methodname",
+        "sym_open_brace", "sym_close_brace",
+        "sym_open_paren", "sym_close_paren",
+        "sym_semicolon"
+      ],
+      "solution": [
+        "kw_public", "kw_interface", "id_classname",
+        "sym_open_brace",
+        "kw_void", "id_methodname", "sym_open_paren", "sym_close_paren", "sym_semicolon",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "Interfaces não usam o termo 'class'. Garanta que construiu com `public interface Veiculo` e abra chaves `{`.",
+        "Os métodos de inferência são cascas vazias: Você deve retornar o seu tipo e parênteses. `void acao()`",
+        "Erro crítico em interfaces: Um método sem implementação NUNCA abre e fecha chaves `{ }`. Finalize-o com Ponto e Vírgula `;` imediatamente!"
+      ]
+    },
+
+    {
+      "id": "java_class_implements",
+      "title": "Classe Implementando Interface",
+      "description": "Declare uma classe pública Carro que implementa a interface Veiculo.",
+      "language": "java",
+      "difficulty": "intermediário",
+      "exerciseType": "Classe",
+      "availableTokenIds": [
+        "kw_public", "kw_class", "kw_implements",
+        "id_classname", "id_varname",
+        "sym_open_brace", "sym_close_brace"
+      ],
+      "solution": [
+        "kw_public", "kw_class", "id_classname",
+        "kw_implements", "id_varname",
+        "sym_open_brace", "sym_close_brace"
+      ],
+      "hints": [
+        "Diferente da palavra `extends` de Java, Interfaces exigem restritamente a palavra-chave `implements`.",
+        "Para a implementação acontecer, o `implements Veiculo` vem diretamente antes de as chaves das classes se abrirem `{`."
+      ]
+    },
+
+    {
+      "id": "java_method_return_string",
+      "title": "Método com Retorno String",
+      "description": "Crie um método público que retorna uma String. O método deve retornar um texto literal.",
+      "language": "java",
+      "difficulty": "iniciante",
+      "exerciseType": "Método",
+      "availableTokenIds": [
+        "kw_public", "kw_return",
+        "type_string",
+        "id_methodname",
+        "sym_open_paren", "sym_close_paren",
+        "sym_open_brace", "sym_close_brace",
+        "sym_semicolon",
+        "lit_string"
+      ],
+      "solution": [
+        "kw_public", "type_string", "id_methodname",
+        "sym_open_paren", "sym_close_paren",
+        "sym_open_brace",
+        "kw_return", "lit_string", "sym_semicolon",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "Todo método em Java expõe Retorno imediatamente depois da sua visibilidade. Exemplo: `public String nomeMetodo() `.",
+        "Como a função não tem parâmetros complexos, só abra e feche imediatamente os parênteses: `()` e introduza o bloco '{'.",
+        "Note que ele pediu de devolução uma string literal. Isso significa que é essencial injetar blocos de aspas acompanhado do ponto-e-vírgula!"
+      ]
+    },
+
+    {
+      "id": "java_if_else",
+      "title": "Condicional if / else",
+      "description": "Monte um bloco if/else: se o parâmetro booleano for true, retorne true; caso contrário, retorne false.",
+      "language": "java",
+      "difficulty": "iniciante",
+      "exerciseType": "Condicional",
+      "availableTokenIds": [
+        "kw_if", "kw_else", "kw_return",
+        "id_param",
+        "sym_open_paren", "sym_close_paren",
+        "sym_open_brace", "sym_close_brace",
+        "sym_semicolon",
+        "lit_true", "lit_false"
+      ],
+      "solution": [
+        "kw_if", "sym_open_paren", "id_param", "sym_close_paren",
+        "sym_open_brace",
+        "kw_return", "lit_true", "sym_semicolon",
+        "sym_close_brace",
+        "kw_else",
+        "sym_open_brace",
+        "kw_return", "lit_false", "sym_semicolon",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "Regra essencial: Após 'if', não se esqueça de usar parênteses para agrupar o parametro `( x )`.",
+        "Em Java `true` e `false` não usam aspas, pois são literais nativos do booleano. Só puxe o retorno deles limpo.",
+        "Verifique minuciosamente o balanceamento: Um par para o if `{}`, final da chave 1, aí puxa a palavra else e abra o par completo nela `{}`."
+      ]
+    },
+
+    {
+      "id": "java_while_loop",
+      "title": "Loop while",
+      "description": "Monte um loop while que repete enquanto uma condição (parâmetro) for verdadeira e retorna uma variável.",
+      "language": "java",
+      "difficulty": "intermediário",
+      "exerciseType": "Loop",
+      "availableTokenIds": [
+        "kw_while", "kw_return",
+        "id_param", "id_varname",
+        "sym_open_paren", "sym_close_paren",
+        "sym_open_brace", "sym_close_brace",
+        "sym_semicolon"
+      ],
+      "solution": [
+        "kw_while", "sym_open_paren", "id_param", "sym_close_paren",
+        "sym_open_brace",
+        "kw_return", "id_varname", "sym_semicolon",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "Inspecione a ordem das marcações para ver se os blocos estão vazando ou misturados. Estrutura pura: While | Variável (Condição) | { Código }",
+        "Muitas vezes esquecemos o ponto-e-vírgula em devoluções. `return var;` se não dá erro."
+      ]
+    },
+
+    {
+      "id": "cs_class_auto_property",
+      "title": "Classe com Propriedade Auto-Implementada",
+      "description": "Crie uma classe pública Carro com uma propriedade pública 'Marca' do tipo string com get e set automáticos.",
+      "language": "csharp",
+      "difficulty": "iniciante",
+      "exerciseType": "Classe",
+      "availableTokenIds": [
+        "kw_public", "kw_class", "kw_get", "kw_set",
+        "type_string",
+        "id_classname", "id_varname",
+        "sym_open_brace", "sym_close_brace",
+        "sym_semicolon"
+      ],
+      "solution": [
+        "kw_public", "kw_class", "id_classname", "sym_open_brace",
+        "kw_public", "type_string", "id_varname",
+        "sym_open_brace", "kw_get", "sym_semicolon", "kw_set", "sym_semicolon", "sym_close_brace",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "Você construiu corretamente todo o corpo da classe externa ({ ... }) para envelopar a propriedade?",
+        "Em C#, Auto-Properties dispensam declaração de variáveis locais. A sintaxe de visibilidade na própria variação deve receber `{ get; set; }` completas e unidas.",
+        "Atenção extra aos pontuários semicolons das properties: um para get ( get; ) e outro para set ( set; )! Os delimitadores '{ }' seguram juntos!"
+      ]
+    },
+
+    {
+      "id": "cs_abstract_class",
+      "title": "Classe Abstrata",
+      "description": "Declare uma classe pública abstrata com um método público abstrato void.",
+      "language": "csharp",
+      "difficulty": "avançado",
+      "exerciseType": "Classe",
+      "availableTokenIds": [
+        "kw_public", "kw_abstract", "kw_class", "kw_void",
+        "id_classname", "id_methodname",
+        "sym_open_brace", "sym_close_brace",
+        "sym_open_paren", "sym_close_paren",
+        "sym_semicolon"
+      ],
+      "solution": [
+        "kw_public", "kw_abstract", "kw_class", "id_classname",
+        "sym_open_brace",
+        "kw_public", "kw_abstract", "kw_void", "id_methodname",
+        "sym_open_paren", "sym_close_paren", "sym_semicolon",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "A palavra chave `abstract` precede o tipo da estrutura: `public abstract class Nome`.",
+        "Se atente às restrições dos métodos: O método interno requer DE NOVO as tags de abstração completas! Use `public abstract void Nome()`. Isso é exclusivo do C#.",
+        "Outro possível erro que você pode não ter notado: Como métodos abstratos forçam filhos a implementar lógica, eles nunca possuem bloco '{ }'. Somente terminar a linha em `;`."
+      ]
+    },
+
+    {
+      "id": "cs_override_method",
+      "title": "Método com override",
+      "description": "Declare um método público que sobrescreve (override) um método void da classe pai.",
+      "language": "csharp",
+      "difficulty": "intermediário",
+      "exerciseType": "Método",
+      "availableTokenIds": [
+        "kw_public", "kw_override", "kw_void",
+        "id_methodname",
+        "sym_open_paren", "sym_close_paren",
+        "sym_open_brace", "sym_close_brace"
+      ],
+      "solution": [
+        "kw_public", "kw_override", "kw_void", "id_methodname",
+        "sym_open_paren", "sym_close_paren",
+        "sym_open_brace", "sym_close_brace"
+      ],
+      "hints": [
+        "A ordem canônica do .NET C# para reescrever algo precisa ser: Visibilidade (public) -> Modificador de Sobrescrição (override) -> Tipo de Retorno (void) -> Nome (Metodo).",
+        "A sequência é estrita. Inverter as palavras 'override' e 'public' vai arruinar a sintaxe no avaliador. Aja conforme os padrões Microsoft.",
+        "Diferente da abstração, dessa vez é imperativo invocar blocos funcionais completos da abertura via chaves '{}' mesmo que vazios!"
+      ]
+    },
+
+    {
+      "id": "cs_foreach_loop",
+      "title": "Loop foreach",
+      "description": "Monte um loop foreach que percorre um parâmetro (coleção), declarando a variável de iteração com var.",
+      "language": "csharp",
+      "difficulty": "iniciante",
+      "exerciseType": "Loop",
+      "availableTokenIds": [
+        "kw_foreach", "kw_var", "kw_in",
+        "id_varname", "id_param",
+        "sym_open_paren", "sym_close_paren",
+        "sym_open_brace", "sym_close_brace"
+      ],
+      "solution": [
+        "kw_foreach",
+        "sym_open_paren", "kw_var", "id_varname", "kw_in", "id_param", "sym_close_paren",
+        "sym_open_brace",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "Foreach é diferente de Java/Javascript. A estrutura tem o cabeçalho envolto inteiramente por um único par de parenteses: `foreach ( var x = y )`",
+        "A composição interna da atribuição em C# obrigatoriamente requisita três pontas na sintaxe: Tipo Dinâmico `var`, O novo apelido singular da lista `(ex: item)`, e de onde ela vem com a chave `in` `lista`.",
+        "O avaliador vai recusar caso você tenha esquecido de criar o buraco para alocar os processos dentro usando o clássico abre-fecha chaves `{ }`."
+      ]
+    },
+
+    {
+      "id": "cs_if_else",
+      "title": "Condicional if / else",
+      "description": "Monte um bloco if/else: se o parâmetro for verdadeiro, retorne true; caso contrário, retorne false.",
+      "language": "csharp",
+      "difficulty": "iniciante",
+      "exerciseType": "Condicional",
+      "availableTokenIds": [
+        "kw_if", "kw_else", "kw_return",
+        "id_param",
+        "sym_open_paren", "sym_close_paren",
+        "sym_open_brace", "sym_close_brace",
+        "sym_semicolon",
+        "lit_true", "lit_false"
+      ],
+      "solution": [
+        "kw_if", "sym_open_paren", "id_param", "sym_close_paren",
+        "sym_open_brace",
+        "kw_return", "lit_true", "sym_semicolon",
+        "sym_close_brace",
+        "kw_else",
+        "sym_open_brace",
+        "kw_return", "lit_false", "sym_semicolon",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "Se o aplicativo reprovou esse teste tão rápido certifique-se que o IF tem seus parenteses limitando a variável e que as chaves `{}` do primeiro ramo acompanham ele sem faltar nada.",
+        "Não existe verificação na aba contrária. Sendo assim o ramo alternativo 'else' entra de fininho sem parênteses, direto enfiando nas chaves `{ }` do segundo bloco!"
+      ]
+    },
+
+    {
+      "id": "cs_namespace_class",
+      "title": "Namespace com Classe",
+      "description": "Declare um namespace contendo uma classe pública com uma propriedade auto-implementada do tipo int.",
+      "language": "csharp",
+      "difficulty": "intermediário",
+      "exerciseType": "Namespace",
+      "availableTokenIds": [
+        "kw_namespace", "kw_public", "kw_class", "kw_get", "kw_set",
+        "type_int",
+        "id_classname", "id_varname",
+        "sym_open_brace", "sym_close_brace",
+        "sym_semicolon"
+      ],
+      "solution": [
+        "kw_namespace", "id_varname", "sym_open_brace",
+        "kw_public", "kw_class", "id_classname", "sym_open_brace",
+        "kw_public", "type_int", "id_varname",
+        "sym_open_brace", "kw_get", "sym_semicolon", "kw_set", "sym_semicolon", "sym_close_brace",
+        "sym_close_brace",
+        "sym_close_brace"
+      ],
+      "hints": [
+        "Você sabia que namespaces agem sob o ecossistema C# contendo outras estruturas filhas dentro deles? Inicie validamente através de `namespace` e abrindo as primeiras chaves gigantes `{ ... }`.",
+        "Navegando lá pra dentro, agora posicione sua declaração normal da classe que deseja criar com seus próprios encapsulamentos `public class { ... }`",
+        "A estrutura profunda precisa das aberturas das propriedades dentro da classe! `public int Id { get; set; }`. Cuidado para não errar a sequência dos `;`."
+      ]
+    }
+
+  ]
+}

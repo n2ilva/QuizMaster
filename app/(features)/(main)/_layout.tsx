@@ -25,6 +25,7 @@ function DesktopTabLayout() {
             tabBarStyle: { display: 'none' },
           }}>
           <Tabs.Screen name="index" options={{ title: 'Início' }} />
+          <Tabs.Screen name="coding-practice" options={{ title: 'Praticar' }} />
           <Tabs.Screen name="quiz" options={{ title: 'Quiz' }} />
           <Tabs.Screen name="progress" options={{ title: 'Progresso' }} />
           <Tabs.Screen name="community" options={{ title: 'Comunidade' }} />
@@ -58,6 +59,13 @@ function CompactTabLayout() {
         options={{
           title: 'Início',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="coding-practice"
+        options={{
+          title: 'Praticar',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chevron.left.forwardslash.chevron.right" color={color} />,
         }}
       />
       <Tabs.Screen
