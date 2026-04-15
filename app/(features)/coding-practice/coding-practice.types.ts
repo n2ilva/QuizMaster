@@ -14,12 +14,13 @@ export type Difficulty = 'iniciante' | 'intermediário' | 'avançado';
 export type ExerciseType =
   | 'Classe'
   | 'Função'
-  | 'Arrey'
+  | 'Array'
   | 'Método'
   | 'Namespace'
   | 'Interface'
   | 'Loop'
-  | 'Condicional';
+  | 'Condicional'
+  | 'Objeto';
 
 export type SyntaxToken = {
   id: string;

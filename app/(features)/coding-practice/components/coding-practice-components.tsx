@@ -22,7 +22,8 @@ export const DIFFICULTY_CONFIG: Record<Difficulty, { label: string; color: strin
 export const EXERCISE_TYPE_ICONS: Record<ExerciseType, string> = {
   Classe:      'account-balance',
   Função:      'functions',
-  Variável:    'data-object',
+  Array:       'data-object',
+  Objeto:      'data-object',
   Método:      'auto-fix-high',
   Namespace:   'folder',
   Interface:   'integration-instructions',
