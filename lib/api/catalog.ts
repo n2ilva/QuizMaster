@@ -154,16 +154,25 @@ export async function getTotalCardsForCategory(
  */
 export async function getDatabaseStats(): Promise<{
   totalCards: number;
+  totalCodingExercises: number;
   activeTracks: number;
 }> {
   return fetchWithCache(
     "dbStats",
     async () => {
       const cardsRef = collection(db, "cards");
-      const countSnapshot = await getCountFromServer(query(cardsRef));
-      const totalCards = countSnapshot.data().count;
+      const codingRef = collection(db, "coding_exercises");
+
+      const [cardsSnapshot, codingSnapshot] = await Promise.all([
+        getCountFromServer(query(cardsRef)),
+        getCountFromServer(query(codingRef)),
+      ]);
+
+      const totalCards = cardsSnapshot.data().count;
+      const totalCodingExercises = codingSnapshot.data().count;
       const catalog = await getTrackCatalog();
-      return { totalCards, activeTracks: catalog.length };
+
+      return { totalCards, totalCodingExercises, activeTracks: catalog.length };
     },
     STATIC_TTL,
   );

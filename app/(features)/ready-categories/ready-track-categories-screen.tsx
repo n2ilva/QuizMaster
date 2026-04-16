@@ -10,6 +10,7 @@ import { QUIZ_COLORS, QUIZ_RADII } from '@/constants/quiz-ui';
 import { getCategoryTags } from '@/data/cards/category-tags';
 import { CATEGORY_TYPE_LABEL } from '@/data/tracks';
 import { useLayoutMode } from '@/hooks/use-layout-mode';
+import { useTopContentPadding } from '@/hooks/use-tab-content-padding';
 import { fetchCategoryStats, getCategoriesForTrack, resolveTrackLabel, type CategoryStats } from '@/lib/api';
 import { useAuth } from '@/providers/auth-provider';
 
@@ -24,6 +25,7 @@ export function ReadyTrackCategoriesScreen() {
   const colorScheme = useColorScheme();
   const track = useMemo(() => decodeURIComponent(encodedTrack ?? ''), [encodedTrack]);
   const label = resolveTrackLabel(track);
+  const topPadding = useTopContentPadding();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [categories, setCategories] = useState<string[]>([]);
@@ -166,20 +168,24 @@ export function ReadyTrackCategoriesScreen() {
   const isDark = colorScheme === 'dark';
 
   return (
-    <ScrollView className="flex-1 bg-white px-5 pt-6 dark:bg-[#151718]" contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 24, gap: 12 }}>
+    <ScrollView 
+      className="flex-1 bg-white px-5 dark:bg-[#151718]" 
+      contentContainerStyle={{ paddingTop: topPadding, paddingBottom: 100 }} 
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 12 }}>
         <Pressable
           onPress={() => router.back()}
           style={({ pressed }) => ({
             width: 40,
             height: 40,
             borderRadius: 20,
-            backgroundColor: isDark ? '#1C1F24' : '#F1F5F9',
+            backgroundColor: '#1C1F24',
             alignItems: 'center',
             justifyContent: 'center',
-            opacity: pressed ? 0.6 : 1,
+            opacity: pressed ? 0.7 : 1,
           })}>
-          <MaterialIcons name="arrow-back" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
+          <MaterialIcons name="arrow-back" size={20} color="#ECEDEE" />
         </Pressable>
         <View style={{ flex: 1 }}>
           <Text className="text-2xl font-bold tracking-tight text-[#11181C] dark:text-[#ECEDEE]">{label}</Text>

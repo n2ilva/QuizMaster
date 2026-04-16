@@ -15,6 +15,7 @@ import {
 import { cacheInvalidatePrefix, fetchWithCache, USER_TTL } from "@/lib/cache";
 import { db } from "@/lib/firebase";
 import { buildDifficultyProgress, resolveActiveDifficulty } from "./cards";
+import { fetchCodingPracticeProgress, fetchCodingExercises } from "./coding-practice";
 import { getTotalCardsForCategory } from "./catalog";
 import type {
     CardHistory,
@@ -57,6 +58,19 @@ export function calculateScore(
   const speedFactor = Math.max(0, 1 - avgTimePerQuestionMs / 20000);
   const speedBonus = baseScore * speedFactor * 0.25;
   return Math.round(baseScore + accuracyBonus + speedBonus);
+}
+
+export function calculateCodingExerciseScore(
+  minMoves: number,
+  bestMoves: number,
+  difficulty: "fácil" | "intermediário" | "avançado" = "fácil"
+): number {
+  const accuracy = Math.min(100, Math.round((minMoves / (bestMoves || minMoves)) * 100));
+  const diffMultiplier = difficulty === 'avançado' ? 2 : (difficulty === 'intermediário' ? 1.5 : 1);
+  
+  // Use 1 base point per exercise as requested
+  const exerciseScore = calculateScore(1, accuracy, 0); 
+  return Math.round(exerciseScore * diffMultiplier);
 }
 
 export function formatDuration(ms: number): string {
@@ -173,11 +187,13 @@ async function _fetchUserProgressFromServer(
 ): Promise<ProgressSummary> {
   const lessonsRef = collection(db, "users", uid, "lessons");
   const inProgressRef = collection(db, "users", uid, "inProgressLessons");
-  const lessonsQuery = query(lessonsRef, orderBy("createdAt", "desc"));
+  const lessonsQuery = query(lessonsRef);
 
-  const [lessonsSnapshot, inProgressSnapshot] = await Promise.all([
+  const [lessonsSnapshot, inProgressSnapshot, codingResults, allExercises] = await Promise.all([
     getDocs(lessonsQuery),
     getDocs(inProgressRef),
+    fetchCodingPracticeProgress(uid),
+    fetchCodingExercises()
   ]);
 
   const uniqueSeenByCategory = await getUniqueSeenQuestionsByCategory(uid);
@@ -193,7 +209,9 @@ async function _fetchUserProgressFromServer(
       ...(d.data() as Omit<InProgressLessonRecord, "id">),
     }));
 
-  if (lessons.length === 0 && inProgressLessons.length === 0) {
+  const hasAnyCodingResult = Object.keys(codingResults).length > 0;
+
+  if (lessons.length === 0 && inProgressLessons.length === 0 && !hasAnyCodingResult) {
     return {
       accuracyPercent: 0,
       avgTimeMs: 0,
@@ -290,17 +308,36 @@ async function _fetchUserProgressFromServer(
     }
   }
 
-  const accuracyPercent =
-    totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
-  const avgTimeMs =
-    lessons.length > 0 ? Math.round(totalDuration / lessons.length) : 0;
+  // ---------------------------------------------------------------------------
+  // Calculate Coding Practice Score
+  // ---------------------------------------------------------------------------
+  let totalCodingScore = 0;
+  Object.keys(codingResults).forEach(exerciseId => {
+    const res = codingResults[exerciseId];
+    if (!res.completed) return;
+
+    const exercise = allExercises.find(e => e.id === exerciseId);
+    if (!exercise) return;
+
+    const minMoves = exercise.solution.filter(s => s !== 'sym_newline').length;
+    const bestMoves = res.bestMoves || minMoves;
+    
+    totalCodingScore += calculateCodingExerciseScore(
+      minMoves, 
+      bestMoves, 
+      exercise.difficulty as any
+    );
+  });
+
   const avgTimePerQuestion =
     totalQuestions > 0 ? totalDuration / totalQuestions : 0;
   const totalScore = calculateScore(
     totalQuestions,
-    accuracyPercent,
+    totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0,
     avgTimePerQuestion,
   );
+
+  const finalScore = (totalScore || 0) + totalCodingScore;
 
   const categories: CategoryProgress[] = (
     await Promise.all(
@@ -353,11 +390,14 @@ async function _fetchUserProgressFromServer(
     )
   ).sort((a, b) => b.lastStudiedAt - a.lastStudiedAt);
 
+  const accuracyPercent = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+  const avgTimeMs = lessons.length > 0 ? Math.round(totalDuration / lessons.length) : 0;
+
   return {
     accuracyPercent,
     avgTimeMs,
     totalLessons: lessons.length,
-    totalScore,
+    totalScore: finalScore,
     streak: calculateStreak(lessons),
     categories,
   };
@@ -570,6 +610,7 @@ export async function resetUserProgress(uid: string): Promise<void> {
   await deleteCollection(collection(db, "users", uid, "lessons"));
   await deleteCollection(collection(db, "users", uid, "inProgressLessons"));
   await deleteCollection(collection(db, "users", uid, "cardHistory"));
+  await deleteCollection(collection(db, "users", uid, "codingPracticeResults"));
 
   try {
     await deleteDoc(doc(db, "users", uid, "progressData", "current"));

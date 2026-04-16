@@ -1,10 +1,8 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { PanelCard } from '@/components/quiz/panel-card';
-import { QuizStatCard } from '@/components/quiz/stat-card';
 import { TRACK_STYLE_FALLBACK, trackStyles } from '@/constants/track-styles';
-import { QUIZ_COLORS } from '@/constants/quiz-ui';
 import { useLayoutMode } from '@/hooks/use-layout-mode';
 import { useLogout } from '@/hooks/use-logout';
 import { useScreenSize } from '@/hooks/use-screen-size';
@@ -19,7 +17,7 @@ export function HomeScreen() {
   const bottomPadding = useTabContentPadding();
   const topPadding = useTopContentPadding();
   const { user } = useAuth();
-  const { trackCatalog, dbStats: stats } = useData();
+  const { trackCatalog, dbStats: stats, userProgress: progress } = useData();
   const layoutMode = useLayoutMode();
   const { isDesktop } = useScreenSize();
   const { loggingOut, handleLogout } = useLogout();
@@ -34,220 +32,159 @@ export function HomeScreen() {
     };
   });
 
-  if (layoutMode === 'desktop') {
-    return (
-      <ScrollView
-        style={{ flex: 1, backgroundColor: '#111316' }}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: bottomPadding, padding: 32, paddingTop: 32 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 28, gap: 16 }}>
-          <View style={{ flex: 1 }}>
-            <Text style={{ color: '#ECEDEE', fontSize: 26, fontWeight: '700' }}>
-              {user ? `Olá, ${user.name}!` : 'Bem-vindo!'}
-            </Text>
-            <Text style={{ color: '#687076', fontSize: 14, marginTop: 4 }}>
-              Teste seus conhecimentos com quiz e pratique programação montando código.
-            </Text>
-          </View>
-        </View>
-
-        <View style={{ flexDirection: 'row', gap: 16, marginBottom: 24 }}>
-          <QuizStatCard label="Quiz" value={stats ? stats.totalCards.toLocaleString('pt-BR') : '…'} subtitle="questões disponíveis" icon="layers" accentColor="#FFFFFF" backgroundColor="#0EA5E9" borderColor="#0EA5E9" valueColor="#FFFFFF" labelColor="rgba(255,255,255,0.8)" subtitleColor="rgba(255,255,255,0.7)" iconBackgroundColor="rgba(255,255,255,0.14)" style={{ flex: 1 }} />
-          <QuizStatCard label="Código" value="Puzzle" subtitle="monte o código" icon="extension" accentColor="#FFFFFF" backgroundColor="#22C55E" borderColor="#22C55E" valueColor="#FFFFFF" labelColor="rgba(255,255,255,0.8)" subtitleColor="rgba(255,255,255,0.7)" iconBackgroundColor="rgba(255,255,255,0.14)" style={{ flex: 1 }} />
-          <QuizStatCard label="Temas" value={stats ? stats.activeTracks : '…'} subtitle="temas ativos" icon="category" accentColor="#FFFFFF" backgroundColor="#8B5CF6" borderColor="#8B5CF6" valueColor="#FFFFFF" labelColor="rgba(255,255,255,0.8)" subtitleColor="rgba(255,255,255,0.7)" iconBackgroundColor="rgba(255,255,255,0.14)" style={{ flex: 1 }} />
-        </View>
-
-        <View style={{ flexDirection: isDesktop ? 'row' : 'column', gap: 16 }}>
-          <View style={{ flex: 3, gap: 16 }}>
-            <PanelCard>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <MaterialIcons name="school" size={18} color={QUIZ_COLORS.primarySoft} />
-                <Text style={{ color: QUIZ_COLORS.textPrimary, fontSize: 15, fontWeight: '600' }}>Temas disponíveis</Text>
-              </View>
-              <View style={{ flexDirection: 'row', gap: 10 }}>
-                {[0, 1, 2].map((columnIndex) => (
-                  <View key={columnIndex} style={{ flex: 1, gap: 10 }}>
-                    {themes.filter((_, index) => index % 3 === columnIndex).map((theme) => (
-                      <HomeThemeCard key={theme.key} item={theme} fontSize={16} />
-                    ))}
-                  </View>
-                ))}
-              </View>
-            </PanelCard>
-
-            <PanelCard>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <MaterialIcons name="help-outline" size={18} color={QUIZ_COLORS.primarySoft} />
-                <Text style={{ color: QUIZ_COLORS.textPrimary, fontSize: 15, fontWeight: '600' }}>Como estudar</Text>
-              </View>
-              <View style={{ gap: 12 }}>
-                {[
-                  { n: '1', text: 'Quiz: Escolha um tema e responda questões com repetição espaçada' },
-                  { n: '2', text: 'Código: Monte trechos de código arrastando peças no lugar certo' },
-                  { n: '3', text: 'O sistema adapta dificuldade e frequência ao seu desempenho' },
-                  { n: '4', text: 'Acompanhe seu progresso em tempo real com estatísticas detalhadas' },
-                ].map((step) => (
-                  <View key={step.n} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
-                    <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: QUIZ_COLORS.primary, alignItems: 'center', justifyContent: 'center', marginTop: 1 }}>
-                      <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '700' }}>{step.n}</Text>
-                    </View>
-                    <Text style={{ color: QUIZ_COLORS.textMuted, fontSize: 13, lineHeight: 20, flex: 1 }}>{step.text}</Text>
-                  </View>
-                ))}
-              </View>
-            </PanelCard>
-          </View>
-
-          <View style={{ flex: 2, gap: 16 }}>
-            <PanelCard>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <MaterialIcons name="auto-awesome" size={18} color="#8B5CF6" />
-                <Text style={{ color: QUIZ_COLORS.textPrimary, fontSize: 15, fontWeight: '600' }}>Recursos</Text>
-              </View>
-              <View style={{ gap: 10 }}>
-                {HOME_FEATURES.map((feature, index) => (
-                  <View key={index} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
-                    <MaterialIcons name={feature.icon} size={15} color={QUIZ_COLORS.textFaint} style={{ marginTop: 1 }} />
-                    <Text style={{ color: QUIZ_COLORS.textMuted, fontSize: 12, lineHeight: 18, flex: 1 }}>{feature.text}</Text>
-                  </View>
-                ))}
-              </View>
-            </PanelCard>
-          </View>
-        </View>
-      </ScrollView>
-    );
-  }
+  const textPrimary = '#ECEDEE';
+  const textMuted = '#9BA1A6';
+  const surfaceColor = '#1A1D21';
 
   return (
     <ScrollView
-      className="flex-1 bg-white px-5 dark:bg-[#151718]"
+      style={{ flex: 1, backgroundColor: '#0D0F10' }}
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingTop: topPadding, paddingBottom: bottomPadding }}>
-      <View className="flex-row items-center gap-3">
-        <View className="h-11 w-11 items-center justify-center rounded-xl bg-[#3F51B5]">
-          <MaterialIcons name="style" size={22} color="#FFFFFF" />
-        </View>
-        <View className="flex-1">
-          <Text className="text-2xl font-bold text-[#11181C] dark:text-[#ECEDEE]">QMaster</Text>
+      contentContainerStyle={{ 
+        paddingTop: isDesktop ? 40 : topPadding, 
+        paddingBottom: bottomPadding + 32,
+        paddingHorizontal: isDesktop ? 40 : 20 
+      }}>
+      
+      {/* Hero Header */}
+      <View style={{ 
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        marginBottom: 32,
+        justifyContent: 'space-between'
+      }}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: textPrimary, fontSize: 24, fontWeight: '800', letterSpacing: -0.5 }}>
+            {user ? `Olá, ${user.name}!` : 'Bem-vindo!'}
+          </Text>
+          <Text style={{ color: textMuted, fontSize: 13, marginTop: 4 }}>
+            Pronto para impulsionar seu conhecimento hoje?
+          </Text>
         </View>
         <Pressable
-          onPress={() => {
-            if (!loggingOut) {
-              void handleLogout();
-            }
+          onPress={() => !loggingOut && handleLogout()}
+          style={{
+            width: 44, height: 44, borderRadius: 22,
+            backgroundColor: surfaceColor,
+            alignItems: 'center', justifyContent: 'center',
+            borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)'
           }}
-          className="h-10 w-10 items-center justify-center rounded-full active:opacity-60"
           disabled={loggingOut}>
-          <MaterialIcons name={loggingOut ? 'hourglass-empty' : 'logout'} size={22} color="#9BA1A6" />
+          <Ionicons name={loggingOut ? "sync" : "log-out-outline"} size={20} color={textMuted} />
         </Pressable>
       </View>
 
-      <Text className="mt-3 text-base leading-6 text-[#687076] dark:text-[#9BA1A6]">
-        {user ? (
-          <>
-            Olá, <Text className="font-bold text-[#11181C] dark:text-[#ECEDEE]">{user.name}</Text>!
-          </>
-        ) : (
-          'Bem-vindo!'
-        )}{' '}
-        Teste seus conhecimentos com quiz e pratique programação montando código.
-      </Text>
-
-      <View className="mt-5 flex-row gap-3">
-        <View className="flex-1 rounded-2xl bg-[#F0F9FF] p-4 dark:bg-[#0EA5E9]/10">
-          <View className="flex-row items-center gap-2">
-            <MaterialIcons name="layers" size={16} color="#0EA5E9" />
-            <Text className="text-xs uppercase tracking-wide text-[#0369A1] dark:text-[#7DD3FC]">Quiz</Text>
+      {/* Modern Stats Grid */}
+      <View style={{ 
+        flexDirection: 'row', 
+        gap: 12, 
+        marginBottom: 32 
+      }}>
+        <View style={{ 
+          flex: 1, 
+          backgroundColor: '#1E293B', 
+          borderRadius: 24, 
+          padding: 18,
+          borderWidth: 1,
+          borderColor: 'rgba(56,189,248,0.2)'
+        }}>
+          <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: 'rgba(56,189,248,0.15)', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+            <Ionicons name="book" size={18} color="#38BDF8" />
           </View>
-          <Text className="mt-2 text-3xl font-bold text-[#0C4A6E] dark:text-[#E0F2FE]">
+          <Text style={{ color: textMuted, fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 }}>Quizzes</Text>
+          <Text style={{ color: textPrimary, fontSize: 24, fontWeight: '800', marginTop: 2 }}>
             {stats ? stats.totalCards.toLocaleString('pt-BR') : '…'}
           </Text>
         </View>
-        <View className="flex-1 rounded-2xl bg-[#F0FDF4] p-4 dark:bg-[#22C55E]/10">
-          <View className="flex-row items-center gap-2">
-            <MaterialIcons name="extension" size={16} color="#22C55E" />
-            <Text className="text-xs uppercase tracking-wide text-[#166534] dark:text-[#86EFAC]">Código</Text>
+
+        <View style={{ 
+          flex: 1, 
+          backgroundColor: '#1A2121', 
+          borderRadius: 24, 
+          padding: 18,
+          borderWidth: 1,
+          borderColor: 'rgba(16,185,129,0.2)'
+        }}>
+          <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: 'rgba(16,185,129,0.15)', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+            <Ionicons name="extension-puzzle" size={18} color="#10B981" />
           </View>
-          <Text className="mt-2 text-2xl font-bold text-[#14532D] dark:text-[#DCFCE7]">
-            Puzzle
+          <Text style={{ color: textMuted, fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 }}>Quebra-Cabeça</Text>
+          <Text style={{ color: textPrimary, fontSize: 24, fontWeight: '800', marginTop: 2 }}>
+            {stats ? (stats as any).totalCodingExercises ?? 0 : '…'}
           </Text>
         </View>
       </View>
 
-      <View className="mt-3 flex-row gap-3">
-        <View className="flex-1 rounded-2xl bg-[#F5F3FF] p-4 dark:bg-[#8B5CF6]/10">
-          <View className="flex-row items-center gap-2">
-            <MaterialIcons name="category" size={16} color="#8B5CF6" />
-            <Text className="text-xs uppercase tracking-wide text-[#5B21B6] dark:text-[#C4B5FD]">Temas</Text>
+      {/* Main Content Layout */}
+      <View style={{ flexDirection: isDesktop ? 'row' : 'column', gap: 24 }}>
+        
+        {/* Themes Column */}
+        <View style={{ flex: 3 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+            <Ionicons name="grid-outline" size={20} color="#6366F1" />
+            <Text style={{ color: textPrimary, fontSize: 18, fontWeight: '700' }}>Temas de Estudo</Text>
           </View>
-          <Text className="mt-2 text-3xl font-bold text-[#3B0764] dark:text-[#EDE9FE]">
-            {stats ? stats.activeTracks : '…'}
-          </Text>
-        </View>
-        <View className="flex-1 rounded-2xl bg-[#FFF7ED] p-4 dark:bg-[#F59E0B]/10">
-          <View className="flex-row items-center gap-2">
-            <MaterialIcons name="auto-awesome" size={16} color="#F59E0B" />
-            <Text className="text-xs uppercase tracking-wide text-[#92400E] dark:text-[#FDE68A]">Sistema</Text>
+          
+          <View style={{ flexDirection: 'row', gap: 12 }}>
+            {[0, 1].map((columnIndex) => (
+              <View key={columnIndex} style={{ flex: 1, gap: 12 }}>
+                {themes.filter((_, index) => index % 2 === columnIndex).map((theme) => (
+                  <HomeThemeCard key={theme.key} item={theme} />
+                ))}
+              </View>
+            ))}
           </View>
-          <Text className="mt-2 text-lg font-bold text-[#78350F] dark:text-[#FEF3C7]">
-            Repetição Espaçada
-          </Text>
         </View>
-      </View>
 
-      <PanelCard compact style={{ marginTop: 20, backgroundColor: '#1A1D21' }}>
-        <View className="flex-row items-center gap-2">
-          <MaterialIcons name="school" size={18} color="#687076" />
-          <Text className="text-base font-semibold text-[#11181C] dark:text-[#ECEDEE]">Temas disponíveis</Text>
-        </View>
-        <View style={{ flexDirection: 'row', gap: 10, marginTop: 12 }}>
-          {[0, 1].map((columnIndex) => (
-            <View key={columnIndex} style={{ flex: 1, gap: 10 }}>
-              {themes.filter((_, index) => index % 2 === columnIndex).map((theme) => (
-                <HomeThemeCard key={theme.key} item={theme} />
+        {/* Info Column */}
+        <View style={{ flex: 2, gap: 24 }}>
+          
+          <PanelCard compact style={{ backgroundColor: surfaceColor, borderRadius: 24, padding: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+              <Ionicons name="rocket-outline" size={20} color="#F43F5E" />
+              <Text style={{ color: textPrimary, fontSize: 16, fontWeight: '700' }}>Como evoluir</Text>
+            </View>
+            <View style={{ gap: 16 }}>
+              {[
+                { icon: "chatbox-ellipses", text: "Quiz: Reforce a teoria com repetição espaçada", color: "#38BDF8" },
+                { icon: "extension-puzzle", text: "Quebra-Cabeça: Pratique a lógica montando código", color: "#F59E0B" },
+                { icon: "analytics", text: "Acompanhe suas métricas em tempo real", color: "#10B981" }
+              ].map((step, index) => (
+                <View key={index} style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
+                  <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.03)', alignItems: 'center', justifyContent: 'center' }}>
+                    <Ionicons name={step.icon as any} size={16} color={step.color} />
+                  </View>
+                  <Text style={{ flex: 1, color: textMuted, fontSize: 13, lineHeight: 18 }}>{step.text}</Text>
+                </View>
               ))}
             </View>
-          ))}
-        </View>
-      </PanelCard>
+          </PanelCard>
 
-      <PanelCard compact style={{ marginTop: 12, backgroundColor: '#1A1D21' }}>
-        <View className="flex-row items-center gap-2">
-          <MaterialIcons name="help-outline" size={18} color="#3F51B5" />
-          <Text className="text-base font-semibold text-[#11181C] dark:text-[#ECEDEE]">Como estudar</Text>
-        </View>
-        <View className="mt-3 gap-3">
-          {[
-            'Quiz: Escolha um tema e responda questões com repetição espaçada',
-            'Código: Monte trechos de código arrastando peças no lugar certo',
-            'O sistema adapta dificuldade e frequência ao seu desempenho',
-            'Acompanhe seu progresso em tempo real com estatísticas detalhadas',
-          ].map((step, index) => (
-            <View key={index} className="flex-row items-start gap-2.5">
-              <View className="mt-0.5 h-5 w-5 items-center justify-center rounded-full bg-[#3F51B5]">
-                <Text className="text-[10px] font-bold text-white">{index + 1}</Text>
-              </View>
-              <Text className="flex-1 text-sm leading-5 text-[#687076] dark:text-[#9BA1A6]">{step}</Text>
+          <PanelCard compact style={{ backgroundColor: surfaceColor, borderRadius: 24, padding: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+              <Ionicons name="shield-checkmark" size={20} color="#10B981" />
+              <Text style={{ color: textPrimary, fontSize: 16, fontWeight: '700' }}>Recursos Premium</Text>
             </View>
-          ))}
-        </View>
-      </PanelCard>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+              {HOME_FEATURES.map((feature, index) => (
+                <View key={index} style={{ 
+                  backgroundColor: 'rgba(255,255,255,0.03)', 
+                  paddingHorizontal: 12, 
+                  paddingVertical: 8, 
+                  borderRadius: 12,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 6
+                }}>
+                  <MaterialCommunityIcons name={feature.icon as any} size={14} color={textMuted} />
+                  <Text style={{ color: textMuted, fontSize: 11 }}>{feature.text}</Text>
+                </View>
+              ))}
+            </View>
+          </PanelCard>
 
-      <PanelCard compact style={{ marginTop: 12, backgroundColor: '#1A1D21' }}>
-        <View className="flex-row items-center gap-2">
-          <MaterialIcons name="auto-awesome" size={18} color="#8B5CF6" />
-          <Text className="text-base font-semibold text-[#11181C] dark:text-[#ECEDEE]">Recursos</Text>
         </View>
-        <View className="mt-3 flex-row flex-wrap gap-x-2 gap-y-2.5">
-          {HOME_FEATURES.map((feature, index) => (
-            <View key={index} className="w-[48%] flex-row items-start gap-2">
-              <MaterialIcons name={feature.icon} size={14} color="#9BA1A6" style={{ marginTop: 2 }} />
-              <Text className="flex-1 text-xs leading-4 text-[#687076] dark:text-[#9BA1A6]">{feature.text}</Text>
-            </View>
-          ))}
-        </View>
-      </PanelCard>
+      </View>
     </ScrollView>
   );
 }

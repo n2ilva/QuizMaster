@@ -84,6 +84,7 @@ export type UserProfile = {
   scoreLevel: ScoreLevel;
   score: number;
   totalQuestionsAnswered: number;
+  totalCodingCompleted: number;
   overallAccuracy: number;
   avgTimePerQuestion: number;
   streak: number;
@@ -92,6 +93,9 @@ export type UserProfile = {
   topCategoryTrack?: string;
   topCategoryAccuracy?: number;
   topCategoryAvgTimeMs?: number;
+  topCodingCategory?: string;
+  topCodingAccuracy?: number;
+  topCodingAvgTimeMs?: number;
 };
 
 /** Progress data stored in users/{uid}/profile - used by community */
@@ -100,8 +104,12 @@ export type UserProgressData = {
   scoreLevel: ScoreLevel;
   score: number;
   totalQuestionsAnswered: number;
+  totalCodingCompleted: number;
   overallAccuracy: number;
   avgTimePerQuestion: number;
+  topCodingCategory?: string;
+  topCodingAccuracy?: number;
+  topCodingAvgTimeMs?: number;
   updatedAt: unknown;
 };
 
@@ -188,5 +196,6 @@ export type CodingPracticeResult = {
   exerciseId: string;
   completed: boolean;
   bestTime: number;
+  bestMoves: number;
   updatedAt: unknown;
 };

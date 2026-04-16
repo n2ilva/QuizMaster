@@ -80,7 +80,7 @@ export function QuizScreen() {
         contentContainerStyle={{ padding: 32, paddingTop: 32, paddingBottom: bottomPadding }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 28, gap: 12 }}>
           <TouchableOpacity 
-            onPress={() => router.push('/practice')} 
+            onPress={() => router.push('/(features)/(main)/practice')} 
             style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: '#1C1F24', alignItems: 'center', justifyContent: 'center', marginRight: 4 }}
           >
             <MaterialIcons name="arrow-back" size={24} color={'#ECEDEE'} />
@@ -153,7 +153,7 @@ export function QuizScreen() {
       contentContainerStyle={{ paddingTop: topPadding, paddingHorizontal: 20, paddingBottom: bottomPadding }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 12 }}>
         <TouchableOpacity 
-          onPress={() => router.push('/practice')} 
+          onPress={() => router.push('/(features)/(main)/practice')} 
           style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#1C1F24', alignItems: 'center', justifyContent: 'center' }}
         >
           <MaterialIcons name="arrow-back" size={20} color={'#ECEDEE'} />

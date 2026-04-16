@@ -7,6 +7,7 @@ const DATA_CACHE_KEY = 'coding-exercises-cache';
 export type ExerciseProgress = {
   completed: boolean;
   bestTime: number; // in seconds
+  bestMoves?: number;
 };
 
 export type GlobalProgress = Record<string, ExerciseProgress>;
@@ -65,23 +66,27 @@ export const CodingPracticeStore = {
     return localData;
   },
 
-  async saveResult(exerciseId: string, timeSeconds: number, uid?: string): Promise<void> {
+  async saveResult(exerciseId: string, timeSeconds: number, moves: number, uid?: string): Promise<void> {
     try {
       // Save locally
       const progress = await this.getProgress();
       const existing = progress[exerciseId];
 
-      if (!existing || timeSeconds < existing.bestTime || !existing.completed) {
+      const isNewBestTime = !existing || timeSeconds < existing.bestTime;
+      const isNewBestMoves = !existing || moves < (existing.bestMoves ?? Infinity);
+
+      if (isNewBestTime || isNewBestMoves || !existing?.completed) {
         progress[exerciseId] = {
           completed: true,
           bestTime: existing ? Math.min(existing.bestTime, timeSeconds) : timeSeconds,
+          bestMoves: existing ? Math.min(existing.bestMoves ?? Infinity, moves) : moves,
         };
         await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
       }
 
       // Save to Firebase
       if (uid) {
-        await saveCodingPracticeResult(uid, exerciseId, timeSeconds);
+        await saveCodingPracticeResult(uid, exerciseId, timeSeconds, moves);
       }
     } catch (e) {
       console.error('Error saving coding practice result', e);

@@ -1,7 +1,8 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, Platform, ScrollView, Text, useWindowDimensions, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { ActivityIndicator, Alert, Platform, Pressable, ScrollView, Text, useColorScheme, useWindowDimensions, View } from 'react-native';
+import { router } from 'expo-router';
 
 import { QuizStatCard } from '@/components/quiz/stat-card';
 import { SCORE_LEVEL_EMOJIS } from '@/constants/score-levels';
@@ -15,6 +16,8 @@ import { useData } from '@/providers/data-provider';
 
 import { ProgressCategoryCard } from './components/progress-category-card';
 import { ResetProgressButton } from './components/reset-progress-button';
+import { CodingPracticeStore } from '../coding-practice/coding-practice.store';
+import { LANGUAGES } from '../coding-practice/coding-practice.constants';
 
 export function ProgressScreen() {
   const bottomPadding = useTabContentPadding();
@@ -30,6 +33,11 @@ export function ProgressScreen() {
     ? (windowWidth - 344 - (categoryGridColumns - 1) * categoryGridGap) / categoryGridColumns
     : (windowWidth - 104 - (categoryGridColumns - 1) * categoryGridGap) / categoryGridColumns;
 
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const textPrimary = isDark ? '#ECEDEE' : '#11181C';
+  const textMuted = isDark ? '#9BA1A6' : '#687076';
+
   const [loading, setLoading] = useState(!cachedProgress);
   const [resetting, setResetting] = useState(false);
   const [scoreLevel, setScoreLevel] = useState<ScoreLevel>(cachedProgress ? getScoreLevel(cachedProgress.totalScore) : 'Bronze');
@@ -38,19 +46,84 @@ export function ProgressScreen() {
   const [totalLessons, setTotalLessons] = useState(cachedProgress?.totalLessons ?? 0);
   const [streak, setStreak] = useState(cachedProgress?.streak ?? 0);
   const [categories, setCategories] = useState<CategoryProgress[]>(cachedProgress?.categories ?? []);
+  const [codingLangProgress, setCodingLangProgress] = useState<any[]>([]);
   const isFirstLoad = useRef(true);
+
+  const totalCodingExercises = useMemo(() => {
+    return codingLangProgress.reduce((acc, curr) => acc + (curr.completed || 0), 0);
+  }, [codingLangProgress]);
+
+  const ModernSection = ({ title, subtitle, icon, iconColor, count, children }: any) => (
+    <View style={{
+      backgroundColor: isDark ? '#1C1F24' : '#FFFFFF',
+      borderRadius: 24,
+      borderWidth: 1,
+      borderColor: isDark ? '#30363D' : '#E6E8EB',
+      overflow: 'hidden',
+      marginBottom: 24,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: isDark ? 0.2 : 0.03,
+      shadowRadius: 12,
+      elevation: 2,
+    }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, padding: 20, paddingBottom: 12 }}>
+        <View style={{ 
+          width: 42, 
+          height: 42, 
+          borderRadius: 14, 
+          backgroundColor: `${iconColor}15`, 
+          alignItems: 'center', 
+          justifyContent: 'center' 
+        }}>
+          <MaterialIcons name={icon} size={22} color={iconColor} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: textPrimary, fontSize: 18, fontWeight: '800', letterSpacing: -0.3 }}>{title}</Text>
+          <Text style={{ color: textMuted, fontSize: 13 }}>{subtitle}</Text>
+        </View>
+        {count && (
+          <View style={{ backgroundColor: `${iconColor}15`, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 4 }}>
+            <Text style={{ color: iconColor, fontSize: 12, fontWeight: '800' }}>{count}</Text>
+          </View>
+        )}
+      </View>
+      <View style={{ padding: 16 }}>
+        {children}
+      </View>
+    </View>
+  );
+
+  const ModernStatCard = ({ label, value, color, subtitle }: any) => (
+    <View style={{
+      flex: 1,
+      backgroundColor: isDark ? '#1C1F24' : '#FFFFFF',
+      borderRadius: 20,
+      padding: 20,
+      borderWidth: 1,
+      borderColor: isDark ? '#30363D' : '#E6E8EB',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, width: 4, backgroundColor: color }} />
+      <Text style={{ color: textMuted, fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 }}>{label}</Text>
+      <View style={{ marginTop: 12 }}>
+        <Text style={{ color: textPrimary, fontSize: 30, fontWeight: '900', letterSpacing: -1 }}>{value}</Text>
+        {subtitle && <Text style={{ color: textMuted, fontSize: 12, marginTop: 2 }}>{subtitle}</Text>}
+      </View>
+    </View>
+  );
 
   const loadProgress = useCallback(async () => {
     if (!user) return;
-    if (isFirstLoad.current && cachedProgress) {
-      isFirstLoad.current = false;
-      return;
-    }
-
+    
+    // Always load to ensure consistency, especially for Coding Practice which isn't in global cache yet
     isFirstLoad.current = false;
 
     try {
       setLoading(true);
+      
+      // Load Quiz Progress
       const data = await fetchUserProgress(user.id);
       setAccuracy(data.accuracyPercent);
       setTotalLessons(data.totalLessons);
@@ -58,8 +131,26 @@ export function ProgressScreen() {
       setCategories(data.categories);
       setScore(data.totalScore);
       setScoreLevel(getScoreLevel(data.totalScore));
-    } catch {
-      // silently fail
+
+      // Load Coding Practice Progress
+      const allEx = await CodingPracticeStore.getAllExercises();
+      const cpProgress = await CodingPracticeStore.getProgress(user.id);
+      
+      const langStats = LANGUAGES.map(lang => {
+        const langExercises = allEx.filter(e => e.language === lang.id);
+        const completed = langExercises.filter(e => cpProgress[e.id]?.completed).length;
+        return {
+          id: lang.id,
+          label: lang.label,
+          completed,
+          total: langExercises.length,
+          percent: langExercises.length > 0 ? (completed / langExercises.length) * 100 : 0
+        };
+      });
+      setCodingLangProgress(langStats);
+
+    } catch (e) {
+      console.error('Error loading progress:', e);
     } finally {
       setLoading(false);
     }
@@ -78,6 +169,7 @@ export function ProgressScreen() {
       try {
         setResetting(true);
         await resetUserProgress(user.id);
+        await CodingPracticeStore.resetProgress();
         await refreshUserProgress();
         void loadProgress();
 
@@ -134,47 +226,17 @@ export function ProgressScreen() {
           </View>
         ) : (
           <>
-            <View style={{ flexDirection: 'row', gap: 14, marginBottom: 32, flexWrap: 'nowrap' }}>
-              <QuizStatCard label="Lições" value={totalLessons} subtitle="Lições concluídas" icon="school" accentColor={QUIZ_COLORS.primarySoft} backgroundColor={QUIZ_COLORS.surfaceStrong} borderColor={QUIZ_COLORS.borderSubtle} valueColor={QUIZ_COLORS.textPrimary} subtitleColor={QUIZ_COLORS.textFaint} style={{ flex: 1, padding: 22 }} />
-              <QuizStatCard label="Acerto" value={`${accuracy}%`} subtitle="Média de acertos" icon={accuracy >= 80 ? 'check-circle' : 'trending-down'} accentColor={accuracy >= 80 ? QUIZ_COLORS.success : QUIZ_COLORS.danger} backgroundColor={QUIZ_COLORS.surfaceStrong} borderColor={QUIZ_COLORS.borderSubtle} valueColor={accuracy >= 80 ? QUIZ_COLORS.textPrimary : QUIZ_COLORS.danger} subtitleColor={accuracy >= 80 ? QUIZ_COLORS.textFaint : QUIZ_COLORS.danger} style={{ flex: 1, padding: 22 }} />
-              <QuizStatCard label="Pontuação" value={score} subtitle="Pontos totais" emoji={SCORE_LEVEL_EMOJIS[scoreLevel]} accentColor={QUIZ_COLORS.primarySoft} backgroundColor={QUIZ_COLORS.surfaceStrong} borderColor={QUIZ_COLORS.borderSubtle} valueColor={QUIZ_COLORS.textPrimary} subtitleColor={QUIZ_COLORS.textFaint} style={{ flex: 1, padding: 22 }} />
-              <QuizStatCard label="Sequência" value={streak} subtitle={streak === 1 ? 'Dia consecutivo' : 'Dias consecutivos'} emoji="🔥" accentColor={QUIZ_COLORS.warning} backgroundColor={QUIZ_COLORS.surfaceStrong} borderColor={QUIZ_COLORS.borderSubtle} valueColor={streak > 0 ? '#FBBF24' : '#4B5563'} subtitleColor={QUIZ_COLORS.textFaint} style={{ flex: 1, padding: 22 }} />
-            </View>
-
-            <View style={{ backgroundColor: QUIZ_COLORS.surfaceStrong, borderRadius: 18, borderWidth: 1, borderColor: QUIZ_COLORS.borderSubtle }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, padding: 20, paddingBottom: 16 }}>
-                <View style={{ width: 36, height: 36, borderRadius: 10, backgroundColor: 'rgba(34,197,94,0.15)', alignItems: 'center', justifyContent: 'center' }}>
-                  <MaterialIcons name="trending-up" size={18} color="#22C55E" />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ color: QUIZ_COLORS.textPrimary, fontSize: 16, fontWeight: '700' }}>Progresso por tema</Text>
-                  <Text style={{ color: QUIZ_COLORS.textFaint, fontSize: 12 }}>Histórico de categorias estudadas</Text>
-                </View>
-                {categories.length > 0 && (
-                  <View style={{ backgroundColor: 'rgba(34,197,94,0.15)', borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 }}>
-                    <Text style={{ color: QUIZ_COLORS.success, fontSize: 11, fontWeight: '700' }}>{categories.length}</Text>
-                  </View>
-                )}
-              </View>
-              <View style={{ height: 1, backgroundColor: QUIZ_COLORS.borderSubtle }} />
-
-              {categories.length === 0 ? (
-                <View style={{ padding: 40, alignItems: 'center' }}>
-                  <MaterialIcons name="book" size={32} color="#4B5563" />
-                  <Text style={{ color: QUIZ_COLORS.textFaint, fontSize: 14, marginTop: 10 }}>Nenhuma lição concluída ainda.</Text>
-                </View>
-              ) : (
-                <ScrollView style={{ maxHeight: 500 }} showsVerticalScrollIndicator={false} nestedScrollEnabled>
-                  <View style={{ padding: 16, flexDirection: 'row', flexWrap: 'wrap', gap: categoryGridGap, alignContent: 'flex-start', justifyContent: 'center' }}>
-                    {[...categories].sort((a, b) => b.lastStudiedAt - a.lastStudiedAt).map((category) => (
-                      <View key={`${category.track}__${category.category}`} style={{ width: categoryItemWidth }}>
-                        <ProgressCategoryCard categoryProgress={category} />
+                        </Text>
                       </View>
-                    ))}
-                  </View>
-                </ScrollView>
+                      
+                      <View style={{ height: 6, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 4, overflow: 'hidden' }}>
+                        <View style={{ height: '100%', width: `${stat.percent}%`, backgroundColor: stat.percent === 100 ? '#22C55E' : '#818CF8', borderRadius: 4 }} />
+                      </View>
+                    </Pressable>
+                  ))}
+                </View>
               )}
-            </View>
+            </ModernSection>
           </>
         )}
       </ScrollView>
@@ -198,13 +260,19 @@ export function ProgressScreen() {
         </View>
       ) : (
         <>
-          <View style={{ flexDirection: 'row', gap: 10, marginTop: 20 }}>
-            <QuizStatCard label="Resumo geral" value={totalLessons} subtitle={`${totalLessons === 1 ? 'lição concluída' : 'lições concluídas'} · ${accuracy}% de acerto`} accentColor="#FFFFFF" backgroundColor={QUIZ_COLORS.primary} borderColor={QUIZ_COLORS.borderSubtle} valueColor="#FFFFFF" labelColor="rgba(255,255,255,0.8)" subtitleColor="rgba(255,255,255,0.7)" style={{ flex: 1 }} size="compact" align="center" />
-            <QuizStatCard label="Medalha" value={scoreLevel} subtitle={`${score} pontos`} emoji={SCORE_LEVEL_EMOJIS[scoreLevel]} accentColor={QUIZ_COLORS.primary} backgroundColor="rgba(63,81,181,0.05)" borderColor={QUIZ_COLORS.borderSubtle} valueColor={QUIZ_COLORS.primary} subtitleColor={QUIZ_COLORS.textMuted} style={{ flex: 1 }} align="center" size="compact" />
+          <View style={{ gap: 12, marginTop: 24, marginBottom: 16 }}>
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              <ModernStatCard label="Quiz" value={totalLessons} color={QUIZ_COLORS.primary} />
+              <ModernStatCard label="Quebra-Cabeça" value={totalCodingExercises} color="#818CF8" />
+            </View>
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              <ModernStatCard label="Pontuação Geral" value={score} color="#FBBF24" />
+              <ModernStatCard label="Sequência" value={streak} color="#F59E0B" />
+            </View>
           </View>
 
           {streak > 0 && (
-            <View className="mt-3 flex-row items-center gap-3 rounded-2xl bg-[#F59E0B]/10 p-4">
+            <View style={{ marginBottom: 12 }} className="mt-3 flex-row items-center gap-3 rounded-2xl bg-[#F59E0B]/10 p-4">
               <Text className="text-3xl">🔥</Text>
               <View className="flex-1">
                 <Text className="text-2xl font-bold text-[#D97706] dark:text-[#FBBF24]">
@@ -215,37 +283,69 @@ export function ProgressScreen() {
             </View>
           )}
 
-          <View className="mt-5 overflow-hidden rounded-2xl border border-[#E6E8EB] dark:border-[#30363D]">
-            <View style={{ backgroundColor: 'rgba(34,197,94,0.08)' }} className="flex-row items-center gap-3 px-4 py-3">
-              <View className="h-9 w-9 items-center justify-center rounded-full bg-[#22C55E]/15">
-                <MaterialIcons name="trending-up" size={20} color="#22C55E" />
-              </View>
-              <View className="flex-1">
-                <Text className="text-base font-bold text-[#22C55E]">Progresso por tema</Text>
-                <Text className="text-[11px] text-[#687076] dark:text-[#9BA1A6]">Acompanhe sua evolução em cada categoria</Text>
-              </View>
-              {categories.length > 0 && (
-                <View className="rounded-full bg-[#22C55E]/15 px-2 py-0.5">
-                  <Text className="text-[10px] font-bold text-[#22C55E]">{categories.length}</Text>
-                </View>
-              )}
-            </View>
-
+          <ModernSection 
+            title="Progresso Quiz" 
+            subtitle="Categorias estudadas" 
+            icon="quiz" 
+            iconColor="#22C55E"
+            count={categories.length > 0 ? categories.length : null}
+          >
             {categories.length === 0 ? (
-              <View className="p-3">
-                <Text className="py-2 text-center text-[#687076] dark:text-[#9BA1A6]">Conclua lições para exibir progresso.</Text>
+              <View style={{ padding: 12 }}>
+                <Text style={{ color: textMuted, textAlign: 'center' }}>Conclua lições para exibir progresso.</Text>
               </View>
             ) : (
-              <ScrollView style={{ maxHeight: 320 }} showsVerticalScrollIndicator={false} nestedScrollEnabled contentContainerStyle={{ padding: 12 }}>
-                {categories.map((category, index) => (
+              <View style={{ gap: 12 }}>
+                {[...categories].sort((a, b) => b.lastStudiedAt - a.lastStudiedAt).map((category, index) => (
                   <View key={`${category.track}__${category.category}`}>
-                    {index > 0 && <View className="my-2 h-px bg-[#E6E8EB] dark:bg-[#30363D]" />}
+                    {index > 0 && <View style={{ height: 1, backgroundColor: isDark ? '#30363D' : '#F1F5F9', marginBottom: 12, opacity: 0.5 }} />}
                     <ProgressCategoryCard categoryProgress={category} />
                   </View>
                 ))}
-              </ScrollView>
+              </View>
             )}
-          </View>
+          </ModernSection>
+
+          <ModernSection 
+            title="Progresso Quebra-Cabeça" 
+            subtitle="Prática por linguagem" 
+            icon="extension" 
+            iconColor="#818CF8"
+            count={codingLangProgress.some(s => s.completed > 0) ? `${codingLangProgress.filter(s => s.completed > 0).length} / ${codingLangProgress.length}` : null}
+          >
+            <View style={{ gap: 16 }}>
+              {codingLangProgress.filter(s => s.completed > 0).length === 0 ? (
+                <View style={{ paddingVertical: 20, alignItems: 'center' }}>
+                  <Text style={{ color: textMuted, fontSize: 13 }}>Nenhum exercício concluído ainda.</Text>
+                </View>
+              ) : (
+                codingLangProgress.filter(s => s.completed > 0).map((stat, idx) => (
+                  <Pressable 
+                    key={stat.id} 
+                    onPress={() => router.push(`/coding-practice?lang=${stat.id}`)}
+                    style={({ pressed }) => ({ opacity: pressed ? 0.7 : 1 })}
+                  >
+                    {idx > 0 && <View style={{ height: 1, backgroundColor: isDark ? '#30363D' : '#F1F5F9', marginBottom: 16 }} />}
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 }}>
+                        <MaterialIcons name="extension" size={14} color={stat.percent === 100 ? "#22C55E" : "#818CF8"} />
+                        <Text style={{ fontWeight: '700', color: textPrimary }}>{stat.label}</Text>
+                      </View>
+                      <Text style={{ fontSize: 13, fontWeight: '900', color: textPrimary }}>{Math.round(stat.percent)}%</Text>
+                    </View>
+                    <View style={{ height: 8, width: '100%', borderRadius: 4, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', overflow: 'hidden' }}>
+                      <View 
+                        style={{ height: '100%', width: `${stat.percent}%`, backgroundColor: stat.percent === 100 ? '#22C55E' : '#818CF8' }} 
+                      />
+                    </View>
+                    <Text style={{ marginTop: 6, fontSize: 11, color: textMuted }}>
+                      {stat.completed} de {stat.total} exercícios concluídos
+                    </Text>
+                  </Pressable>
+                ))
+              )}
+            </View>
+          </ModernSection>
         </>
       )}
     </ScrollView>

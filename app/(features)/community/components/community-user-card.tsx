@@ -100,11 +100,11 @@ export function CommunityUserCard({
           </Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: compact ? 4 : 6, marginTop: 4 }}>
             <Text style={{ color: textSecondary, fontSize: 11 }}>
-              {userProfile.totalQuestionsAnswered} questões
+              Quiz: {userProfile.totalQuestionsAnswered}
             </Text>
             <Text style={{ color: textSecondary, fontSize: 11 }}>•</Text>
             <Text style={{ color: textSecondary, fontSize: 11 }}>
-              {userProfile.overallAccuracy}% acertos
+              Quebra-Cabeça: {userProfile.totalCodingCompleted}
             </Text>
             {effectiveStreak > 0 && (
               <>
@@ -128,44 +128,83 @@ export function CommunityUserCard({
 
       {isExpanded && (
         <View style={{ borderTopWidth: 1, borderTopColor: isDark ? '#30363D' : '#E2E8F0', paddingHorizontal: compact ? 16 : 20, paddingBottom: compact ? 16 : 20, paddingTop: compact ? 14 : 16 }}>
-          {userProfile.topCategory ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: compact ? 10 : 12 }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: textSecondary, fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 4 }}>
-                  Tema mais estudado
-                </Text>
-                <Text style={{ color: textPrimary, fontSize: 14, fontWeight: '800', letterSpacing: -0.3 }}>{userProfile.topCategory}</Text>
-                {userProfile.topCategoryTrack ? (
-                  <Text style={{ color: textSecondary, fontSize: 11, marginTop: 2 }}>{userProfile.topCategoryTrack}</Text>
-                ) : null}
+          <View style={{ gap: 16 }}>
+            {/* Quiz Info */}
+            {userProfile.topCategory ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: compact ? 10 : 12 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: textSecondary, fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 4 }}>
+                    Quiz: Tema mais estudado
+                  </Text>
+                  <Text style={{ color: textPrimary, fontSize: 14, fontWeight: '800', letterSpacing: -0.3 }}>{userProfile.topCategory}</Text>
+                </View>
+                <View style={{ alignItems: 'center', gap: 2 }}>
+                  <Text style={{ color: textSecondary, fontSize: 10 }}>Acerto</Text>
+                  <Text
+                    style={{
+                      color:
+                        (userProfile.topCategoryAccuracy ?? 0) >= 80
+                          ? '#10B981'
+                          : (userProfile.topCategoryAccuracy ?? 0) >= 50
+                            ? '#F59E0B'
+                            : '#EF4444',
+                      fontSize: 16,
+                      fontWeight: '800',
+                    }}>
+                    {userProfile.topCategoryAccuracy ?? 0}%
+                  </Text>
+                </View>
+                <View style={{ width: 1, height: 36, backgroundColor: isDark ? '#30363D' : '#E2E8F0' }} />
+                <View style={{ alignItems: 'center', gap: 2 }}>
+                  <Text style={{ color: textSecondary, fontSize: 10 }}>Tempo/q</Text>
+                  <Text style={{ color: accentColor, fontSize: 14, fontWeight: '800' }}>
+                    {userProfile.topCategoryAvgTimeMs ? `${(userProfile.topCategoryAvgTimeMs / 1000).toFixed(1)}s` : '—'}
+                  </Text>
+                </View>
               </View>
-              <View style={{ alignItems: 'center', gap: 2 }}>
-                <Text style={{ color: textSecondary, fontSize: 10 }}>Acerto</Text>
-                <Text
-                  style={{
-                    color:
-                      (userProfile.topCategoryAccuracy ?? 0) >= 80
-                        ? '#10B981'
-                        : (userProfile.topCategoryAccuracy ?? 0) >= 50
-                          ? '#F59E0B'
-                          : '#EF4444',
-                    fontSize: 16,
-                    fontWeight: '800',
-                  }}>
-                  {userProfile.topCategoryAccuracy ?? 0}%
-                </Text>
+            ) : (
+              <Text style={{ color: textSecondary, fontSize: 12, textAlign: 'center' }}>Sem dados de Quiz disponíveis.</Text>
+            )}
+
+            {/* Coding Info */}
+            <View style={{ height: 1, backgroundColor: isDark ? '#30363D' : '#E2E8F0', opacity: 0.5 }} />
+
+            {userProfile.topCodingCategory ? (
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: compact ? 10 : 12 }}>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: textSecondary, fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 4 }}>
+                    Quebra-Cabeça: Tema mais estudado
+                  </Text>
+                  <Text style={{ color: textPrimary, fontSize: 14, fontWeight: '800', letterSpacing: -0.3 }}>{userProfile.topCodingCategory}</Text>
+                </View>
+                <View style={{ alignItems: 'center', gap: 2 }}>
+                  <Text style={{ color: textSecondary, fontSize: 10 }}>Eficiência</Text>
+                  <Text
+                    style={{
+                      color:
+                        (userProfile.topCodingAccuracy ?? 0) >= 80
+                          ? '#10B981'
+                          : (userProfile.topCodingAccuracy ?? 0) >= 50
+                            ? '#F59E0B'
+                            : '#EF4444',
+                      fontSize: 16,
+                      fontWeight: '800',
+                    }}>
+                    {userProfile.topCodingAccuracy ?? 0}%
+                  </Text>
+                </View>
+                <View style={{ width: 1, height: 36, backgroundColor: isDark ? '#30363D' : '#E2E8F0' }} />
+                <View style={{ alignItems: 'center', gap: 2 }}>
+                  <Text style={{ color: textSecondary, fontSize: 10 }}>Tempo total</Text>
+                  <Text style={{ color: accentColor, fontSize: 14, fontWeight: '800' }}>
+                    {userProfile.topCodingAvgTimeMs ? `${(userProfile.topCodingAvgTimeMs / 1000).toFixed(0)}s` : '—'}
+                  </Text>
+                </View>
               </View>
-              <View style={{ width: 1, height: 36, backgroundColor: isDark ? '#30363D' : '#E2E8F0' }} />
-              <View style={{ alignItems: 'center', gap: 2 }}>
-                <Text style={{ color: textSecondary, fontSize: 10 }}>Tempo/q</Text>
-                <Text style={{ color: accentColor, fontSize: 14, fontWeight: '800' }}>
-                  {userProfile.topCategoryAvgTimeMs ? `${(userProfile.topCategoryAvgTimeMs / 1000).toFixed(1)}s` : '—'}
-                </Text>
-              </View>
-            </View>
-          ) : (
-            <Text style={{ color: textSecondary, fontSize: 12, textAlign: 'center' }}>Sem dados de categorias disponíveis.</Text>
-          )}
+            ) : (
+              <Text style={{ color: textSecondary, fontSize: 12, textAlign: 'center' }}>Sem dados de Quebra-Cabeça disponíveis.</Text>
+            )}
+          </View>
         </View>
       )}
     </Pressable>

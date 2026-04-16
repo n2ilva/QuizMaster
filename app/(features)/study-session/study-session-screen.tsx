@@ -11,6 +11,7 @@ import { QuizActionButton } from '@/components/quiz/action-button';
 import { QuizStatCard } from '@/components/quiz/stat-card';
 import { QUIZ_COLORS } from '@/constants/quiz-ui';
 import { useLayoutMode } from '@/hooks/use-layout-mode';
+import { useTopContentPadding } from '@/hooks/use-tab-content-padding';
 import { getNextPlanStep, parseStudyIndex, parseStudySequence } from '@/lib/study-flow';
 import {
   clearInProgressLesson,
@@ -148,6 +149,7 @@ export function StudySessionScreen() {
   const isDesktopLayout = layoutMode === 'desktop';
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const topPadding = useTopContentPadding();
 
   useEffect(() => {
     let cancelled = false;
@@ -433,7 +435,7 @@ export function StudySessionScreen() {
   }
 
   return (
-    <View className="flex-1 bg-white px-5 pt-6 dark:bg-[#151718]" style={isDesktopLayout ? { alignItems: 'center' } : undefined}>
+    <View className="flex-1 bg-white px-5 dark:bg-[#151718]" style={[isDesktopLayout ? { alignItems: 'center', paddingTop: 32 } : { paddingTop: topPadding }]}>
       <View style={[{ flex: 1 }, isDesktopLayout ? { width: '60%', alignSelf: 'center' } : undefined]}>
         {/* Custom header */}
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 12 }}>
@@ -443,12 +445,12 @@ export function StudySessionScreen() {
               width: 40,
               height: 40,
               borderRadius: 20,
-              backgroundColor: isDark ? '#1C1F24' : '#F1F5F9',
+              backgroundColor: '#1C1F24',
               alignItems: 'center',
               justifyContent: 'center',
-              opacity: pressed ? 0.6 : 1,
+              opacity: pressed ? 0.7 : 1,
             })}>
-            <MaterialIcons name="arrow-back" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
+            <MaterialIcons name="arrow-back" size={20} color="#ECEDEE" />
           </Pressable>
           <View style={{ flex: 1 }}>
             <Text style={{ fontSize: 18, fontWeight: '700', color: isDark ? '#ECEDEE' : '#11181C' }}>{contextLabel}</Text>

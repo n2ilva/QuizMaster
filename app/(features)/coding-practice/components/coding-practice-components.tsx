@@ -1,7 +1,7 @@
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
-import { Animated, Pressable, Text, TouchableOpacity, View, useColorScheme, useWindowDimensions } from 'react-native';
+import { Animated, Modal, Pressable, Text, TouchableOpacity, View, useColorScheme, useWindowDimensions, ScrollView } from 'react-native';
 import { DraxView } from 'react-native-drax';
 
 import {
@@ -265,6 +265,7 @@ export function ExerciseListCard({ exercise, language, onPress, progress }: Exer
 
   const isCompleted = progress?.completed;
   const bestTime = progress?.bestTime;
+  const bestMoves = progress?.bestMoves;
 
   const bg = isDark ? (isHovered ? '#22252A' : '#1C1F24') : (isHovered ? '#F8FAFC' : '#FFFFFF');
   const borderStatic = isDark ? '#30363D' : '#E2E8F0';
@@ -360,7 +361,28 @@ export function ExerciseListCard({ exercise, language, onPress, progress }: Exer
             >
               <MaterialIcons name="timer" size={12} color="#10B981" />
               <Text style={{ color: '#10B981', fontSize: 10, fontWeight: '800' }}>
-                Melhor: {bestTime}s
+                {bestTime}s
+              </Text>
+            </View>
+          )}
+
+          {bestMoves !== undefined && (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4,
+                paddingHorizontal: 8,
+                paddingVertical: 3,
+                borderRadius: 20,
+                backgroundColor: '#1E3A8A44',
+                borderWidth: 1,
+                borderColor: '#3B82F644',
+              }}
+            >
+              <MaterialIcons name="touch-app" size={12} color="#3B82F6" />
+              <Text style={{ color: '#3B82F6', fontSize: 10, fontWeight: '800' }}>
+                {bestMoves} movs
               </Text>
             </View>
           )}
@@ -403,20 +425,34 @@ type QuestionCardProps = {
   hintIndex: number;
   onShowHint: () => void;
   onHideHints?: () => void;
+  isHintsVisible?: boolean;
+  onToggleHints?: (visible: boolean) => void;
   progressPercent?: number;
   liveTimer?: number;
 };
 
-export function QuestionCard({ exercise, language, onBack, hintIndex, onShowHint, onHideHints, progressPercent = 0, liveTimer = 0 }: QuestionCardProps) {
+export function QuestionCard({
+  exercise,
+  language,
+  onBack,
+  hintIndex,
+  onShowHint,
+  onHideHints,
+  isHintsVisible = false,
+  onToggleHints,
+  progressPercent = 0,
+  liveTimer = 0
+}: QuestionCardProps) {
   const diff = DIFFICULTY_CONFIG[exercise.difficulty];
   const maxHints = exercise.hints?.length ?? 0;
+  const remainingHints = Math.max(0, maxHints - hintIndex);
   const clampedProgress = Math.min(100, Math.max(0, progressPercent));
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
   return (
     <View style={{ paddingHorizontal: 20, paddingBottom: 16 }}>
-      {/* Top bar: back + language badge */}
+      {/* Top bar: back + progress + hints */}
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 12 }}>
         <TouchableOpacity
           onPress={onBack}
@@ -439,30 +475,64 @@ export function QuestionCard({ exercise, language, onBack, hintIndex, onShowHint
 
         {/* Progress bar */}
         <View style={{ flex: 1, height: 8, borderRadius: 4, backgroundColor: isDark ? '#1A1D21' : '#E2E8F0', overflow: 'hidden' }}>
-          <View style={{ height: '100%', width: `${clampedProgress}%`, backgroundColor: language.accent, borderRadius: 4, transition: 'width 0.3s ease' } as any} />
+          <View style={{ height: '100%', width: `${clampedProgress}%`, backgroundColor: language.accent, borderRadius: 4 } as any} />
         </View>
 
-        {/* Hint button */}
-        <TouchableOpacity
-          onPress={onShowHint}
-          disabled={maxHints === 0 || hintIndex >= maxHints}
-          hitSlop={8}
-          activeOpacity={0.6}
-          style={{
-            width: 36,
-            height: 36,
-            borderRadius: 18,
-            backgroundColor: '#1C1600',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderStyle: 'solid',
-            borderWidth: 1,
-            borderColor: '#44300A',
-            opacity: maxHints === 0 || hintIndex >= maxHints ? 0.3 : 1,
-          }}
-        >
-          <MaterialIcons name="lightbulb-outline" size={18} color="#F59E0B" />
-        </TouchableOpacity>
+        {/* Combined Hint Button and Already Unlocked Dropdown Trigger */}
+        <View style={{ flexDirection: 'row', gap: 6 }}>
+          {/* Show the unlocked hints count / trigger View modal if we already have hints */}
+          {hintIndex > 0 && (
+            <TouchableOpacity
+              onPress={() => onToggleHints?.(true)}
+              hitSlop={8}
+              activeOpacity={0.6}
+              style={{
+                height: 36,
+                paddingHorizontal: 10,
+                borderRadius: 18,
+                backgroundColor: isDark ? '#1C1F24' : '#F8FAFC',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderWidth: 1.5,
+                borderColor: '#F59E0B44',
+              }}
+            >
+              <MaterialIcons name="lightbulb" size={16} color="#F59E0B" />
+              <Text style={{ color: '#F59E0B', fontSize: 12, fontWeight: '800', marginLeft: 4 }}>
+                {hintIndex}
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          {/* Unlock New Hint Button */}
+          <TouchableOpacity
+            onPress={onShowHint}
+            disabled={remainingHints === 0}
+            hitSlop={8}
+            activeOpacity={0.6}
+            style={{
+              height: 36,
+              paddingHorizontal: 12,
+              borderRadius: 18,
+              backgroundColor: '#1C1600',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderStyle: 'solid',
+              borderWidth: 1.5,
+              borderColor: remainingHints > 0 ? '#F59E0B' : '#44300A',
+              opacity: remainingHints === 0 ? 0.3 : 1,
+            }}
+          >
+            <MaterialIcons name="lightbulb-outline" size={18} color="#F59E0B" />
+            {remainingHints > 0 && (
+              <Text style={{ color: '#F59E0B', fontSize: 13, fontWeight: '800', marginLeft: 4 }}>
+                {remainingHints}
+              </Text>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Question text */}
@@ -498,53 +568,135 @@ export function QuestionCard({ exercise, language, onBack, hintIndex, onShowHint
         </View>
       </View>
 
-      {/* Hints Dropdown */}
-      {hintIndex > 0 && exercise.hints && (
-        <View
+      {/* Hints Modal */}
+      <Modal
+        visible={isHintsVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => onToggleHints?.(false)}
+      >
+        <Pressable
           style={{
-            marginTop: 12,
-            backgroundColor: '#1C1600',
-            borderRadius: 12,
-            borderWidth: 1,
-            borderColor: '#F59E0B44',
-            overflow: 'hidden',
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 20,
           }}
+          onPress={() => onToggleHints?.(false)}
         >
-          {/* Header */}
-          <View
+          <Pressable
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              backgroundColor: '#292000',
-              paddingHorizontal: 16,
-              paddingVertical: 10,
-              borderBottomWidth: 1,
-              borderBottomColor: '#F59E0B22',
+              width: '100%',
+              maxWidth: 400,
+              backgroundColor: isDark ? '#1C1F24' : '#FFFFFF',
+              borderRadius: 24,
+              overflow: 'hidden',
+              borderWidth: 1,
+              borderColor: isDark ? '#30363D' : '#E2E8F0',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 10 },
+              shadowOpacity: 0.3,
+              shadowRadius: 20,
+              elevation: 24,
             }}
+            onPress={(e) => e.stopPropagation()} // Prevent closing when clicking inside
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <MaterialIcons name="lightbulb" size={16} color="#F59E0B" />
-              <Text style={{ color: '#FCD34D', fontWeight: 'bold', fontSize: 13 }}>
-                {hintIndex === 1 ? '1 Dica desbloqueada' : `${hintIndex} Dicas desbloqueadas`}
-              </Text>
-            </View>
-            <TouchableOpacity onPress={onHideHints} hitSlop={12}>
-              <MaterialIcons name="close" size={18} color="#F59E0B" />
-            </TouchableOpacity>
-          </View>
-
-          {/* Hint content */}
-          <View style={{ padding: 12, gap: 10 }}>
-            {exercise.hints.slice(0, hintIndex).map((hint, i) => (
-              <View key={i} style={{ flexDirection: 'row', gap: 8 }}>
-                <Text style={{ color: '#F59E0B', fontSize: 13, fontWeight: 'bold' }}>{i + 1}.</Text>
-                <Text style={{ color: '#FCD34D', fontSize: 13, lineHeight: 19, flex: 1 }}>{hint}</Text>
+            {/* Header */}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                backgroundColor: isDark ? '#252930' : '#F8FAFC',
+                paddingHorizontal: 20,
+                paddingVertical: 16,
+                borderBottomWidth: 1,
+                borderBottomColor: isDark ? '#30363D' : '#E2E8F0',
+              }}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: '#F59E0B22', alignItems: 'center', justifyContent: 'center' }}>
+                  <MaterialIcons name="lightbulb" size={20} color="#F59E0B" />
+                </View>
+                <Text style={{ color: isDark ? '#ECEDEE' : '#11181C', fontWeight: '800', fontSize: 16 }}>
+                  Dicas do Exercício
+                </Text>
               </View>
-            ))}
-          </View>
-        </View>
-      )}
+              <TouchableOpacity
+                onPress={() => onToggleHints?.(false)}
+                hitSlop={12}
+                style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: isDark ? '#1A1D21' : '#E2E8F0', alignItems: 'center', justifyContent: 'center' }}
+              >
+                <MaterialIcons name="close" size={18} color={isDark ? '#9BA1A6' : '#64748B'} />
+              </TouchableOpacity>
+            </View>
+
+            {/* Hint content */}
+            <ScrollView
+              style={{ maxHeight: 400 }}
+              contentContainerStyle={{ padding: 20, gap: 16 }}
+            >
+              {exercise.hints && exercise.hints.slice(0, hintIndex).map((hint, i) => (
+                <View
+                  key={i}
+                  style={{
+                    flexDirection: 'row',
+                    gap: 12,
+                    backgroundColor: isDark ? '#16191D' : '#F1F5F9',
+                    padding: 14,
+                    borderRadius: 16,
+                    borderWidth: 1,
+                    borderColor: isDark ? '#2D3139' : '#E2E8F0',
+                  }}
+                >
+                  <View style={{ width: 24, height: 24, borderRadius: 12, backgroundColor: '#F59E0B22', alignItems: 'center', justifyContent: 'center', marginTop: 2 }}>
+                    <Text style={{ color: '#F59E0B', fontSize: 12, fontWeight: '900' }}>{i + 1}</Text>
+                  </View>
+                  <Text style={{ color: isDark ? '#ECEDEE' : '#334155', fontSize: 15, lineHeight: 22, flex: 1, fontWeight: '500' }}>
+                    {hint}
+                  </Text>
+                </View>
+              ))}
+              {hintIndex === 0 && (
+                <View style={{ alignItems: 'center', paddingVertical: 20 }}>
+                  <MaterialIcons name="lightbulb-outline" size={40} color={isDark ? '#2D3139' : '#CBD5E1'} />
+                  <Text style={{ color: isDark ? '#4B5563' : '#94A3B8', textAlign: 'center', marginTop: 12 }}>
+                    Nenhuma dica desbloqueada ainda.
+                  </Text>
+                </View>
+              )}
+            </ScrollView>
+
+            {/* Footer */}
+            <View style={{ padding: 16, borderTopWidth: 1, borderTopColor: isDark ? '#30363D' : '#E2E8F0', alignItems: 'center' }}>
+               {remainingHints > 0 ? (
+                 <TouchableOpacity
+                   onPress={onShowHint}
+                   style={{
+                     backgroundColor: '#F59E0B',
+                     paddingHorizontal: 20,
+                     paddingVertical: 12,
+                     borderRadius: 14,
+                     flexDirection: 'row',
+                     alignItems: 'center',
+                     gap: 8,
+                     width: '100%',
+                     justifyContent: 'center'
+                   }}
+                 >
+                   <MaterialIcons name="add-comment" size={18} color="#FFFFFF" />
+                   <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>Desbloquear nova dica ({remainingHints} restantes)</Text>
+                 </TouchableOpacity>
+               ) : (
+                 <Text style={{ color: isDark ? '#4B5563' : '#94A3B8', fontSize: 12, fontWeight: '600' }}>
+                   Todas as dicas foram desbloqueadas.
+                 </Text>
+               )}
+            </View>
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }

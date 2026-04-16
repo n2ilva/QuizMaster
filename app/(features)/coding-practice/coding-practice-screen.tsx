@@ -1,7 +1,7 @@
 import { Audio } from 'expo-av';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { ScrollView, Text, TouchableOpacity, View, Animated, useColorScheme, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -54,7 +54,21 @@ export function CodingPracticeScreen() {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
 
-  const [selectedLang, setSelectedLang] = useState<LanguageInfo>(LANGUAGES[0]);
+  const { lang: initialLangId } = useLocalSearchParams<{ lang: string }>();
+  const [selectedLang, setSelectedLang] = useState<LanguageInfo>(() => {
+    if (initialLangId) {
+      const found = LANGUAGES.find(l => l.id === initialLangId);
+      if (found) return found;
+    }
+    return LANGUAGES[0];
+  });
+
+  useEffect(() => {
+    if (initialLangId) {
+      const found = LANGUAGES.find(l => l.id === initialLangId);
+      if (found) setSelectedLang(found);
+    }
+  }, [initialLangId]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
   const [activeExercise, setActiveExercise] = useState<Exercise | null>(null);
@@ -72,6 +86,8 @@ export function CodingPracticeScreen() {
   const [isLoadingExercises, setIsLoadingExercises] = useState(true);
   const [attempts, setAttempts] = useState(0);
   const [liveTimer, setLiveTimer] = useState(0);
+  const [isHintsVisible, setIsHintsVisible] = useState(false);
+  const [moveCount, setMoveCount] = useState(0);
 
   // Load exercises from db / cache
   React.useEffect(() => {
@@ -142,7 +158,7 @@ export function CodingPracticeScreen() {
     setPool(newPool);
   }, []);
 
-  const playSound = async (type: 'concluido' | 'erro') => {
+  const playSound = useCallback(async (type: 'concluido' | 'erro') => {
     try {
       const source =
         type === 'concluido'
@@ -158,7 +174,7 @@ export function CodingPracticeScreen() {
     } catch (err) {
       console.log('Error playing sound', err);
     }
-  };
+  }, []);
 
   const exercisesForLang = useMemo(
     () => allExercises.filter((e) => e.language === (selectedLang.id as Language)),
@@ -211,6 +227,8 @@ export function CodingPracticeScreen() {
     initPool(ex);
     setIsCorrect(null);
     setHintIndex(0);
+    setIsHintsVisible(false);
+    setMoveCount(0);
     setStartTime(Date.now());
     setAttempts(0);
     setLiveTimer(0);
@@ -221,6 +239,8 @@ export function CodingPracticeScreen() {
     setPool([]);
     setIsCorrect(null);
     setHintIndex(0);
+    setIsHintsVisible(false);
+    setMoveCount(0);
     setStartTime(null);
     setFinished(false);
     await refreshProgress();
@@ -231,6 +251,8 @@ export function CodingPracticeScreen() {
     if (activeExercise) initPool(activeExercise);
     setIsCorrect(null);
     setHintIndex(0);
+    setIsHintsVisible(false);
+    setMoveCount(0);
     setStartTime(Date.now());
     setFinished(false);
     setAttempts(0);
@@ -243,6 +265,7 @@ export function CodingPracticeScreen() {
       const token = prevPool.find((p) => p.instanceId === instanceId);
       if (!token) return prevPool;
       setPlaced((prevPlaced) => [...prevPlaced, token]);
+      setMoveCount((m) => m + 1);
       return prevPool.filter((p) => p.instanceId !== instanceId);
     });
     setIsCorrect(null);
@@ -256,6 +279,7 @@ export function CodingPracticeScreen() {
       const without = [...prev.slice(0, fromIdx), ...prev.slice(fromIdx + 1)];
       const insertIdx = toIndex > fromIdx ? toIndex - 1 : toIndex;
       without.splice(Math.min(insertIdx, without.length), 0, item);
+      setMoveCount((m) => m + 1);
       return without;
     });
     setIsCorrect(null);
@@ -270,6 +294,7 @@ export function CodingPracticeScreen() {
         copy.splice(atIndex, 0, token);
         return copy;
       });
+      setMoveCount((m) => m + 1);
       return prevPool.filter((p) => p.instanceId !== instanceId);
     });
     setIsCorrect(null);
@@ -277,6 +302,7 @@ export function CodingPracticeScreen() {
 
   const handleAddNewline = useCallback(() => {
     setPlaced((prev) => [...prev, { instanceId: uid(), tokenId: 'sym_newline' }]);
+    setMoveCount((m) => m + 1);
     setIsCorrect(null);
   }, []);
 
@@ -288,6 +314,7 @@ export function CodingPracticeScreen() {
       if (token.tokenId !== 'sym_newline') {
         setPool((prevPool) => [...prevPool, token]);
       }
+      setMoveCount((m) => m + 1);
       return prev.filter((p) => p.instanceId !== instanceId);
     });
     setIsCorrect(null);
@@ -305,6 +332,7 @@ export function CodingPracticeScreen() {
       return [...prevPool, ...toReturn];
     });
     setPlaced([]);
+    setMoveCount((m) => m + 1);
     setIsCorrect(null);
   }, [placed]);
 
@@ -315,6 +343,7 @@ export function CodingPracticeScreen() {
       if (last.tokenId !== 'sym_newline') {
         setPool((prevPool) => [...prevPool, last]);
       }
+      setMoveCount((m) => m + 1);
       return prev.slice(0, -1);
     });
     setIsCorrect(null);
@@ -336,6 +365,8 @@ export function CodingPracticeScreen() {
       initPool(nextEx);
       setIsCorrect(null);
       setHintIndex(0);
+      setIsHintsVisible(false);
+      setMoveCount(0);
       setStartTime(Date.now());
       setFinished(false);
       setAttempts(0);
@@ -358,7 +389,7 @@ export function CodingPracticeScreen() {
       setElapsedTime(timeSecs);
       
       // Save global progress (sync to Firebase if logged in)
-      await CodingPracticeStore.saveResult(activeExercise.id, timeSecs, user?.id);
+      await CodingPracticeStore.saveResult(activeExercise.id, timeSecs, moveCount, user?.id);
       
       await playSound('concluido');
 
@@ -409,7 +440,10 @@ export function CodingPracticeScreen() {
   }, [
     activeExercise,
     placed,
+    moveCount,
     startTime,
+    user,
+    playSound,
     iconScale,
     iconOpacity,
     completionBgOpacity,
@@ -421,7 +455,10 @@ export function CodingPracticeScreen() {
 
   const handleShowHint = useCallback(() => {
     const max = activeExercise?.hints?.length ?? 0;
-    if (hintIndex < max) setHintIndex((h) => h + 1);
+    if (hintIndex < max) {
+      setHintIndex((h) => h + 1);
+    }
+    setIsHintsVisible(true);
   }, [hintIndex, activeExercise]);
 
   // ─────────────────────────────────────────────
@@ -438,6 +475,18 @@ export function CodingPracticeScreen() {
       const textMuted = isDark ? '#9BA1A6' : '#687076';
       const accentColor = '#22C55E';
 
+      const minElements = activeExercise.solution.filter(s => s !== 'sym_newline').length;
+      let performanceRating: string = "Excelente";
+      let ratingColor: string = QUIZ_COLORS.success;
+      
+      if (moveCount > minElements * 2) {
+        performanceRating = "Tente Melhorar";
+        ratingColor = QUIZ_COLORS.danger;
+      } else if (moveCount > minElements) {
+        performanceRating = "Bom";
+        ratingColor = QUIZ_COLORS.warning;
+      }
+
       return (
         <ScrollView
           style={{ flex: 1, backgroundColor: bg }}
@@ -453,13 +502,15 @@ export function CodingPracticeScreen() {
         >
           <View style={{ width: '100%', maxWidth: 420 }}>
             <View style={{ alignItems: 'center', marginBottom: 20 }}>
-              <View style={{ width: 100, height: 100, borderRadius: 50, borderWidth: 2, borderColor: `${accentColor}30`, backgroundColor: `${accentColor}0D`, alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-                <View style={{ width: 72, height: 72, borderRadius: 36, borderWidth: 2, borderColor: `${accentColor}50`, backgroundColor: `${accentColor}18`, alignItems: 'center', justifyContent: 'center' }}>
-                  <MaterialIcons name="emoji-events" size={38} color={accentColor} />
+              <View style={{ width: 100, height: 100, borderRadius: 50, borderWidth: 2, borderColor: `${ratingColor}30`, backgroundColor: `${ratingColor}0D`, alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                <View style={{ width: 72, height: 72, borderRadius: 36, borderWidth: 2, borderColor: `${ratingColor}50`, backgroundColor: `${ratingColor}18`, alignItems: 'center', justifyContent: 'center' }}>
+                  <MaterialIcons name="emoji-events" size={38} color={ratingColor} />
                 </View>
               </View>
 
-              <Text style={{ fontSize: 32, fontWeight: '800', color: accentColor, letterSpacing: -1, textAlign: 'center' }}>EXCELENTE!</Text>
+              <Text style={{ fontSize: 32, fontWeight: '800', color: ratingColor, letterSpacing: -1, textAlign: 'center' }}>
+                {performanceRating.toUpperCase()}!
+              </Text>
               <Text style={{ fontSize: 14, color: textMuted, marginTop: 6 }}>Exercício concluído com sucesso</Text>
             </View>
 
@@ -477,14 +528,15 @@ export function CodingPracticeScreen() {
                 align="center" 
               />
               <QuizStatCard 
-                label="precisão" 
-                value={attempts > 0 ? `${Math.round((1 / attempts) * 100)}%` : '100%'} 
-                icon="check-circle" 
-                accentColor={QUIZ_COLORS.success} 
-                backgroundColor="rgba(34,197,94,0.09)" 
-                borderColor="rgba(34,197,94,0.25)" 
-                valueColor={QUIZ_COLORS.success} 
-                subtitleColor={textMuted} 
+                label="movimentos" 
+                value={`${moveCount}/${minElements}`} 
+                subtitle={performanceRating}
+                icon="touch-app" 
+                accentColor={ratingColor} 
+                backgroundColor={`${ratingColor}0D`} 
+                borderColor={`${ratingColor}40`} 
+                valueColor={ratingColor} 
+                subtitleColor={ratingColor} 
                 style={{ flex: 1, padding: 12 }} 
                 align="center" 
               />
@@ -556,7 +608,9 @@ export function CodingPracticeScreen() {
                       onBack={handleBack}
                       hintIndex={hintIndex}
                       onShowHint={handleShowHint}
-                      onHideHints={() => setHintIndex(0)}
+                      isHintsVisible={isHintsVisible}
+                      onToggleHints={setIsHintsVisible}
+                      onHideHints={() => setIsHintsVisible(false)}
                       progressPercent={activeExercise.solution.length > 0
                         ? Math.round((placed.filter(p => p.tokenId !== 'sym_newline').length / activeExercise.solution.length) * 100)
                         : 0
@@ -629,7 +683,7 @@ export function CodingPracticeScreen() {
           {/* Header - Padrão Quiz/Categorias */}
           <View className="px-5 mb-4 mt-5 flex-row items-center">
             <TouchableOpacity 
-              onPress={() => router.push('/practice')} 
+              onPress={() => router.push('/(features)/(main)/practice')} 
               style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: isDark ? '#1C1F24' : '#F1F5F9', alignItems: 'center', justifyContent: 'center', marginRight: 16 }}
             >
               <MaterialIcons name="arrow-back" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
