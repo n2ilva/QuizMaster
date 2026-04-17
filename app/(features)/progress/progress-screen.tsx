@@ -1,6 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useFocusEffect } from '@react-navigation/native';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { ActivityIndicator, Alert, Platform, Pressable, ScrollView, Text, useColorScheme, useWindowDimensions, View } from 'react-native';
 import { router } from 'expo-router';
 
@@ -9,7 +9,7 @@ import { QUIZ_COLORS } from '@/constants/quiz-ui';
 import { useLayoutMode } from '@/hooks/use-layout-mode';
 import { useScreenSize } from '@/hooks/use-screen-size';
 import { useTabContentPadding, useTopContentPadding } from '@/hooks/use-tab-content-padding';
-import { fetchUserProgress, getScoreLevel, resetUserProgress, type CategoryProgress, type ScoreLevel } from '@/lib/api';
+import { fetchUserProgress, getScoreLevel, resetUserProgress, type CategoryProgress, type ScoreLevel, fetchDataCenterProgress, fetchQuickResponseProgress } from '@/lib/api';
 import { useAuth } from '@/providers/auth-provider';
 import { useData } from '@/providers/data-provider';
 
@@ -22,13 +22,13 @@ export function ProgressScreen() {
   const bottomPadding = useTabContentPadding();
   const topPadding = useTopContentPadding();
   const { user } = useAuth();
-  const { userProgress: cachedProgress, refreshUserProgress } = useData();
+  const { userProgress: cachedProgress, refreshUserProgress, dbStats: stats, trackCatalog } = useData();
   const layoutMode = useLayoutMode();
   const { isDesktop } = useScreenSize();
   const { width: windowWidth } = useWindowDimensions();
-  const categoryGridColumns = isDesktop ? (windowWidth >= 1500 ? 5 : 3) : 2;
+  const categoryGridColumns = layoutMode === 'desktop' ? (windowWidth >= 1500 ? 5 : 3) : 2;
   const categoryGridGap = 12;
-  const categoryItemWidth = isDesktop
+  const categoryItemWidth = layoutMode === 'desktop'
     ? (windowWidth - 344 - (categoryGridColumns - 1) * categoryGridGap) / categoryGridColumns
     : (windowWidth - 104 - (categoryGridColumns - 1) * categoryGridGap) / categoryGridColumns;
 
@@ -45,6 +45,9 @@ export function ProgressScreen() {
   const [streak, setStreak] = useState(cachedProgress?.streak ?? 0);
   const [categories, setCategories] = useState<CategoryProgress[]>(cachedProgress?.categories ?? []);
   const [codingLangProgress, setCodingLangProgress] = useState<any[]>([]);
+  const [incidentsStats, setIncidentsStats] = useState({ completed: 0, total: 0, slaRate: 0 });
+  const [dcStats, setDcStats] = useState({ completed: 0, total: 0, avgTime: 0, avgMoves: 0 });
+  const [quizStats, setQuizStats] = useState({ mastered: 0, total: 0, accuracy: 0 });
   const isFirstLoad = useRef(true);
 
   const totalCodingExercises = useMemo(() => {
@@ -58,7 +61,6 @@ export function ProgressScreen() {
       borderWidth: 1,
       borderColor: isDark ? '#30363D' : '#E6E8EB',
       overflow: 'hidden',
-      marginBottom: 24,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 4 },
       shadowOpacity: isDark ? 0.2 : 0.03,
@@ -125,6 +127,7 @@ export function ProgressScreen() {
       setScore(data.totalScore);
       setScoreLevel(getScoreLevel(data.totalScore));
 
+      // 2. Outros jogos
       const allEx = await CodingPracticeStore.getAllExercises();
       const cpProgress = await CodingPracticeStore.getProgress(user.id);
       
@@ -140,12 +143,39 @@ export function ProgressScreen() {
         };
       });
       setCodingLangProgress(langStats);
+
+      // 3. Incidentes & Data Center (Centralizado no API)
+      setIncidentsStats({ 
+        completed: data.extraStats?.incidents.completed ?? 0, 
+        total: data.extraStats?.incidents.total ?? 0, 
+        slaRate: data.extraStats?.incidents.slaRate ?? 0
+      });
+
+      setDcStats({ 
+        completed: data.extraStats?.datacenter.completed ?? 0, 
+        total: data.extraStats?.datacenter.total ?? 0,
+        avgTime: data.extraStats?.datacenter.avgTime ?? 0,
+        avgMoves: data.extraStats?.datacenter.avgMoves ?? 0
+      });
+
+      // 5. Quiz Summary
+      const catalogTotal = (trackCatalog || []).reduce((acc, t) => acc + (t.totalCards || 0), 0);
+      const qTotal = stats?.totalCards || catalogTotal || (data.categories || []).reduce((acc, c: any) => acc + (c.totalCards || 0), 0);
+      
+      const qMastered = (data.categories || []).reduce((acc, c) => acc + (c.uniqueQuestionsAnswered || 0), 0);
+      setQuizStats({ mastered: qMastered, total: qTotal, accuracy: qTotal > 0 ? (qMastered / qTotal) * 100 : 0 });
     } catch (e) {
       console.error('Error loading progress:', e);
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, stats, trackCatalog]);
+
+  useEffect(() => {
+    if (!isFirstLoad.current && (stats || trackCatalog.length > 0)) {
+      void loadProgress();
+    }
+  }, [stats, trackCatalog, loadProgress]);
 
   useFocusEffect(
     useCallback(() => {
@@ -200,53 +230,106 @@ export function ProgressScreen() {
             <ActivityIndicator size="large" color="#818CF8" />
           </View>
         ) : (
-          <>
-            <View style={{ flexDirection: 'row', gap: 16, marginBottom: 32 }}>
-              <ModernStatCard label="Quiz" value={totalLessons} subtitle="Concluídos" color={QUIZ_COLORS.primary} />
-              <ModernStatCard label="Quebra-Cabeça" value={totalCodingExercises} subtitle="Feitos" color="#818CF8" />
-              <ModernStatCard label="Pontuação" value={score} subtitle={`${scoreLevel} Ranking`} color="#FBBF24" />
-              <ModernStatCard label="Sequência" value={streak} subtitle="Dias" color="#F59E0B" />
+          <View style={{ gap: 24 }}>
+            <View style={{ flexDirection: 'row', gap: 16 }}>
+              <ModernStatCard label="Pontuação Total" value={score} subtitle={`${scoreLevel} Ranking`} color="#FBBF24" />
+              <ModernStatCard label="Sequência 🔥" value={streak} subtitle="Dias consecutivos" color="#F59E0B" />
             </View>
 
-            <ModernSection title="Progresso Quiz" subtitle="Categorias concluídas" icon="quiz" iconColor="#22C55E" count={categories.length}>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: categoryGridGap }}>
-                {categories.map((c) => (
-                  <View key={`${c.track}_${c.category}`} style={{ width: categoryItemWidth }}>
-                    <ProgressCategoryCard categoryProgress={c} />
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 16 }}>
+              {/* QUIZ */}
+              <View style={{ width: layoutMode === 'desktop' ? '49%' : '100%' }}>
+                <ModernSection title="Quiz de Certificação" subtitle="Consistência teórica" icon="school" iconColor="#38BDF8">
+                  <View style={{ paddingVertical: 10 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <Text style={{ color: textMuted }}>Conhecimento Dominado</Text>
+                      <Text style={{ color: textPrimary, fontWeight: '800' }}>{quizStats.mastered} / {quizStats.total}</Text>
+                    </View>
+                    <View style={{ height: 12, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 6, overflow: 'hidden', marginBottom: 16 }}>
+                      <View style={{ height: '100%', width: `${quizStats.total > 0 ? (quizStats.mastered / quizStats.total) * 100 : 0}%`, backgroundColor: '#38BDF8' }} />
+                    </View>
+                    <View style={{ flexDirection: 'row', gap: 20 }}>
+                      <View>
+                        <Text style={{ color: textMuted, fontSize: 11, textTransform: 'uppercase', fontWeight: '700' }}>Taxa de Domínio</Text>
+                        <Text style={{ color: textPrimary, fontSize: 18, fontWeight: '800' }}>{Math.round(quizStats.accuracy)}%</Text>
+                      </View>
+                    </View>
                   </View>
-                ))}
+                </ModernSection>
               </View>
-            </ModernSection>
 
-            <ModernSection title="Progresso Quebra-Cabeça" subtitle="Por linguagem" icon="extension" iconColor="#818CF8">
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 16 }}>
-                {codingLangProgress.filter(s => s.completed > 0).map((stat) => (
-                  <Pressable 
-                    key={stat.id} 
-                    onPress={() => router.push(`/coding-practice?lang=${stat.id}`)}
-                    style={({ pressed }) => ({ 
-                      width: categoryItemWidth, 
-                      backgroundColor: isDark ? (pressed ? '#22252A' : '#1C1F24') : (pressed ? '#F8FAFC' : '#FFFFFF'), 
-                      borderRadius: 16, 
-                      padding: 16, 
-                      borderWidth: 1, 
-                      borderColor: isDark ? '#30363D' : '#E2E8F0',
-                      opacity: pressed ? 0.9 : 1
-                    })}
-                  >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-                      <MaterialIcons name="extension" size={16} color={stat.percent === 100 ? "#22C55E" : "#818CF8"} />
-                      <Text style={{ color: textPrimary, fontSize: 14, fontWeight: '800', flex: 1 }}>{stat.label}</Text>
-                      <Text style={{ color: textPrimary, fontWeight: '900' }}>{Math.round(stat.percent)}%</Text>
+              {/* CODING */}
+              <View style={{ width: layoutMode === 'desktop' ? '49%' : '100%' }}>
+                <ModernSection title="Prática de Código" subtitle="Sintaxe e Lógica" icon="terminal" iconColor="#10B981">
+                  <View style={{ paddingVertical: 10 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <Text style={{ color: textMuted }}>Exercícios Concluídos</Text>
+                      <Text style={{ color: textPrimary, fontWeight: '800' }}>{totalCodingExercises} / {codingLangProgress.reduce((a, b) => a + b.total, 0)}</Text>
                     </View>
-                    <View style={{ height: 6, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 4, overflow: 'hidden' }}>
-                      <View style={{ height: '100%', width: `${stat.percent}%`, backgroundColor: stat.percent === 100 ? '#22C55E' : '#818CF8' }} />
+                    <View style={{ height: 12, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 6, overflow: 'hidden', marginBottom: 16 }}>
+                      <View style={{ height: '100%', width: `${codingLangProgress.reduce((a, b) => a + b.total, 0) > 0 ? (totalCodingExercises / codingLangProgress.reduce((a, b) => a + b.total, 0)) * 100 : 0}%`, backgroundColor: '#10B981' }} />
                     </View>
-                  </Pressable>
-                ))}
+                    <View style={{ flexDirection: 'row', gap: 20 }}>
+                      <View>
+                        <Text style={{ color: textMuted, fontSize: 11, textTransform: 'uppercase', fontWeight: '700' }}>Conclusão Geral</Text>
+                        <Text style={{ color: textPrimary, fontSize: 18, fontWeight: '800' }}>{Math.round((totalCodingExercises / (codingLangProgress.reduce((a, b) => a + b.total, 0) || 1)) * 100)}%</Text>
+                      </View>
+                    </View>
+                  </View>
+                </ModernSection>
               </View>
-            </ModernSection>
-          </>
+
+              {/* INCIDENTS */}
+              <View style={{ width: layoutMode === 'desktop' ? '49%' : '100%' }}>
+                <ModernSection title="Gestão de Incidentes" subtitle="Troubleshooting Real" icon="shield-checkmark" iconColor="#F43F5E">
+                  <View style={{ paddingVertical: 10 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <Text style={{ color: textMuted }}>Incidentes Resolvidos</Text>
+                      <Text style={{ color: textPrimary, fontWeight: '800' }}>{incidentsStats.completed} / {incidentsStats.total}</Text>
+                    </View>
+                    <View style={{ height: 12, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 6, overflow: 'hidden', marginBottom: 16 }}>
+                      <View style={{ height: '100%', width: `${incidentsStats.total > 0 ? (incidentsStats.completed / incidentsStats.total) * 100 : 0}%`, backgroundColor: '#F43F5E' }} />
+                    </View>
+                    <View style={{ flexDirection: 'row', gap: 24 }}>
+                      <View>
+                        <Text style={{ color: textMuted, fontSize: 11, textTransform: 'uppercase', fontWeight: '700' }}>SLA OK Rate</Text>
+                        <Text style={{ color: '#F43F5E', fontSize: 18, fontWeight: '800' }}>{Math.round(incidentsStats.slaRate)}%</Text>
+                      </View>
+                      <View>
+                        <Text style={{ color: textMuted, fontSize: 11, textTransform: 'uppercase', fontWeight: '700' }}>Qualidade</Text>
+                        <Text style={{ color: textPrimary, fontSize: 18, fontWeight: '800' }}>{incidentsStats.slaRate > 80 ? 'Excelente' : 'Bom'}</Text>
+                      </View>
+                    </View>
+                  </View>
+                </ModernSection>
+              </View>
+
+              {/* DATA CENTER */}
+              <View style={{ width: layoutMode === 'desktop' ? '49%' : '100%' }}>
+                <ModernSection title="Data Center Builder" subtitle="Infraestrutura Física" icon="server" iconColor="#8B5CF6">
+                  <View style={{ paddingVertical: 10 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <Text style={{ color: textMuted }}>Projetos Finalizados</Text>
+                      <Text style={{ color: textPrimary, fontWeight: '800' }}>{dcStats.completed} / {dcStats.total}</Text>
+                    </View>
+                    <View style={{ height: 12, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 6, overflow: 'hidden', marginBottom: 16 }}>
+                      <View style={{ height: '100%', width: `${dcStats.total > 0 ? (dcStats.completed / dcStats.total) * 100 : 0}%`, backgroundColor: '#8B5CF6' }} />
+                    </View>
+                    <View style={{ flexDirection: 'row', gap: 24 }}>
+                      <View>
+                        <Text style={{ color: textMuted, fontSize: 11, textTransform: 'uppercase', fontWeight: '700' }}>Tempo Médio</Text>
+                        <Text style={{ color: '#8B5CF6', fontSize: 18, fontWeight: '800' }}>{dcStats.avgTime}s</Text>
+                      </View>
+                      <View>
+                        <Text style={{ color: textMuted, fontSize: 11, textTransform: 'uppercase', fontWeight: '700' }}>Média Movimentos</Text>
+                        <Text style={{ color: textPrimary, fontSize: 18, fontWeight: '800' }}>{dcStats.avgMoves}</Text>
+                      </View>
+                    </View>
+                  </View>
+                </ModernSection>
+              </View>
+            </View>
+          </View>
         )}
       </ScrollView>
     );
@@ -264,54 +347,79 @@ export function ProgressScreen() {
       </View>
       
       {loading ? (
-        <ActivityIndicator style={{ marginTop: 40 }} color="#818CF8" />
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 100 }}>
+          <ActivityIndicator size="large" color="#818CF8" />
+        </View>
       ) : (
-        <>
-          <View style={{ gap: 12, marginTop: 24, marginBottom: 24 }}>
-            <View style={{ flexDirection: 'row', gap: 12 }}>
-              <ModernStatCard label="Quiz" value={totalLessons} color={QUIZ_COLORS.primary} />
-              <ModernStatCard label="Código" value={totalCodingExercises} color="#818CF8" />
-            </View>
-            <View style={{ flexDirection: 'row', gap: 12 }}>
-              <ModernStatCard label="Pontos" value={score} color="#FBBF24" />
-              <ModernStatCard label="🔥 Dias" value={streak} color="#F59E0B" />
-            </View>
+        <View style={{ gap: 16, marginTop: 16, paddingBottom: 40 }}>
+          {/* Dashboard Mobile */}
+          <View style={{ flexDirection: 'row', gap: 10 }}>
+            <ModernStatCard label="Pontos" value={score} color="#FBBF24" />
+            <ModernStatCard label="🔥 Dias" value={streak} color="#F59E0B" />
           </View>
 
-          <ModernSection title="Progresso Quiz" icon="quiz" iconColor="#22C55E">
-            {categories.map((c, i) => (
-              <View key={c.category}>
-                {i > 0 && <View style={{ height: 1, backgroundColor: isDark ? '#30363D' : '#F1F5F9', marginVertical: 12 }} />}
-                <ProgressCategoryCard categoryProgress={c} />
+          {/* QUIZ */}
+          <ModernSection title="Quiz de Certificação" icon="school" iconColor="#38BDF8">
+            <View style={{ paddingVertical: 4 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+                <Text style={{ color: textMuted, fontSize: 13 }}>Domínio Geral</Text>
+                <Text style={{ color: textPrimary, fontWeight: '700' }}>{Math.round(quizStats.accuracy)}%</Text>
               </View>
-            ))}
+              <View style={{ height: 8, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 4, overflow: 'hidden' }}>
+                <View style={{ height: '100%', width: `${quizStats.total > 0 ? (quizStats.mastered / quizStats.total) * 100 : 0}%`, backgroundColor: '#38BDF8' }} />
+              </View>
+              <Text style={{ color: textMuted, fontSize: 11, marginTop: 6 }}>{quizStats.mastered} de {quizStats.total} conceitos dominados</Text>
+            </View>
           </ModernSection>
 
-          <ModernSection title="Quebra-Cabeça" icon="extension" iconColor="#818CF8">
-            {codingLangProgress.filter(s => s.completed > 0).map((s, i) => (
-              <Pressable 
-                key={s.id} 
-                onPress={() => router.push(`/coding-practice?lang=${s.id}`)}
-                style={({ pressed }) => ({ 
-                  marginBottom: 12,
-                  opacity: pressed ? 0.6 : 1
-                })}
-              >
-                {i > 0 && <View style={{ height: 1, backgroundColor: isDark ? '#30363D' : '#F1F5F9', marginVertical: 12, opacity: 0.5 }} />}
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <MaterialIcons name="extension" size={14} color="#818CF8" />
-                    <Text style={{ color: textPrimary, fontWeight: '700' }}>{s.label}</Text>
-                  </View>
-                  <Text style={{ color: textPrimary }}>{Math.round(s.percent)}%</Text>
-                </View>
-                <View style={{ height: 6, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
-                  <View style={{ height: '100%', width: `${s.percent}%`, backgroundColor: s.percent === 100 ? '#22C55E' : '#818CF8' }} />
-                </View>
-              </Pressable>
-            ))}
+          {/* CODING */}
+          <ModernSection title="Prática de Código" icon="terminal" iconColor="#10B981">
+            <View style={{ paddingVertical: 4 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+                <Text style={{ color: textMuted, fontSize: 13 }}>Geral</Text>
+                <Text style={{ color: textPrimary, fontWeight: '700' }}>{Math.round((totalCodingExercises / (codingLangProgress.reduce((a, b) => a + b.total, 0) || 1)) * 100)}%</Text>
+              </View>
+              <View style={{ height: 8, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 4, overflow: 'hidden' }}>
+                <View style={{ height: '100%', width: `${(codingLangProgress.reduce((a, b) => a + b.total, 0) > 0 ? (totalCodingExercises / codingLangProgress.reduce((a, b) => a + b.total, 0)) * 100 : 0)}%`, backgroundColor: '#10B981' }} />
+              </View>
+              <Text style={{ color: textMuted, fontSize: 11, marginTop: 6 }}>{totalCodingExercises} de {codingLangProgress.reduce((a, b) => a + b.total, 0)} exercícios feitos</Text>
+            </View>
           </ModernSection>
-        </>
+
+          {/* INCIDENTS */}
+          <ModernSection title="Gestão de Incidentes" icon="shield-checkmark" iconColor="#F43F5E">
+            <View style={{ paddingVertical: 4 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+                <Text style={{ color: textMuted, fontSize: 13 }}>SLA OK Rate</Text>
+                <Text style={{ color: '#F43F5E', fontWeight: '800' }}>{Math.round(incidentsStats.slaRate)}%</Text>
+              </View>
+              <View style={{ height: 8, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 4, overflow: 'hidden' }}>
+                <View style={{ height: '100%', width: `${incidentsStats.total > 0 ? (incidentsStats.completed / incidentsStats.total) * 100 : 0}%`, backgroundColor: '#F43F5E' }} />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 }}>
+                <Text style={{ color: textMuted, fontSize: 11 }}>{incidentsStats.completed} de {incidentsStats.total} resolvidos</Text>
+                <Text style={{ color: textPrimary, fontSize: 11, fontWeight: '700' }}>{incidentsStats.slaRate > 80 ? 'Excelente' : 'Bom'}</Text>
+              </View>
+            </View>
+          </ModernSection>
+
+          {/* DATA CENTER */}
+          <ModernSection title="Data Center Builder" icon="server" iconColor="#8B5CF6">
+            <View style={{ paddingVertical: 4 }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+                <Text style={{ color: textMuted, fontSize: 13 }}>Eficiência</Text>
+                <Text style={{ color: '#8B5CF6', fontWeight: '800' }}>{Math.round(dcStats.avgTime)}s avg</Text>
+              </View>
+              <View style={{ height: 8, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 4, overflow: 'hidden' }}>
+                <View style={{ height: '100%', width: `${dcStats.total > 0 ? (dcStats.completed / dcStats.total) * 100 : 0}%`, backgroundColor: '#8B5CF6' }} />
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 }}>
+                <Text style={{ color: textMuted, fontSize: 11 }}>{dcStats.completed} de {dcStats.total} projetos</Text>
+                <Text style={{ color: textPrimary, fontSize: 11, fontWeight: '700' }}>{dcStats.avgMoves} moves/avg</Text>
+              </View>
+            </View>
+          </ModernSection>
+        </View>
       )}
     </ScrollView>
   );

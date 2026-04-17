@@ -16,6 +16,10 @@ import { cacheInvalidatePrefix, fetchWithCache, USER_TTL } from "@/lib/cache";
 import { db } from "@/lib/firebase";
 import { buildDifficultyProgress, resolveActiveDifficulty } from "./cards";
 import { fetchCodingPracticeProgress, fetchCodingExercises } from "./coding-practice";
+import { fetchQuickResponseProgress } from "./quick-response";
+import { fetchDataCenterProgress } from "./datacenter";
+const SupportData = require('../../app/(features)/coding-practice/Data/suportetecnico.json');
+const DataCenterData = require('../../app/(features)/coding-practice/Data/datacenterbuild.json');
 import { getTotalCardsForCategory } from "./catalog";
 import type {
     CardHistory,
@@ -189,11 +193,13 @@ async function _fetchUserProgressFromServer(
   const inProgressRef = collection(db, "users", uid, "inProgressLessons");
   const lessonsQuery = query(lessonsRef);
 
-  const [lessonsSnapshot, inProgressSnapshot, codingResults, allExercises] = await Promise.all([
+  const [lessonsSnapshot, inProgressSnapshot, codingResults, allExercises, quickProgress, dcProgress] = await Promise.all([
     getDocs(lessonsQuery),
     getDocs(inProgressRef),
     fetchCodingPracticeProgress(uid),
-    fetchCodingExercises()
+    fetchCodingExercises(),
+    fetchQuickResponseProgress(uid),
+    fetchDataCenterProgress(uid)
   ]);
 
   const uniqueSeenByCategory = await getUniqueSeenQuestionsByCategory(uid);
@@ -212,6 +218,7 @@ async function _fetchUserProgressFromServer(
   const hasAnyCodingResult = Object.keys(codingResults).length > 0;
 
   if (lessons.length === 0 && inProgressLessons.length === 0 && !hasAnyCodingResult) {
+    // Mesmo sem progresso, queremos os totais dos outros jogos se possível
     return {
       accuracyPercent: 0,
       avgTimeMs: 0,
@@ -219,6 +226,19 @@ async function _fetchUserProgressFromServer(
       totalScore: 0,
       streak: 0,
       categories: [],
+      extraStats: {
+        incidents: { 
+          completed: 0, 
+          total: (SupportData.categories || []).reduce((acc: any, cat: any) => acc + (cat.exercises || []).length, 0),
+          slaRate: 0
+        },
+        datacenter: { 
+          completed: 0, 
+          total: (DataCenterData.levels || DataCenterData.default?.levels || []).length,
+          avgTime: 0,
+          avgMoves: 0
+        }
+      }
     };
   }
 
@@ -400,6 +420,25 @@ async function _fetchUserProgressFromServer(
     totalScore: finalScore,
     streak: calculateStreak(lessons),
     categories,
+    extraStats: {
+      incidents: {
+        completed: Object.keys(quickProgress).length,
+        total: (SupportData.categories || []).reduce((acc: any, cat: any) => acc + (cat.exercises || []).length, 0),
+        slaRate: Object.keys(quickProgress).length > 0 
+          ? (Object.values(quickProgress).filter((e: any) => e.withinSLA).length / Object.keys(quickProgress).length) * 100 
+          : 0
+      },
+      datacenter: {
+        completed: Object.keys(dcProgress).length,
+        total: (DataCenterData.levels || DataCenterData.default?.levels || []).length,
+        avgTime: Object.keys(dcProgress).length > 0 
+          ? Object.values(dcProgress).reduce((acc: any, curr: any) => acc + curr.bestTime, 0) / Object.keys(dcProgress).length 
+          : 0,
+        avgMoves: Object.keys(dcProgress).length > 0 
+          ? Object.values(dcProgress).reduce((acc: any, curr: any) => acc + curr.bestMoves, 0) / Object.keys(dcProgress).length 
+          : 0
+      }
+    }
   };
 }
 

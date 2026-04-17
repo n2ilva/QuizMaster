@@ -6,19 +6,18 @@ export type HomeFeatureItem = {
 };
 
 export const HOME_FEATURES: HomeFeatureItem[] = [
-  {
-    icon: "auto-awesome",
-    text: "Crie um planejamento de estudos personalizado",
-  },
-  { icon: "extension", text: "Monte código arrastando peças como quebra-cabeça" },
-  { icon: "menu-book", text: "Glossário interativo com termos técnicos" },
-  { icon: "lightbulb", text: "Explicações detalhadas e exemplos práticos" },
-  { icon: "emoji-events", text: "Medalhas: Bronze, Prata, Ouro e Diamante" },
-  { icon: "leaderboard", text: "Ranking comunitário por nível de medalha" },
-  { icon: "speed", text: "Pontuação por acertos e velocidade de resposta" },
-  { icon: "timer", text: "Temporizador por questão em tempo real" },
-  { icon: "code", text: "Exercícios de código com drag-and-drop interativo" },
-  { icon: "play-circle-filled", text: "Retome lições de onde parou" },
-  { icon: "bar-chart", text: "Progresso detalhado por categoria e nível" },
-  { icon: "auto-awesome", text: "Repetição espaçada adaptativa (SRS)" },
+  { icon: "school", text: "Quizzes técnicos com repetição espaçada" },
+  { icon: "xml", text: "Prática de Código: monte blocos de sintaxe interativos" },
+  { icon: "shield-search", text: "Gestão de Incidentes: resolva chamados sob pressão" },
+  { icon: "server-network", text: "Data Center Builder: simule o cabeamento de racks reais" },
+  { icon: "book-open-variant", text: "Glossário interativo com termos técnicos" },
+  { icon: "lightbulb-on", text: "Explicações detalhadas e exemplos práticos" },
+  { icon: "trophy-variant", text: "Medalhas: Bronze, Prata, Ouro e Diamante" },
+  { icon: "chart-bell-curve", text: "Ranking comunitário por nível de medalha" },
+  { icon: "lightning-bolt", text: "Pontuação por acertos e velocidade de resposta" },
+  { icon: "timer-outline", text: "Temporizador por questão em tempo real" },
+  { icon: "code-json", text: "Exercícios de código com drag-and-drop interativo" },
+  { icon: "restart", text: "Retome lições de onde parou" },
+  { icon: "google-analytics", text: "Progresso detalhado por categoria e nível" },
+  { icon: "brain", text: "Repetição espaçada adaptativa (SRS)" },
 ];

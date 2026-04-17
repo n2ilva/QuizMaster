@@ -288,6 +288,7 @@ export function DataCenterBuilderScreen() {
   const [showCableMenu, setShowCableMenu] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [showSuccessTransition, setShowSuccessTransition] = useState(false);
+  const [levelFilter, setLevelFilter] = useState<'TODOS' | 'EASY' | 'MEDIUM' | 'HARD'>('TODOS');
   const successScale = useRef(new Animated.Value(0)).current;
   const successOpacity = useRef(new Animated.Value(0)).current;
   
@@ -531,9 +532,32 @@ export function DataCenterBuilderScreen() {
         <Text style={[styles.title, { color: textPrimary }]}>{data.game.name}</Text>
         <Text style={[styles.subtitle, { color: textMuted }]}>Simulador de montagem e cabeamento estruturado.</Text>
       </View>
-
+      
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 24 }} contentContainerStyle={{ gap: 8 }}>
+        {['TODOS', 'EASY', 'MEDIUM', 'HARD'].map((filter) => {
+          const isActive = levelFilter === filter;
+          const filterColor = filter === 'EASY' ? '#22C55E' : filter === 'MEDIUM' ? '#F59E0B' : filter === 'HARD' ? '#EF4444' : '#3B82F6';
+          return (
+            <TouchableOpacity 
+              key={filter} 
+              onPress={() => setLevelFilter(filter as any)}
+              style={{
+                paddingHorizontal: 16,
+                paddingVertical: 10,
+                borderRadius: 14,
+                backgroundColor: isActive ? filterColor : surfaceColor,
+                borderWidth: 1.5,
+                borderColor: isActive ? filterColor : borderColor,
+              }}
+            >
+              <Text style={{ color: isActive ? '#FFFFFF' : textMuted, fontWeight: '800', fontSize: 13 }}>{filter}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+      
       <View style={styles.levelGrid}>
-        {data.levels.map(lvl => {
+        {data.levels.filter(lvl => levelFilter === 'TODOS' || lvl.difficulty.toUpperCase() === levelFilter).map(lvl => {
           const isDone = completedLevels.has(lvl.id);
           return (
             <TouchableOpacity 

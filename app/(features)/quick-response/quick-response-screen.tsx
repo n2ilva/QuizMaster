@@ -50,6 +50,7 @@ export function QuickResponseScreen() {
   const [currentAttempts, setCurrentAttempts] = useState(0);
   const [isSyncing, setIsSyncing] = useState(false);
   const [showSuccessTransition, setShowSuccessTransition] = useState(false);
+  const [priorityFilter, setPriorityFilter] = useState<'TODOS' | 'BAIXA' | 'URGENTE' | 'CRÍTICA'>('TODOS');
   const successScale = useRef(new Animated.Value(0)).current;
   const successOpacity = useRef(new Animated.Value(0)).current;
 
@@ -259,8 +260,34 @@ export function QuickResponseScreen() {
         <Text style={{ fontSize: 12, fontWeight: '800', color: selectedCategory?.color, textTransform: 'uppercase', letterSpacing: 1 }}>{selectedCategory?.name}</Text>
         <Text style={{ fontSize: 24, fontWeight: '800', color: textPrimary, marginTop: 4, letterSpacing: -0.5 }}>Selecione um Incidente</Text>
       </View>
+
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }} contentContainerStyle={{ gap: 8 }}>
+        {['TODOS', 'BAIXA', 'URGENTE', 'CRÍTICA'].map((filter) => {
+          const isActive = priorityFilter === filter;
+          const filterColor = filter === 'BAIXA' ? '#22C55E' : filter === 'URGENTE' ? '#F59E0B' : filter === 'CRÍTICA' ? '#EF4444' : selectedCategory?.color;
+          return (
+            <TouchableOpacity 
+              key={filter} 
+              onPress={() => setPriorityFilter(filter as any)}
+              style={{
+                paddingHorizontal: 16,
+                paddingVertical: 8,
+                borderRadius: 12,
+                backgroundColor: isActive ? filterColor : surfaceColor,
+                borderWidth: 1.5,
+                borderColor: isActive ? filterColor : borderColor,
+              }}
+            >
+              <Text style={{ color: isActive ? '#FFFFFF' : textMuted, fontWeight: '800', fontSize: 12 }}>{filter}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+
       <View style={{ gap: 12 }}>
-        {selectedCategory?.exercises.map((ex, index) => {
+        {selectedCategory?.exercises
+          .filter(ex => priorityFilter === 'TODOS' || ex.level.toUpperCase() === priorityFilter)
+          .map((ex, index) => {
           const stats = answeredStats[ex.id];
           const isAnswered = !!stats;
           return (

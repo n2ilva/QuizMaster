@@ -186,10 +186,15 @@ export function CodingPracticeScreen() {
   }, [exercisesForLang]);
 
   const categoryCounts = useMemo(() => {
-    const counts = new Map<string, number>();
-    exercisesForLang.forEach(e => counts.set(e.exerciseType, (counts.get(e.exerciseType) || 0) + 1));
+    const counts = new Map<string, { total: number; completed: number }>();
+    categories.forEach(cat => {
+      const exercises = exercisesForLang.filter(e => e.exerciseType === cat);
+      const total = exercises.length;
+      const completed = exercises.filter(e => userProgress[e.id]?.completed).length;
+      counts.set(cat, { total, completed });
+    });
     return counts;
-  }, [exercisesForLang]);
+  }, [exercisesForLang, categories, userProgress]);
 
   const exercisesForCategory = useMemo(() => {
     return exercisesForLang.filter((e) => e.exerciseType === selectedCategory);
@@ -730,7 +735,8 @@ export function CodingPracticeScreen() {
                     <CategoryGridCard
                       key={cat}
                       categoryName={cat}
-                      count={categoryCounts.get(cat) || 0}
+                      count={categoryCounts.get(cat)?.total || 0}
+                      completedCount={categoryCounts.get(cat)?.completed || 0}
                       onPress={() => setSelectedCategory(cat)}
                     />
                   );

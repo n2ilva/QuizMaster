@@ -167,10 +167,11 @@ export function LanguageSelector({ languages, selected, onSelect }: LanguageSele
 type CategoryGridCardProps = {
   categoryName: string;
   count: number;
+  completedCount?: number;
   onPress: () => void;
 };
 
-export function CategoryGridCard({ categoryName, count, onPress }: CategoryGridCardProps) {
+export function CategoryGridCard({ categoryName, count, completedCount = 0, onPress }: CategoryGridCardProps) {
   const iconName = EXERCISE_TYPE_ICONS[categoryName as ExerciseType] ?? 'extension';
   const colorTheme = CATEGORY_COLORS[categoryName] ?? '#3B82F6';
   
@@ -228,7 +229,7 @@ export function CategoryGridCard({ categoryName, count, onPress }: CategoryGridC
           borderColor: isDark ? `${colorTheme}30` : `${colorTheme}20`,
         }}
       >
-        <Text style={{ color: colorTheme, fontSize: 11, fontWeight: '800' }}>{count}</Text>
+        <Text style={{ color: colorTheme, fontSize: 11, fontWeight: '800' }}>{completedCount}/{count}</Text>
       </View>
 
       <View style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: isDark ? `${colorTheme}15` : `${colorTheme}10`, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: isDark ? `${colorTheme}30` : `${colorTheme}20` }}>

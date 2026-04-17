@@ -64,6 +64,10 @@ export type ProgressSummary = {
   totalScore: number;
   streak: number;
   categories: CategoryProgress[];
+  extraStats?: {
+    incidents: { completed: number; total: number };
+    datacenter: { completed: number; total: number };
+  };
 };
 
 /** User's summary level for display and community ranking */

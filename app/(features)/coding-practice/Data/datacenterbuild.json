@@ -26,9 +26,9 @@
         { "from": "switch.lan1", "to": "server.eth0", "cable": "cat6" }
       ],
       "rules": [
-        "Internet must start from telecom",
-        "Router must be before switch",
-        "Server must connect to switch"
+        "A Internet deve começar pelo telecom (Modem)",
+        "O Roteador deve estar conectado antes do Switch",
+        "O Servidor deve se conectar ao Switch"
       ]
     },
     {
@@ -65,7 +65,7 @@
         { "from": "switch.lan1", "to": "server.eth0", "cable": "cat6" }
       ],
       "rules": [
-        "Firewall must be between telecom and network"
+        "O Firewall deve estar posicionado entre o telecom e a rede local"
       ]
     },
     {
@@ -128,9 +128,9 @@
         { "from": "core_switch.lan5", "to": "camera.eth0", "cable": "cat6" }
       ],
       "rules": [
-        "Correct cable type must be used",
-        "Fiber required for backbone",
-        "All devices must be reachable from core"
+        "O tipo correto de cabo deve ser utilizado para cada conexão",
+        "Cabo de fibra ótica é obrigatório para o backbone",
+        "Todos os dispositivos devem estar acessíveis a partir do Core Switch"
       ]
     },
 
@@ -150,8 +150,8 @@
         { "from": "switch_managed.lan2", "to": "camera.eth0", "cable": "cat6" }
       ],
       "rules": [
-        "Devices must be in different VLANs",
-        "Server VLAN must not access camera VLAN directly"
+        "Os dispositivos devem ser segmentados em VLANs diferentes",
+        "A VLAN do Servidor não deve ter acesso direto à VLAN de Câmeras"
       ]
     },
     {
@@ -167,8 +167,8 @@
         { "from": "switch_core.uplink2", "to": "server.eth1", "cable": "cat6a" }
       ],
       "rules": [
-        "Both links must be active",
-        "Aggregation required for full bandwidth"
+        "Ambos os links físicos devem estar ativos",
+        "A agregação (LACP) é necessária para atingir a largura de banda total"
       ]
     },
     {
@@ -185,8 +185,8 @@
         { "from": "switch2.lan1", "to": "server.eth1", "cable": "cat6" }
       ],
       "rules": [
-        "Server must stay online if one switch fails",
-        "Connections must be redundant"
+        "O servidor deve permanecer online mesmo se um dos switches falhar",
+        "As conexões físicas devem ser redundantes"
       ]
     },
     {
@@ -205,8 +205,8 @@
         { "from": "load_balancer.out2", "to": "server2.eth0", "cable": "cat6" }
       ],
       "rules": [
-        "Traffic must be distributed",
-        "Both servers must be reachable"
+        "O tráfego de rede deve ser distribuído entre os nós",
+        "Ambos os servidores de destino devem estar acessíveis"
       ]
     },
     {
@@ -223,8 +223,8 @@
         { "from": "distribution_switch.lan1", "to": "server.eth0", "cable": "cat6a" }
       ],
       "rules": [
-        "Fiber must be used in backbone",
-        "Copper not allowed for core links"
+        "Fibra ótica deve ser obrigatoriamente usada no backbone",
+        "Cabos de cobre não são permitidos para links de infraestrutura core"
       ]
     },
     {
@@ -246,9 +246,9 @@
         { "from": "core_switch.lan2", "to": "server_cluster.eth1", "cable": "cat6a" }
       ],
       "rules": [
-        "Dual ISP required",
-        "Failover must be possible",
-        "Cluster must have redundancy"
+        "Conexão redundante com dois ISPs é obrigatória",
+        "O sistema de failover deve estar funcional",
+        "O cluster de servidores deve possuir redundância total"
       ]
     }
   ]

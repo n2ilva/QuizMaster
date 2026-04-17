@@ -63,7 +63,7 @@ export function PracticeHubScreen() {
               </View>
               <View style={{ flex: 1, paddingTop: 4 }}>
                 <Text style={{ fontSize: 20, fontWeight: '800', color: isDark ? '#ECEDEE' : '#11181C', marginBottom: 6, letterSpacing: -0.5 }}>
-                  Quebra-Cabeça
+                  Prática de Código
                 </Text>
                 <Text style={{ fontSize: 14, lineHeight: 22, color: isDark ? '#9BA1A6' : '#687076' }}>
                   Monte códigos como quebra-cabeças.
