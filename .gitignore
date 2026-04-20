@@ -38,11 +38,11 @@ server/.env
 *.tsbuildinfo
 *.tgz
 
-# data (JSON card banks are generated / too large to track)
+# data (JSON card banks are now tracked as they are required for build/app logic)
 data/cards/
 data/cards/glossary/
-data/data-center/
-data/gestaodeincidentes/
+# data/data-center/
+# data/gestaodeincidentes/
 
 # generated native folders
 /ios

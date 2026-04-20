@@ -38,8 +38,20 @@ import type {
 // `fetchDataCenterCatalog` / `fetchQuickResponseCatalog`. Aqui mantemos um
 // snapshot do JSON local apenas para obter `total` sem precisar aguardar
 // uma leitura assíncrona extra dentro do cálculo de `ProgressSummary`.
-const SupportData = require("../../data/gestaodeincidentes/suportetecnico.json");
-const DataCenterData = require("../../data/data-center/datacenterbuild.json");
+let SupportData: any = { categories: [] };
+let DataCenterData: any = { levels: [] };
+
+try {
+  SupportData = require("../../data/gestaodeincidentes/suportetecnico.json");
+} catch (e) {
+  console.warn("Could not load suportetecnico.json snapshot:", e);
+}
+
+try {
+  DataCenterData = require("../../data/data-center/datacenterbuild.json");
+} catch (e) {
+  console.warn("Could not load datacenterbuild.json snapshot:", e);
+}
 
 // ---------------------------------------------------------------------------
 // Scoring helpers (also exported for use in community module)

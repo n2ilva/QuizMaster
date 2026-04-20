@@ -1,0 +1,3181 @@
+{
+  "game": "Gestão de Incidentes - Troubleshooting",
+  "version": "3.0",
+  "categories": [
+    {
+      "id": "suporte_tecnico",
+      "name": "Suporte Técnico",
+      "description": "Selecione as ações corretas para diagnosticar e resolver o incidente de N1/N2.",
+      "color": "#00d4ff",
+      "exercises": [
+        {
+          "id": "st_facil_01",
+          "level": "Baixa",
+          "alert": "Usuário relata que o Outlook fica pedindo senha repetidamente, mesmo ele digitando a senha correta.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Limpar credenciais no Gerenciador de Credenciais do Windows",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Reinstalar o pacote Office",
+              "is_correct": false,
+              "feedback": "Reinstalar o Office inteiro demora muito e não resolve problemas de token de autenticação cacheado."
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se a conta está bloqueada no Active Directory / M365",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Recriar o perfil de e-mail no painel de controle",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Trocar o cabo de rede",
+              "is_correct": false,
+              "feedback": "Se fosse falta de rede, o Outlook indicaria 'Desconectado', não ficaria em loop de senha."
+            }
+          ],
+          "success_message": "Correto! Loops de senha no Outlook geralmente são causados por tokens corrompidos no Windows ou conta bloqueada no AD."
+        },
+        {
+          "id": "st_facil_02",
+          "level": "Baixa",
+          "alert": "Usuário não consegue acessar a pasta de rede mapeada (Z:). Outros usuários do setor acessam normalmente.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Reiniciar o File Server",
+              "is_correct": false,
+              "feedback": "Se outros usuários acessam, o servidor está online. Reiniciar derrubaria a empresa toda por causa de um usuário."
+            },
+            {
+              "id": "a2",
+              "text": "Pingar o IP/Nome do File Server",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar as permissões (NTFS/Share) do usuário específico",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Rodar gpupdate /force",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Formatar o PC do usuário",
+              "is_correct": false,
+              "feedback": "Ação totalmente destrutiva para um simples problema de mapeamento ou GPO."
+            }
+          ],
+          "success_message": "Exato! Validar conectividade, atualizar políticas de grupo (GPO) e checar permissões resolvem 99% desses casos."
+        },
+        {
+          "id": "st_medio_01",
+          "level": "Urgente",
+          "alert": "Computador muito lento após uma atualização do Windows. O disco (SSD) está em 100% de uso no Gerenciador de Tarefas.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Desfragmentar o SSD",
+              "is_correct": false,
+              "feedback": "Não se desfragmenta SSDs. Isso reduz a vida útil e não resolve o problema de I/O em 100%."
+            },
+            {
+              "id": "a2",
+              "text": "Analisar processos ofensores (SysMain, Windows Update, Antivírus)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Pausar atualizações em segundo plano temporariamente",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Aumentar a memória RAM",
+              "is_correct": false,
+              "feedback": "O gargalo reportado é de Disco (I/O), não de RAM."
+            },
+            {
+              "id": "a5",
+              "text": "Executar sfc /scannow para checar integridade do sistema",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Boa! Gargalo de I/O após updates quase sempre envolve o SysMain (Superfetch) tentando indexar, ou arquivos de sistema corrompidos."
+        },
+        {
+          "id": "st_medio_02",
+          "level": "Urgente",
+          "alert": "Usuário trabalha via VPN em home office. A VPN conecta, mas ele não consegue abrir a intranet ou dar ping nos servidores internos.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Pedir para o usuário reiniciar o modem da casa dele",
+              "is_correct": false,
+              "feedback": "A VPN conectou, logo a internet dele funciona. O problema é de roteamento interno da VPN."
+            },
+            {
+              "id": "a2",
+              "text": "Verificar se há conflito de IP (ex: rede de casa 192.168.1.x batendo com a rede da empresa)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Checar tabela de roteamento local (route print)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Desativar o firewall da empresa",
+              "is_correct": false,
+              "feedback": "Jamais desative o firewall corporativo para resolver acesso de um único endpoint remoto."
+            },
+            {
+              "id": "a5",
+              "text": "Verificar configurações de DNS do adaptador da VPN",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Perfeito! Conflito de sub-redes entre a LAN do usuário e a LAN corporativa é o maior causador de falha de split-tunneling em VPNs."
+        },
+        {
+          "id": "st_dificil_01",
+          "level": "Crítica",
+          "alert": "15 laptops da empresa amanheceram com Tela Azul (BSOD - INACCESSIBLE_BOOT_DEVICE) após o patch tuesday da Microsoft. BitLocker está ativado.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Formatar os 15 laptops",
+              "is_correct": false,
+              "feedback": "Péssima prática. Causa perda de dados local e desperdício massivo de tempo do suporte."
+            },
+            {
+              "id": "a2",
+              "text": "Pegar as chaves de recuperação do BitLocker no AD/Entra ID",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Acessar o WinRE (Ambiente de Recuperação)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Fazer rollback do pacote de atualização via linha de comando (dism /image)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Trocar os SSDs por suspeita de lote defeituoso",
+              "is_correct": false,
+              "feedback": "Um lote queimar exatamente após o update do Windows é improvável. É uma falha lógica de driver/update."
+            }
+          ],
+          "success_message": "Excelente resposta a incidente! Sem a chave do BitLocker você não acessa o disco no WinRE para remover o patch defeituoso."
+        },
+        {
+          "id": "st_dificil_02",
+          "level": "Crítica",
+          "alert": "Diretor viajou para a China e relata que o Teams, Outlook e portal da empresa estão bloqueados na rede do hotel, mas sites locais abrem.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Alterar o DNS do PC dele para 8.8.8.8",
+              "is_correct": false,
+              "feedback": "O 'Great Firewall' chinês intercepta e bloqueia DNS públicos do Google. Não vai funcionar."
+            },
+            {
+              "id": "a2",
+              "text": "Instruir uso de VPN corporativa com protocolo ofuscado (ex: SSTP ou OpenVPN via TCP 443)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Reinstalar o Teams",
+              "is_correct": false,
+              "feedback": "Problema claro de bloqueio de infraestrutura de telecomunicações do país (restrição geográfica), não do aplicativo local."
+            },
+            {
+              "id": "a4",
+              "text": "Acionar N3/Redes para verificar logs no firewall de borda da empresa e validar chegada da conexão VPN",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Comprar um novo notebook na China para ele",
+              "is_correct": false,
+              "feedback": "Gastos absurdos não resolvem bloqueios governamentais de tráfego de rede."
+            }
+          ],
+          "success_message": "Mandou bem! Bloqueios por DPI (Deep Packet Inspection) exigem túneis VPN criptografados passando por portas comuns como 443 para burlar a restrição externa."
+        },
+        {
+          "id": "st_facil_03",
+          "level": "Baixa",
+          "alert": "Usuário no home office relata que o microfone não funciona apenas na reunião do Teams. Em outros apps o áudio funciona.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Verificar as configurações de dispositivo dentro do Teams",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Checar permissões de privacidade de microfone do Windows 10/11",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Reinstalar o driver de vídeo",
+              "is_correct": false,
+              "feedback": "Driver de vídeo não tem relação com captura de áudio local do microfone."
+            },
+            {
+              "id": "a4",
+              "text": "Fazer um teste de chamada (Echo Test) no próprio Teams",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Trocar o headset do usuário imediatamente",
+              "is_correct": false,
+              "feedback": "Se funciona em outros apps, o headset físico está perfeito. O bloqueio é lógico."
+            }
+          ],
+          "success_message": "Exato! Em 90% dos casos, o Teams perde a referência do dispositivo padrão ou o Windows bloqueou a permissão de privacidade para o app."
+        },
+        {
+          "id": "st_facil_04",
+          "level": "Baixa",
+          "alert": "A impressora USB (local) da recepção parou de imprimir. Os documentos ficam acumulados na tela.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Verificar se a impressora não está com status 'Pausada' ou 'Offline'",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Checar o cabo USB fisicamente",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Pingar o IP da impressora",
+              "is_correct": false,
+              "feedback": "É uma impressora USB (local), ela não possui IP na rede."
+            },
+            {
+              "id": "a4",
+              "text": "Limpar a fila do Spooler de Impressão e reiniciar o serviço",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Formatar o computador da recepção",
+              "is_correct": false,
+              "feedback": "Totalmente desproporcional para um simples travamento de fila de impressão."
+            }
+          ],
+          "success_message": "Perfeito. Diagnóstico local rápido: checar painel, cabos e destravar o serviço de spooler."
+        },
+        {
+          "id": "st_medio_03",
+          "level": "Urgente",
+          "alert": "O navegador do usuário bloqueia o acesso à Intranet da empresa exibindo erro de 'Certificado Inválido / Conexão não particular'. A intranet funciona para os outros.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Verificar se a data e a hora do computador do usuário estão corretas",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Desligar o firewall corporativo",
+              "is_correct": false,
+              "feedback": "Desligar o firewall não valida certificados digitais e expõe a rede a riscos gravíssimos."
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se o certificado Raiz da empresa (CA) está instalado na máquina",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Trocar o cabo de rede do usuário",
+              "is_correct": false,
+              "feedback": "Erros de SSL/TLS operam na camada de aplicação. O cabo físico está funcionando perfeitamente."
+            },
+            {
+              "id": "a5",
+              "text": "Limpar o cache SSL e dados de navegação",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Boa! Relógio do Windows dessincronizado é a causa número um de erros repentinos de certificado em apenas uma máquina."
+        },
+        {
+          "id": "st_medio_04",
+          "level": "Urgente",
+          "alert": "Apenas um usuário relata lentidão extrema para abrir planilhas do Servidor de Arquivos. A internet dele voa, mas a rede local se arrasta.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Reiniciar o Servidor de Arquivos da empresa",
+              "is_correct": false,
+              "feedback": "Se é só um usuário afetado, o problema é na ponta dele. Reiniciar o servidor impactaria todo mundo à toa."
+            },
+            {
+              "id": "a2",
+              "text": "Verificar a negociação da placa de rede local (se caiu de 1Gbps para 10/100Mbps Half-Duplex)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Testar a troca do Patch Cord (cabo) que vai do PC à tomada",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Rodar um antivírus no File Server",
+              "is_correct": false,
+              "feedback": "A lentidão é isolada em um endpoint, o diagnóstico deve focar nele."
+            },
+            {
+              "id": "a5",
+              "text": "Analisar o consumo de disco e CPU do próprio computador do usuário",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Certíssimo! Lentidão apenas na LAN geralmente indica falha de cabo que força a placa a renegociar velocidade (ex: de 1000 pra 10Mbps), ou disco local saturado."
+        },
+        {
+          "id": "st_dificil_03",
+          "level": "Crítica",
+          "alert": "Colaborador faz login no Windows, aparece a mensagem 'Você foi conectado a um perfil temporário' e ele perde os atalhos e área de trabalho.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Acessar o Regedit em 'ProfileList' e verificar a chave com extensão .bak",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Remover o computador do Domínio e colocar em Workgroup",
+              "is_correct": false,
+              "feedback": "Isso agrava o problema destruindo a relação de confiança com o AD e quebrando políticas."
+            },
+            {
+              "id": "a3",
+              "text": "Checar permissões e integridade do arquivo NTUSER.DAT na pasta do usuário",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Deletar a pasta C:\\Windows\\Temp",
+              "is_correct": false,
+              "feedback": "A pasta Temp do Windows não tem nenhuma relação com corrupção de Perfil de Usuário local."
+            },
+            {
+              "id": "a5",
+              "text": "Fazer backup da pasta C:\\Users\\Nome, excluir a chave corrompida e deixar recriar o perfil",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Procedimento perfeito! Corrupção de perfil se resolve pelo Registro (ProfileList) ou recriando a pasta Users local."
+        },
+        {
+          "id": "st_dificil_04",
+          "level": "Crítica",
+          "alert": "Notebook de um diretor diz 'Conectado, mas não carregando'. A bateria não passa de 5%.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Gerar um relatório de saúde da bateria (powercfg /batteryreport)",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Testar com uma fonte (carregador) original de mesma amperagem/voltagem",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Formatar o Windows 11",
+              "is_correct": false,
+              "feedback": "Falhas de carregamento são de hardware/firmware, não do sistema operacional."
+            },
+            {
+              "id": "a4",
+              "text": "Atualizar a BIOS / Firmware de gerenciamento de energia",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Desfragmentar o disco rígido",
+              "is_correct": false,
+              "feedback": "Sem relação lógica. Discos não afetam a química e o carregamento elétrico da bateria."
+            }
+          ],
+          "success_message": "Exato! Isolar se é falha na fonte, desgaste natural da célula (batteryreport) ou bug na controladora ACPI (resolvido com update de BIOS)."
+        },
+        {
+          "id": "st_facil_05",
+          "level": "Baixa",
+          "alert": "Usuário do financeiro liga desesperado pois o teclado do notebook 'quebrou': ao digitar letras, aparecem números (ex: ao apertar U, aparece 4).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Verificar se a tecla 'Num Lock' (ou Fn + Num Lock) está ativada",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Testar com um teclado USB externo",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Reinstalar o sistema operacional",
+              "is_correct": false,
+              "feedback": "Isso é claramente uma função do teclado (teclado numérico embutido nas letras), não falha do SO."
+            },
+            {
+              "id": "a4",
+              "text": "Trocar o teclado físico do notebook imediatamente",
+              "is_correct": false,
+              "feedback": "O teclado está funcionando, apenas com a função secundária ativada. Trocar gera custo à toa."
+            },
+            {
+              "id": "a5",
+              "text": "Abrir o Bloco de Notas para testar o mapeamento das teclas",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Exato! Esse é o clássico caso do 'Num Lock' ativado em notebooks menores que não têm teclado numérico lateral dedicado."
+        },
+        {
+          "id": "st_facil_06",
+          "level": "Baixa",
+          "alert": "Usuária relata que a imagem do monitor está 'deitada' ou 'de cabeça para baixo' após ela limpar a mesa.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Usar as Configurações de Exibição do Windows para ajustar a orientação",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Apertar o atalho Ctrl + Alt + Setas no teclado",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Atualizar os drivers da placa de vídeo",
+              "is_correct": false,
+              "feedback": "O driver está ótimo, a imagem só está virada. Atualizar driver não desfará a configuração."
+            },
+            {
+              "id": "a4",
+              "text": "Trocar o monitor do usuário",
+              "is_correct": false,
+              "feedback": "A orientação da tela é gerenciada via software no computador, não é defeito físico da tela."
+            },
+            {
+              "id": "a5",
+              "text": "Verificar se as configurações do painel da Intel/AMD/NVIDIA foram alteradas",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Perfeito! O usuário acidentalmente ativou o atalho de rotação de tela do driver de vídeo ou do Windows."
+        },
+        {
+          "id": "st_medio_05",
+          "level": "Urgente",
+          "alert": "Ao tentar abrir uma planilha na rede, o Excel exibe a mensagem: 'O arquivo está bloqueado para edição por outro usuário'. A usuária jura que ninguém mais trabalha naquele arquivo.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Acessar o File Server (Gerenciamento do Computador > Sessões) para ver quem travou o arquivo",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Reiniciar o Servidor de Arquivos",
+              "is_correct": false,
+              "feedback": "Derrubaria centenas de usuários trabalhando em outros arquivos. Inaceitável para resolver um arquivo travado."
+            },
+            {
+              "id": "a3",
+              "text": "Orientar a salvar uma cópia localmente enquanto investiga",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Procurar e deletar arquivos temporários ocultos do Office (~$nome.xlsx) na mesma pasta",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Desinstalar e reinstalar o Office",
+              "is_correct": false,
+              "feedback": "O bloqueio acontece no nível de sistema de arquivos do servidor, não na instalação local do Office."
+            }
+          ],
+          "success_message": "Boa! Fechar a sessão morta diretamente no servidor ou excluir o arquivo temporário oculto (que sobrou de um travamento) resolve o lock."
+        },
+        {
+          "id": "st_medio_06",
+          "level": "Urgente",
+          "alert": "E-mail de um diretor está preso na caixa de saída do Outlook e não envia. Ao abrir, nota-se que há um anexo de 55 MB.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Verificar o tamanho do anexo no e-mail preso",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Alterar a porta do servidor SMTP para 25",
+              "is_correct": false,
+              "feedback": "Isso vai quebrar totalmente o envio de e-mails, pois as portas padrão seguras (587/465) já estavam funcionando."
+            },
+            {
+              "id": "a3",
+              "text": "Sugerir o upload do arquivo para SharePoint/OneDrive e enviar o link",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Zipar/compactar o arquivo e dividir em partes menores, se for essencial",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Excluir o e-mail preso na caixa de saída trabalhando em modo Offline",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Isso! A maioria dos servidores Exchange/M365 bloqueia mensagens maiores que 25MB ou 35MB. O arquivo gigante é o ofensor."
+        },
+        {
+          "id": "st_dificil_05",
+          "level": "Crítica",
+          "alert": "Computador desktop apresenta tela azul (BSOD) aleatória com a mensagem 'MEMORY_MANAGEMENT'. Acontece umas duas vezes por semana.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Executar o Diagnóstico de Memória do Windows (mdsched.exe) ou MemTest86",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Comprar uma placa de vídeo nova",
+              "is_correct": false,
+              "feedback": "Gasto desnecessário e sem lógica, a falha aponta especificamente para gestão de memória RAM/paginação."
+            },
+            {
+              "id": "a3",
+              "text": "Remover, limpar os contatos da memória RAM com borracha/limpa contato e testar slots diferentes",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Checar se o arquivo de paginação (pagefile.sys) no disco não está em um SSD defeituoso (rodar chkdsk)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Trocar a fonte de alimentação preventivamente",
+              "is_correct": false,
+              "feedback": "Problemas de fonte geralmente causam desligamentos abruptos sem tela azul."
+            }
+          ],
+          "success_message": "Ótimo diagnóstico avançado! Falhas de 'Memory Management' quase sempre são pentes físicos de RAM ruins, contatos oxidados ou disco corrompido falhando na paginação."
+        },
+        {
+          "id": "st_dificil_06",
+          "level": "Crítica",
+          "alert": "A impressora térmica Zebra do setor de expedição começou a pular etiquetas em branco ou imprimir o código de barras 'cortado' na margem.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Recalibrar o sensor de mídia (papel/ribbon) na própria impressora",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Reinstalar o servidor de impressão Windows (Print Server)",
+              "is_correct": false,
+              "feedback": "A impressora está imprimindo, mas perdeu a referência física. O servidor está funcionando e não precisa de rebuild."
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se as medidas da etiqueta nas Preferências de Impressão batem com o rolo físico",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Limpar a cabeça de impressão e os roletes com álcool isopropílico",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Comprar cabos de rede blindados para a impressora",
+              "is_correct": false,
+              "feedback": "Ruído na rede causaria falta de comunicação, não um erro de formatação de etiqueta."
+            }
+          ],
+          "success_message": "Excepcional! Impressoras térmicas são hardware sensível; tamanhos errados no driver do Windows ou sensores descalibrados causam avanço contínuo do rolo."
+        },
+        {
+          "id": "st_facil_07",
+          "level": "Baixa",
+          "alert": "O computador está ligado, mas o monitor não exibe imagem. A luz do monitor está laranja (piscando/standby).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Mexer o mouse e apertar teclas no teclado para acordar o PC",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Verificar se o cabo de vídeo (HDMI/DisplayPort) está bem encaixado nas duas pontas",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Trocar a placa mãe",
+              "is_correct": false,
+              "feedback": "Luz laranja indica que o monitor tem energia, mas não recebe sinal. Trocar a placa mãe sem checar cabos é um erro crasso."
+            },
+            {
+              "id": "a4",
+              "text": "Checar se o cabo está ligado na placa de vídeo offboard (em vez da onboard)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Desmontar o monitor",
+              "is_correct": false,
+              "feedback": "Monitores em standby estão funcionando eletricamente. O defeito é de sinalização ou economia de energia."
+            }
+          ],
+          "success_message": "Exato! Luz laranja significa Standby (Dormindo) ou falta de sinal de vídeo. Verificar atividade e cabos de sinal resolve rápido."
+        },
+        {
+          "id": "st_facil_08",
+          "level": "Baixa",
+          "alert": "Usuário relata que um aplicativo corporativo precisa de autorização de Administrador para ser instalado (janela do UAC).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Fornecer a senha de Administrador de Domínio (Domain Admin) por telefone",
+              "is_correct": false,
+              "feedback": "Nunca forneça credenciais administrativas para o usuário final, e jamais use Domain Admin em estações de trabalho locais (risco de roubo de hash)."
+            },
+            {
+              "id": "a2",
+              "text": "Conectar via acesso remoto (ex: AnyDesk/TeamViewer corporativo) e inserir a credencial de admin local/LAPS",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Colocar o usuário temporariamente no grupo de Administradores Locais",
+              "is_correct": false,
+              "feedback": "Isso viola as políticas de segurança (Princípio do Menor Privilégio). Ele pode instalar malwares e esquecer de avisar para remover depois."
+            },
+            {
+              "id": "a4",
+              "text": "Validar se o software é homologado e permitido pela política da empresa",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Instalar o software via GPO ou ferramenta de distribuição (ex: SCCM/Intune)",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Correto! Instalações devem ser controladas e a credencial administrativa jamais pode ser exposta ao usuário."
+        },
+        {
+          "id": "st_medio_07",
+          "level": "Urgente",
+          "alert": "O Outlook de um usuário parou de receber novos e-mails. No canto inferior direito, a barra de status exibe 'Desconectado'. A internet está normal.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Deletar todo o arquivo de dados (.OST ou .PST)",
+              "is_correct": false,
+              "feedback": "Ação destrutiva desnecessária. O problema não é o arquivo corrompido, e sim a falta de conexão com o servidor Exchange/M365."
+            },
+            {
+              "id": "a2",
+              "text": "Checar se o botão 'Trabalhar Offline' foi clicado acidentalmente na aba Enviar/Receber",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se as credenciais do usuário expiraram ou a conta está bloqueada no AD",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Reiniciar o computador",
+              "is_correct": false,
+              "feedback": "Um 'Trabalhar offline' ativado não se resolve com reinício. A configuração persistirá."
+            },
+            {
+              "id": "a5",
+              "text": "Verificar se o licenciamento do Office 365 daquele usuário está ativo",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Muito bem! Geralmente é um esbarrão no botão 'Trabalhar Offline', mudança de senha que o Windows não registrou ou problema com a licença da nuvem."
+        },
+        {
+          "id": "st_medio_08",
+          "level": "Urgente",
+          "alert": "Usuário liga avisando que o teclado numérico (o bloco de números do lado direito do teclado) não funciona, mas as setinhas nele funcionam.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Trocar o teclado inteiro",
+              "is_correct": false,
+              "feedback": "As teclas estão enviando comando (setinhas funcionam). O defeito não é o hardware, mas sim a função secundária ativada."
+            },
+            {
+              "id": "a2",
+              "text": "Pedir para o usuário apertar a tecla 'Num Lock'",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Formatar o computador",
+              "is_correct": false,
+              "feedback": "Absurdo completo para um problema simples de ativação de Num Lock."
+            },
+            {
+              "id": "a4",
+              "text": "Testar no Bloco de Notas apertando os números para validar o sinal",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Atualizar os drivers do teclado no Gerenciador de Dispositivos",
+              "is_correct": false,
+              "feedback": "O driver nativo do Windows não perde a capacidade de ler números do nada. É o botão Num Lock."
+            }
+          ],
+          "success_message": "Exatamente. O Num Lock alterna entre a digitação de números e a navegação por setas."
+        },
+        {
+          "id": "st_dificil_07",
+          "level": "Crítica",
+          "alert": "Computador corporativo exibe o erro na tela de login: 'A relação de confiança entre a estação de trabalho e o domínio primário falhou'.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Avisar o usuário que ele esqueceu a senha",
+              "is_correct": false,
+              "feedback": "Este erro não é de senha incorreta. Significa que a senha da 'Máquina' não bate mais com a gravada no Active Directory."
+            },
+            {
+              "id": "a2",
+              "text": "Fazer login com o usuário Administrador Local (.\\Administrator)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se a máquina perdeu o cabo de rede logo após ser ligada",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Remover o PC do Domínio, reiniciar e colocar novamente (Re-join)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Executar o cmdlet PowerShell 'Reset-ComputerMachinePassword' autenticando no AD",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Diagnóstico de especialista! Perda de Trust acontece muito em PCs que ficaram meses desligados (tombstoned) ou voltaram de snapshots antigos."
+        },
+        {
+          "id": "st_dificil_08",
+          "level": "Crítica",
+          "alert": "Um aplicativo de banco do setor financeiro exige acesso exclusivo a um token USB (Smartcard). Ao abrir via Remote Desktop (RDP/TS), o token não é reconhecido.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Comprar um leitor de Smartcard Bluetooth",
+              "is_correct": false,
+              "feedback": "Não é limitação do hardware físico, é restrição da sessão remota."
+            },
+            {
+              "id": "a2",
+              "text": "Reinstalar o driver do token no servidor",
+              "is_correct": false,
+              "feedback": "O servidor não enxerga a porta física local por padrão. Instalar o driver não resolve a ponte (bridge)."
+            },
+            {
+              "id": "a3",
+              "text": "Habilitar o redirecionamento de Dispositivos USB e Smartcards no cliente de Conexão de Área de Trabalho Remota",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Checar via GPO se o servidor permite mapeamento de dispositivos plug and play via RDP",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Conectar fisicamente o Token no servidor corporativo",
+              "is_correct": false,
+              "feedback": "Prática terrível. O token tem uso pessoal e deve estar em posse do funcionário do financeiro, jamais esquecido no data center."
+            }
+          ],
+          "success_message": "Muito bem. Tokens USB em sessões remotas precisam ter o tráfego do barramento USB explicitamente redirecionado (USB Redirection/Smartcard Passthrough)."
+        },
+        {
+          "id": "st_facil_09",
+          "level": "Baixa",
+          "alert": "Usuário relata que ninguém ouve ele nas reuniões. As permissões do Windows estão OK, o driver de áudio está OK e o Teams reconhece o headset.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Reinstalar o sistema operacional",
+              "is_correct": false,
+              "feedback": "Absolutamente desnecessário. A parte de software já foi validada e está funcionando."
+            },
+            {
+              "id": "a2",
+              "text": "Verificar se o headset possui um botão físico de 'Mute' no cabo ou na lateral que foi pressionado acidentalmente",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Testar a gravação de voz no aplicativo nativo 'Gravador de Voz' do Windows",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Atualizar a BIOS da placa-mãe",
+              "is_correct": false,
+              "feedback": "Um periférico USB com falha pontual não justifica o risco de uma atualização de BIOS."
+            },
+            {
+              "id": "a5",
+              "text": "Verificar se a porta USB frontal do gabinete não está com mau contato",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Exato! Quando o software reconhece o dispositivo, mas o som não sai, o clássico botão de 'Mute' físico no fio do headset é o grande culpado em 90% das vezes."
+        },
+        {
+          "id": "st_facil_10",
+          "level": "Baixa",
+          "alert": "Usuário mandou imprimir um PDF normal, mas a impressora de rede está cuspindo dezenas de páginas com códigos estranhos (símbolos e letras aleatórias).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Desligar a impressora da tomada ou cancelar a fila no painel rapidamente",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Trocar o toner e o cilindro",
+              "is_correct": false,
+              "feedback": "A impressão com símbolos indica falha lógica/software, não falha na tinta ou no hardware de impressão mecânica."
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se o driver instalado no computador do usuário corresponde exatamente ao modelo da impressora (ex: PCL6 vs PostScript)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Limpar a fila de impressão (Spooler) no servidor e no computador do usuário",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Formatar a impressora para os padrões de fábrica",
+              "is_correct": false,
+              "feedback": "Isso fará ela perder o IP estático na rede corporativa. Apenas limpe a fila de impressão corrompida."
+            }
+          ],
+          "success_message": "Excelente! Impressões em 'linguagem alienígena' ocorrem quando o arquivo é processado pelo driver errado (ex: enviar PostScript para uma impressora PCL)."
+        },
+        {
+          "id": "st_medio_09",
+          "level": "Urgente",
+          "alert": "Notebook liga, passa da tela da BIOS, mas em vez de carregar o Windows, exibe uma tela preta com a mensagem 'Operating System not found' ou 'No Bootable Device'.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Acessar a BIOS/UEFI e verificar se o SSD/HDD está sendo reconhecido fisicamente",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Verificar se a ordem de boot não foi alterada (ex: tentando dar boot por um pendrive esquecido ou rede PXE)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Adicionar mais memória RAM",
+              "is_correct": false,
+              "feedback": "A falta de sistema operacional não tem nenhuma relação com a quantidade de memória RAM da máquina."
+            },
+            {
+              "id": "a4",
+              "text": "Testar a recriação do setor de boot do Windows (bootrec /fixmbr ou reparo do EFI via WinRE)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Comprar imediatamente uma licença nova do Windows",
+              "is_correct": false,
+              "feedback": "O erro é de inicialização física/lógica do disco. A licença e a ativação não impedem a máquina de achar a partição."
+            }
+          ],
+          "success_message": "Correto! Problemas de 'No Bootable Device' exigem validar primeiro o contato físico (se o disco morreu) e depois reparar as partições EFI ou MBR."
+        },
+        {
+          "id": "st_medio_10",
+          "level": "Urgente",
+          "alert": "Um diretor tenta conectar o notebook à TV da sala de reunião usando um cabo HDMI, mas a TV exibe 'Sem Sinal'. O cabo funciona em outros computadores.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Apertar o atalho Windows + P e garantir que está em 'Duplicar' ou 'Estender'",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Atualizar a TV da sala de reunião",
+              "is_correct": false,
+              "feedback": "A TV recebe sinal bruto. Se funciona em outros PCs, o problema é especificamente na saída de vídeo do diretor."
+            },
+            {
+              "id": "a3",
+              "text": "Verificar as Configurações de Tela do Windows para ver se o segundo monitor foi detectado",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Abaixar a resolução ou a taxa de atualização (Hz) do monitor secundário para uma suportada pela TV",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Desinstalar o Antivírus Corporativo",
+              "is_correct": false,
+              "feedback": "Antivírus protege arquivos e rede, não interfere em handshakes físicos de portas HDMI."
+            }
+          ],
+          "success_message": "Muito bem. Notebooks de alta performance podem tentar enviar 4K a 144Hz e a TV da sala não aguenta o handshake. Ajustar a resolução ou forçar o reconhecimento resolve."
+        },
+        {
+          "id": "st_dificil_09",
+          "level": "Crítica",
+          "alert": "O computador está praticamente travado. O Gerenciador de Tarefas mostra que o culpado do Disco a 100% é o arquivo do Outlook (OST). O tamanho do arquivo está em 49 GB.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Formatar o computador",
+              "is_correct": false,
+              "feedback": "Destrutivo. Você apenas precisará re-sincronizar os mesmos 49GB depois da formatação, travando tudo novamente."
+            },
+            {
+              "id": "a2",
+              "text": "Reduzir o controle deslizante de cache do Exchange (Manter emails offline) de 'Tudo' para '1 ano' ou '6 meses'",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Desfragmentar e compactar o arquivo de dados localmente pelas configurações de Conta do Outlook",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Adicionar o Outlook na lista de exclusão de varredura ativa do Antivírus/EDR",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Aumentar a memória RAM para o Outlook ler mais rápido",
+              "is_correct": false,
+              "feedback": "O limite de arquivos OST por padrão é de 50GB no Registro do Windows. Quando chega perto disso, o I/O de disco congela a máquina. RAM não resolve."
+            }
+          ],
+          "success_message": "Postura Sênior! Arquivos OST chegando a 50GB causam travamento catastrófico. O correto é diminuir o cache local e aliviar o I/O do disco."
+        },
+        {
+          "id": "st_dificil_10",
+          "level": "Crítica",
+          "alert": "Máquina no Domínio (AD) perdeu mapeamentos de GPO. Ao rodar 'gpupdate /force', o erro diz que não foi possível contactar um Controlador de Domínio, mas o ping para o IP do DC responde normalmente.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Remover o computador do Domínio e dar re-join preventivo",
+              "is_correct": false,
+              "feedback": "Antes de desfazer o vínculo de segurança, deve-se validar o tráfego e as configurações lógicas locais."
+            },
+            {
+              "id": "a2",
+              "text": "Checar as configurações de DNS do adaptador de rede local para garantir que apontam apenas para o servidor DNS do Active Directory interno",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Rodar 'nslookup nomedodominio.local' para verificar qual servidor está resolvendo a requisição",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Trocar o cabo de rede",
+              "is_correct": false,
+              "feedback": "O ping responde, então a Camada 1 e 2 (Cabo/Switch) estão operacionais. O problema é de resolução de nomes (Camada 7)."
+            },
+            {
+              "id": "a5",
+              "text": "Verificar se o relógio da máquina está atrasado em mais de 5 minutos (skew do Kerberos)",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Excepcional! GPOs e Autenticação do Windows exigem DNS perfeitamente apontado para o DC e o horário rigorosamente sincronizado. Ping atesta apenas rede física/L3."
+        }
+      ]
+    },
+    {
+      "id": "noc",
+      "name": "NOC",
+      "description": "Selecione as ações corretas para manter a disponibilidade da infraestrutura.",
+      "color": "#00ff9d",
+      "exercises": [
+        {
+          "id": "noc_facil_01",
+          "level": "Baixa",
+          "alert": "Zabbix alerta: Porta Gigabit 1/0/24 do Switch Core oscilando (Flapping - UP/DOWN) 15 vezes nos últimos 5 minutos.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Reiniciar o Switch Core",
+              "is_correct": false,
+              "feedback": "O Core Switch conecta tudo. Reiniciá-lo por causa de UMA porta derruba toda a rede. Inaceitável no NOC."
+            },
+            {
+              "id": "a2",
+              "text": "Analisar logs do switch (show logging)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar conectividade física (cabo de rede ou transceptor SFP)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Dar shutdown temporário na porta se estiver gerando broadcast storm",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Aumentar a banda da internet",
+              "is_correct": false,
+              "feedback": "Banda de internet não tem relação física com porta de switch local caindo."
+            }
+          ],
+          "success_message": "Correto! Port flapping quase sempre é cabo defeituoso, conector RJ45 folgado ou módulo SFP/fibra sujo."
+        },
+        {
+          "id": "noc_facil_02",
+          "level": "Baixa",
+          "alert": "Alerta de Monitoramento: Instância EC2 na AWS atingiu 99% de CPU por mais de 30 minutos contínuos.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Desligar a EC2 e religar em um tamanho maior (Scale Up) imediatamente sem avisar",
+              "is_correct": false,
+              "feedback": "Alterar o tipo de instância sem aviso causa downtime e sem diagnóstico prévio é apenas jogar dinheiro no problema."
+            },
+            {
+              "id": "a2",
+              "text": "Acessar via SSH/RDP para checar processos com htop/Task Manager",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar métricas granulares no AWS CloudWatch",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Avaliar se o tráfego de usuários aumentou repentinamente",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Apagar logs antigos do disco",
+              "is_correct": false,
+              "feedback": "O alerta é de CPU, não de disco. Apagar logs não reduzirá processamento."
+            }
+          ],
+          "success_message": "Exatamente. Antes de escalar verticalmente, é preciso entender o que está consumindo CPU (pode ser um loop infinito em uma aplicação)."
+        },
+        {
+          "id": "noc_medio_01",
+          "level": "Urgente",
+          "alert": "Usuários reclamam de lentidão em um sistema web interno hospedado em Cloud. O ping da LAN para o servidor responde em 2ms. A CPU e RAM do servidor web estão em 20%.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Aumentar os recursos do Servidor Web",
+              "is_correct": false,
+              "feedback": "CPU e RAM estão em 20%. O gargalo não é computacional no frontend."
+            },
+            {
+              "id": "a2",
+              "text": "Checar latência e recursos do Banco de Dados",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar pool de conexões (conexões ativas, locks, deadlocks no DB)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Reiniciar o Firewall de borda",
+              "is_correct": false,
+              "feedback": "Se o ping da LAN para a Cloud responde em 2ms, o túnel/firewall de borda está operando com ótima performance."
+            },
+            {
+              "id": "a5",
+              "text": "Analisar logs de lentidão (Slow Queries) no banco de dados",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Muito bem! Lentidão sistêmica sem consumo de hardware quase sempre aponta para fila de banco de dados ou deadlocks."
+        },
+        {
+          "id": "noc_medio_02",
+          "level": "Urgente",
+          "alert": "Queda simultânea de 3 links VPN Site-to-Site com filiais diferentes. A internet da matriz está normal.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Reiniciar roteadores das 3 filiais",
+              "is_correct": false,
+              "feedback": "Falha simultânea em 3 pontas indica que o problema está na origem (Matriz). Não perca tempo nas pontas."
+            },
+            {
+              "id": "a2",
+              "text": "Verificar o serviço VPN (IPSec/OpenVPN) no concentrador/Firewall da matriz",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Checar logs de fase 1 e fase 2 (IKE/IPSec) no concentrador",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Validar se algum update automático do Firewall da matriz quebrou as chaves PSK",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Formatar o servidor DHCP",
+              "is_correct": false,
+              "feedback": "O DHCP distribui IPs na LAN. Não gerencia criptografia de túneis WAN IPSec."
+            }
+          ],
+          "success_message": "Diagnóstico preciso. Quando o problema afeta múltiplos locais ao mesmo tempo, a raiz sempre está no ponto convergente (hub)."
+        },
+        {
+          "id": "noc_dificil_01",
+          "level": "Crítica",
+          "alert": "Alerta Crítico: Sessão BGP com a operadora principal (ISP 1) caiu. Roteador de borda não anuncia mais nossas rotas. O tráfego não migrou para o ISP 2 automaticamente.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Esperar o provedor resolver e ir tomar café",
+              "is_correct": false,
+              "feedback": "No NOC, um incidente de BGP parado é P1 (Prioridade Crítica). Intervenção é imediata."
+            },
+            {
+              "id": "a2",
+              "text": "Acessar roteador de borda e forçar migração manual (ajuste de Local Preference / MED) para o ISP 2",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Validar tabela BGP e rotas recebidas ('show ip bgp summary')",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Abrir chamado emergencial com a operadora 1",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Desconectar fisicamente o cabo da operadora 1 do switch core",
+              "is_correct": false,
+              "feedback": "Arrancar cabos de fibra de operadora em produção antes de rotear via software (BGP) pode causar loops ou travar protocolos."
+            }
+          ],
+          "success_message": "Exato! BGP falhando em failover automático exige roteamento tático imediato (Local Pref) para restabelecer a comunicação global."
+        },
+        {
+          "id": "noc_dificil_02",
+          "level": "Crítica",
+          "alert": "Spanning Tree Protocol (STP) mudando topologia constantemente (TCN topology change). Rede inteira com interrupções intermitentes graves.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Desabilitar o STP globalmente nos switches",
+              "is_correct": false,
+              "feedback": "Desligar o STP causará um Loop de Camada 2 instantâneo. A rede inteira vai colapsar."
+            },
+            {
+              "id": "a2",
+              "text": "Localizar o Root Bridge e checar se ele perdeu a eleição",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Procurar portas de acesso (hosts) sem a configuração de 'PortFast' habilitada",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Verificar se alguém conectou um switchzinho (hub) caseiro fazendo loop entre duas tomadas",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Adicionar mais gateways na rede",
+              "is_correct": false,
+              "feedback": "O problema é Layer 2 (camada de enlace), gateways lidam com Layer 3 (rede). Não terá efeito."
+            }
+          ],
+          "success_message": "Especialista! Loops de L2 são fatais. Habilitar BPDU Guard e PortFast nas portas de usuário impede que switches falsos derrubem a rede."
+        },
+        {
+          "id": "noc_facil_03",
+          "level": "Baixa",
+          "alert": "O monitoramento acusa alta latência (ping > 400ms) constante de dentro da matriz para uma filial conectada via SD-WAN.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Executar um Traceroute (tracert / mtr) para ver em qual salto o atraso começa",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Reiniciar o servidor de arquivos da filial",
+              "is_correct": false,
+              "feedback": "Latência é um sintoma de rede/link, reiniciar servidores de aplicação não resolve."
+            },
+            {
+              "id": "a3",
+              "text": "Verificar o gráfico de utilização de banda da interface WAN (NetFlow/SNMP)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Checar qualidade do link com o ISP (Perda de pacote, Jitter)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Trocar a senha de Admin do Roteador",
+              "is_correct": false,
+              "feedback": "Segurança de acesso não afeta latência de roteamento."
+            }
+          ],
+          "success_message": "Muito bem. Traceroute para mapear o caminho e checagem de banda (um link saturado gera fila e latência alta)."
+        },
+        {
+          "id": "noc_facil_04",
+          "level": "Baixa",
+          "alert": "Zabbix informa que perdeu comunicação via SNMP com o Nobreak (UPS) do Data Center, mas os servidores continuam online.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Desligar todos os servidores preventivamente",
+              "is_correct": false,
+              "feedback": "Os servidores estão online! Você causaria um downtime gigante por causa de uma falha de monitoramento."
+            },
+            {
+              "id": "a2",
+              "text": "Pingar o IP da placa de gerência de rede (NMC) do Nobreak",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Tentar acessar a interface Web/SSH da placa do Nobreak",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Mandar um técnico ir fisicamente olhar o painel do Nobreak no DC",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Abrir chamado na provedora de internet",
+              "is_correct": false,
+              "feedback": "O equipamento está na rede local. A internet não afeta comunicação SNMP da LAN."
+            }
+          ],
+          "success_message": "Correto! Geralmente a placa de rede do Nobreak trava, mas ele continua fornecendo energia física. É preciso validar o estado in-loco ou ping."
+        },
+        {
+          "id": "noc_medio_03",
+          "level": "Urgente",
+          "alert": "Loop de roteamento. Pacotes IP estão sendo descartados (TTL Expired) entre dois roteadores no core da rede usando protocolo OSPF.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Executar 'show ip ospf neighbor' para ver se fecharam adjacência",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Trocar todos os cabos de fibra ótica do Core",
+              "is_correct": false,
+              "feedback": "Loop de TTL é falha lógica de tabela de rotas (Layer 3), não um problema de cabo rompido (Layer 1)."
+            },
+            {
+              "id": "a3",
+              "text": "Limpar a tabela MAC de todos os switches",
+              "is_correct": false,
+              "feedback": "Tabela MAC (Layer 2) não resolve loop de roteadores de Camada 3."
+            },
+            {
+              "id": "a4",
+              "text": "Verificar anúncios de rotas sumariadas e tabelas de roteamento (show ip route)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Rodar um traceroute para ver exatamente em quais dois equipamentos os pacotes ficam rebatendo",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Exato. Loop L3 significa roteadores apontando rotas padrão um para o outro indefinidamente até o pacote morrer. Trace e análise OSPF matam a charada."
+        },
+        {
+          "id": "noc_medio_04",
+          "level": "Urgente",
+          "alert": "Ambiente VMware lento. O Host ESXi relata perda de pacotes ao acessar a LUN do Storage (iSCSI) dedicada de backup.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Verificar logs de storage/VMkernel no ESXi",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Reinstalar o Windows da máquina virtual",
+              "is_correct": false,
+              "feedback": "O erro está na camada do Hypervisor com o Storage (SAN). O sistema operacional da VM não tem culpa."
+            },
+            {
+              "id": "a3",
+              "text": "Checar se o MTU (Jumbo Frames, ex: 9000) está configurado igual no ESXi, Switch e Storage",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Analisar a interface de rede dedicada à rede de armazenamento (iSCSI MPIO)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Formatar a LUN do Storage",
+              "is_correct": false,
+              "feedback": "Apagaria todos os backups e servidores instantaneamente. Ação catastrófica."
+            }
+          ],
+          "success_message": "Fantástico! Configuração errada de Jumbo Frames (MTU Mismatch) é a principal causa de perda de pacotes intermitente em redes iSCSI."
+        },
+        {
+          "id": "noc_dificil_03",
+          "level": "Crítica",
+          "alert": "Ataque Volumétrico: O link de internet principal de 10Gbps da borda está 100% saturado recebendo tráfego UDP lixo. Tudo caiu.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Bloquear o IP atacante no Firewall local da empresa",
+              "is_correct": false,
+              "feedback": "Não adianta bloquear na porta da sua empresa. O tráfego já trafegou pelos 10Gbps da operadora e o link físico já entupiu."
+            },
+            {
+              "id": "a2",
+              "text": "Analisar amostras de NetFlow para identificar os IPs alvos e portas",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Acionar Anti-DDoS / Scrubbing Center na nuvem",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Solicitar Blackhole Routing (RTBH) junto à Operadora/ISP para descartar o tráfego na nuvem deles",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Reiniciar os roteadores internos para esfriar a CPU",
+              "is_correct": false,
+              "feedback": "Ataques de DDoS volumétricos não se resolvem reiniciando hardware. Quando voltar, o link entupirá no mesmo segundo."
+            }
+          ],
+          "success_message": "Resposta tática perfeita. DDoS volumétrico só se para \"na nuvem\", com a ajuda da operadora descartando os pacotes (Blackhole) antes de chegarem ao seu prédio."
+        },
+        {
+          "id": "noc_dificil_04",
+          "level": "Crítica",
+          "alert": "Cluster de Banco de Dados entrou em 'Split-Brain'. O Nó A e o Nó B acham que são o mestre ativo ao mesmo tempo.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Verificar a rede de Heartbeat (comunicação dedicada entre os dois nós)",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Deletar o banco de dados e restaurar o backup de ontem",
+              "is_correct": false,
+              "feedback": "Perda de dados em produção absurda! O split-brain precisa de reconciliação, não deleção."
+            },
+            {
+              "id": "a3",
+              "text": "Isolar imediatamente o nó que tem os dados mais defasados ou bloquear portas de gravação nele",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Verificar logs do gerenciador de cluster (ex: Pacemaker, Windows Cluster, Galera)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Adicionar mais disco no servidor",
+              "is_correct": false,
+              "feedback": "Falta de disco não quebra os votos de quorum/heartbeat. Isso é falha de comunicação entre os nós."
+            }
+          ],
+          "success_message": "Excepcional! Split-brain acontece quando o cabo que liga os servidores morre. Isolar um deles evita corrupção mútua de dados."
+        },
+        {
+          "id": "noc_facil_05",
+          "level": "Baixa",
+          "alert": "Zabbix alerta: Temperatura do Switch de Borda no Rack 2 está em 48°C (o limite de segurança é 40°C).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Desligar o Switch de Borda",
+              "is_correct": false,
+              "feedback": "Desligar a borda corta a comunicação de todo o negócio com a internet. Aja na refrigeração, não desligue o ativo sem autorização."
+            },
+            {
+              "id": "a2",
+              "text": "Verificar via software (CLI) se todas as ventoinhas (fans) do equipamento estão operando",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Mandar um técnico local ou de facilities checar obstrução no equipamento e a climatização da sala",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Reduzir o tráfego de usuários com regras de QoS",
+              "is_correct": false,
+              "feedback": "Reduzir o consumo de banda de rede tem impacto nulo ou irrisório no resfriamento geral de um hardware enterprise sobreaquecendo."
+            },
+            {
+              "id": "a5",
+              "text": "Acionar a equipe de manutenção de Ar Condicionado do Data Center / Rack",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Bem pensado. Alertas ambientais (temperatura, umidade) exigem ação física em facilities ou verificação de falha em hardware mecânico (fans)."
+        },
+        {
+          "id": "noc_facil_06",
+          "level": "Baixa",
+          "alert": "Um Access Point (AP) Wi-Fi reinicia sozinho aleatoriamente durante o pico do expediente. Ele é alimentado por um Switch PoE (Power over Ethernet).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Aumentar a potência do sinal da antena (Transmit Power) ao máximo",
+              "is_correct": false,
+              "feedback": "Aumentar a potência fará o AP consumir AINDA MAIS energia, piorando os reboots caso o problema seja PoE."
+            },
+            {
+              "id": "a2",
+              "text": "Checar o 'PoE Budget' (potência total disponível em Watts) do Switch no CLI",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Testar ou refazer a ponta do cabo de rede (crimpage ruim causa queda de energia no pino)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Trocar a porta em que ele está plugado no Switch PoE para teste isolado",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Mudar a senha do SSID Corporativo",
+              "is_correct": false,
+              "feedback": "Autenticação sem fio não reinicia o hardware eletricamente."
+            }
+          ],
+          "success_message": "Exato! Reboots físicos no meio do expediente geralmente apontam para Switch sem potência suficiente (PoE Budget estourando com tráfego alto) ou cabos ruins."
+        },
+        {
+          "id": "noc_medio_05",
+          "level": "Urgente",
+          "alert": "O link dedicado MPLS entre matriz e filial começou a apresentar oscilação severa, com perda de pacotes (Packet Loss) de 6% e CRC Errors crescentes na interface do roteador.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Reiniciar o roteador corporativo da ponta",
+              "is_correct": false,
+              "feedback": "Erros CRC (Cyclic Redundancy Check) na porta apontam defeito na camada física, reiniciar não conserta o meio físico."
+            },
+            {
+              "id": "a2",
+              "text": "Substituir o cabo/patch cord de fibra ou cobre que liga o seu Roteador ao Modem da Operadora",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Acionar a Operadora para verificar o meio físico/laser atenuado na última milha",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Limpar a tabela de roteamento interno",
+              "is_correct": false,
+              "feedback": "Problema de perdas por falha CRC em interface WAN é L1/L2. Tabela de roteamento é L3."
+            },
+            {
+              "id": "a5",
+              "text": "Analisar as estatísticas detalhadas de log (show interfaces)",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Correto! Erros CRC contínuos = Ruído na linha, cabo mordido, conector de fibra sujo ou problema no conversor de mídia da operadora."
+        },
+        {
+          "id": "noc_medio_06",
+          "level": "Urgente",
+          "alert": "Alerta: O banco de dados PostgreSQL principal parou subitamente no servidor Linux. O comando 'df -h' mostra que a partição '/' (Raiz) e '/var' estão em 100%.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Rodar comando 'rm -rf /*' imediatamente",
+              "is_correct": false,
+              "feedback": "Nunca. Esse comando apaga TODOS os dados do sistema operacional. O servidor seria destruído."
+            },
+            {
+              "id": "a2",
+              "text": "Usar 'du -sh /*' ou 'ncdu' para identificar quais pastas estão tomando os gigabytes",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se o Journalctl (systemd logs) ou logs do PostgreSQL ocuparam todo o disco",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Limpar caches temporários (apt clean/yum clean) e arquivos .log arquivados para liberar espaço emergencial",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Reinstalar o PostgreSQL e restaurar um backup antigo",
+              "is_correct": false,
+              "feedback": "O banco corrompeu por falta de espaço para escrever WAL logs, não por defeito de software. Limpe o disco e inicie o serviço."
+            }
+          ],
+          "success_message": "Perfeito. Diagnóstico limpo e não destrutivo. Identifica-se os arquivos inúteis (logs inflados), limpa, sobe o serviço e depois estuda aumento de disco."
+        },
+        {
+          "id": "noc_dificil_05",
+          "level": "Crítica",
+          "alert": "Firewall NGFW derrubando pacotes TCP aleatórios entre VLANs (Asymmetric Routing / Roteamento Assimétrico). O pacote vai pelo Firewall ativo, mas a resposta volta pelo passivo e o firewall bloqueia a conexão (Drop).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Desativar o Cluster de Alta Disponibilidade (HA) em horário comercial",
+              "is_correct": false,
+              "feedback": "Desmontar a alta disponibilidade é altamente arriscado. Pode isolar totalmente o Data Center da rede."
+            },
+            {
+              "id": "a2",
+              "text": "Verificar logs de drop do firewall analisando flag TCP (SYN-ACK faltando, etc)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Permitir regra 'Allow All' (Any/Any) para todas as redes",
+              "is_correct": false,
+              "feedback": "Isso anula completamente o propósito de existir um firewall, destruindo a segurança interna corporativa."
+            },
+            {
+              "id": "a4",
+              "text": "Analisar as tabelas de roteamento L3 de toda a topologia para entender por que o pacote opta por outro caminho na volta",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Configurar State Synchronization (Sync de Sessões TCP) corretamente entre os nós do Firewall HA",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Excelente! Roteamento assimétrico bloqueado por firewalls estaduais (Stateful) resolve-se alinhando rotas na rede (L3) ou garantindo sincronização total de estado no cluster."
+        },
+        {
+          "id": "noc_dificil_06",
+          "level": "Crítica",
+          "alert": "Tempestade de Broadcast (Broadcast Storm). Os LEDs de todos os switches do prédio estão piscando freneticamente. Ping entre equipamentos da mesma VLAN atinge 2000ms. O acesso remoto caiu.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Desligar todos os switches de core e de distribuição de uma vez",
+              "is_correct": false,
+              "feedback": "Isso paralisa todas as operações da empresa instantaneamente. Pode causar corrupção em sistemas críticos em andamento."
+            },
+            {
+              "id": "a2",
+              "text": "Desconectar fisicamente uplinks redundantes/anel até o loop parar (se STP falhou)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Formatar os servidores DHCP, pois distribuíram muitos IPs",
+              "is_correct": false,
+              "feedback": "Broadcast storms são falhas na Camada 2 (Loop de ARP/MAC). O serviço de DHCP é vítima e não causador."
+            },
+            {
+              "id": "a4",
+              "text": "Configurar Storm-Control nas interfaces de acesso para limitar picos agressivos no futuro",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Verificar via console (cabo serial) a utilização do processador do Core switch para achar as portas mais ofensoras",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Gênio! Tempestade de Broadcast é o fim do mundo para a LAN. Isolar fisicamente uplinks mata o loop. Proteger a rede requer Storm-Control e auditoria do STP (Spanning Tree)."
+        },
+        {
+          "id": "noc_facil_07",
+          "level": "Baixa",
+          "alert": "Alerta de Monitoramento: O certificado digital SSL do e-commerce da empresa vai expirar em 48 horas.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Ignorar o alerta hoje e deixar para ver isso na semana que vem",
+              "is_correct": false,
+              "feedback": "Em 48 horas o site ficará inacessível com erro de segurança gravíssimo, destruindo as vendas. Renovação de SSL não pode esperar."
+            },
+            {
+              "id": "a2",
+              "text": "Gerar um novo CSR (Certificate Signing Request) no servidor web",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Revalidar o domínio (DNS ou HTTP challenge) junto à Autoridade Certificadora (CA)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Planejar a instalação e reinício rápido do Nginx/Apache (reload) com o novo certificado hoje à noite",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Desativar o HTTPS do e-commerce para não dar erro",
+              "is_correct": false,
+              "feedback": "Desativar o HTTPS vaza dados de cartões de crédito e senha dos clientes. Completamente contra a lei (LGPD/PCI-DSS)."
+            }
+          ],
+          "success_message": "Exato. Certificados próximos ao vencimento são incidentes prioritários no NOC. Renovação e aplicação proativa previnem queda do serviço."
+        },
+        {
+          "id": "noc_facil_08",
+          "level": "Baixa",
+          "alert": "Zabbix disparou perda de ping (ICMP) intermitente de 15% para um servidor Linux em ambiente virtual (VMware). Os outros servidores no mesmo Host estão bem.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Reiniciar todo o cluster VMware imediatamente",
+              "is_correct": false,
+              "feedback": "Vai derrubar a empresa inteira por causa de perda de pacote intermitente de UMA máquina. Erro inaceitável no NOC."
+            },
+            {
+              "id": "a2",
+              "text": "Analisar se alguém está rodando um backup massivo ou transferência pesada dessa VM no momento",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se existem conflitos de IP na rede afetando a comunicação",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Mudar a interface virtual da VM (ex: E1000 para VMXNET3)",
+              "is_correct": false,
+              "feedback": "Mudança arquitetural sem janela e sem diagnóstico. Embora VMXNET3 seja melhor, mudar a quente derrubaria o servidor no meio do dia."
+            },
+            {
+              "id": "a5",
+              "text": "Checar os logs de kernel (dmesg) da VM atrás de erros de rede",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Correto! Lentidão/Perda isolada em máquina virtual geralmente indica gargalo de CPU, gargalo na rede daquela VM (backup intenso) ou IP duplicado."
+        },
+        {
+          "id": "noc_medio_07",
+          "level": "Urgente",
+          "alert": "Túnel VPN Site-to-Site com uma filial parceira está 'Down'. A Fase 1 (IKE) está 'UP', mas a Fase 2 (IPSec) falha e não sobe de jeito nenhum.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Checar se a Pre-Shared Key (PSK / Senha) está errada",
+              "is_correct": false,
+              "feedback": "Se a Fase 1 subiu, a senha (PSK) está correta e eles já estão autenticados. O problema é nas regras de roteamento/criptografia da Fase 2."
+            },
+            {
+              "id": "a2",
+              "text": "Validar os Parâmetros de Criptografia da Fase 2 (ex: AES-256 / SHA-2) nas duas pontas",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Reiniciar o Firewall Central",
+              "is_correct": false,
+              "feedback": "Reiniciar o firewall não alinha as configurações criptográficas que estão incompatíveis com o parceiro."
+            },
+            {
+              "id": "a4",
+              "text": "Verificar as Sub-redes (Proxy IDs / SA) declaradas. Um lado pode estar enviando /24 e o outro esperando /32",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Consultar os Logs de IPSec para verificar erros de 'No Proposal Chosen'",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Fantástico! Se Fase 1 tá OK e Fase 2 falha, é divergência de sub-redes combinadas ou mismatch de algoritmos de criptografia da Fase 2."
+        },
+        {
+          "id": "noc_medio_08",
+          "level": "Urgente",
+          "alert": "Monitoramento mostra que o uso de memória do IIS (Servidor Web Windows) está estourando, causando erro 503 Service Unavailable para os usuários.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Fazer um IIS Reset (reinício rápido do serviço Web) como ação de contenção imediata",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Formatar o servidor e reinstalar o IIS",
+              "is_correct": false,
+              "feedback": "A aplicação continuará com memory leak depois da formatação. Não resolve a raiz."
+            },
+            {
+              "id": "a3",
+              "text": "Reciclar o Application Pool problemático e configurar limite de memória (Recycling limit)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Colocar mais espaço em Disco (HD)",
+              "is_correct": false,
+              "feedback": "O alerta é claro sobre Memória RAM (vazamento), adicionar disco não tem efeito na heap de memória da aplicação."
+            },
+            {
+              "id": "a5",
+              "text": "Escalar a evidência de vazamento de memória (Memory Leak) para o time de Desenvolvimento da aplicação",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Excelente fluxo. Você agiu para estancar a sangria (Restart/Pool Recycle) e passou o bastão para a correção de código (Dev)."
+        },
+        {
+          "id": "noc_dificil_07",
+          "level": "Crítica",
+          "alert": "Os logs do Core Switch estão lotados de mensagens 'MAC FLAPPING' (O mesmo endereço MAC está sendo aprendido repetidamente em duas portas físicas diferentes: Gi1/0/1 e Gi2/0/5).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Isso é um Loop de Rede (Layer 2). Rastrear imediatamente o que está conectado na Gi1/0/1 e Gi2/0/5",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Bloquear o endereço MAC no firewall de borda",
+              "is_correct": false,
+              "feedback": "O firewall não consegue agir no tráfego interno (Layer 2) antes dele destruir a LAN. O Loop vai continuar fritando o switch localmente."
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se alguém fechou um anel ligando um cabo entre dois switches de acesso (ou no mesmo switch)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Validar por que o protocolo STP (Spanning Tree) não bloqueou essa porta automaticamente",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Aumentar a banda de internet",
+              "is_correct": false,
+              "feedback": "Problema físico de rede local, total desassociação com o link de internet ISP."
+            }
+          ],
+          "success_message": "Perfeito. MAC Flapping contínuo = Loop L2. O switch não sabe mais por onde enviar o pacote e fica rebatendo ele até a rede cair."
+        },
+        {
+          "id": "noc_dificil_08",
+          "level": "Crítica",
+          "alert": "Cluster Kubernetes (K8s) da produção apresenta falha. Os pods não conseguem resolver nomes de DNS externos (ex: ping google.com de dentro do container falha), mas o ping no IP 8.8.8.8 responde.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Reiniciar os firewalls físicos da empresa",
+              "is_correct": false,
+              "feedback": "Se o ping para 8.8.8.8 (externo) funcionou, a borda e internet da empresa estão OK. O problema é resolução local do cluster."
+            },
+            {
+              "id": "a2",
+              "text": "Checar os logs do serviço CoreDNS/Kube-DNS dentro do cluster Kubernetes",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se os pods de CoreDNS estão travados em estado CrashLoopBackOff ou Pending",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Deletar todos os Pods de aplicação e fazer deploy de novo",
+              "is_correct": false,
+              "feedback": "Desnecessário e causa downtime na aplicação que poderia estar rodando parcialmente sem DNS."
+            },
+            {
+              "id": "a5",
+              "text": "Analisar as regras de CNI (Network Policies) para garantir que não bloquearam a porta 53/UDP dos pods",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Especialista! Resolução de nomes falhando, com roteamento de IP OK dentro de orquestrador (K8s), é quase sempre CoreDNS corrompido ou calico/flannel bloqueando a porta 53."
+        },
+        {
+          "id": "noc_facil_09",
+          "level": "Baixa",
+          "alert": "A API do aplicativo mobile dos motoristas está retornando '502 Bad Gateway' aleatoriamente. O frontend usa Next.JS e o balanceador é um Nginx.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Reiniciar o banco de dados principal",
+              "is_correct": false,
+              "feedback": "Bad Gateway significa que o proxy reverso não conseguiu alcançar a aplicação. Reiniciar o banco não ajuda a conectar o proxy à API."
+            },
+            {
+              "id": "a2",
+              "text": "Checar o status do serviço de Backend (Node.js, PM2, Docker container) que recebe as chamadas do Nginx",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Analisar os logs de erro (/var/log/nginx/error.log) para ver por que o upstream falhou",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Deletar a zona DNS",
+              "is_correct": false,
+              "feedback": "O domínio está resolvendo, caso contrário o Nginx não devolveria erro 502. O problema é interno no servidor."
+            },
+            {
+              "id": "a5",
+              "text": "Verificar a carga de CPU/RAM para entender se o processo Node foi morto por falta de memória (OOM Killer)",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Boa ação! Erro 502 é o Nginx avisando: 'Fui no servidor de trás (backend) pegar a resposta e não tinha ninguém lá ou ele demorou demais'."
+        },
+        {
+          "id": "noc_facil_10",
+          "level": "Baixa",
+          "alert": "O painel da AWS (ou Azure) alerta que o Disco gp2/gp3 do Banco de Dados em produção atingiu 0 de 'Burst Balance' (IOPS esgotados). A aplicação está muito lenta.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Aumentar imediatamente a capacidade de rede da VPC",
+              "is_correct": false,
+              "feedback": "O gargalo não é a banda da rede virtual, e sim as operações de entrada/saída (I/O) do disco anexado."
+            },
+            {
+              "id": "a2",
+              "text": "Analisar as queries do banco para descobrir se alguma transação errada causou varredura completa da tabela (Full Table Scan)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Formatar o disco para liberar espaço",
+              "is_correct": false,
+              "feedback": "Aviso de IOPS não é sobre falta de espaço (Gigabytes), é sobre velocidade de gravação/leitura. Formatar exclui o banco de dados em produção."
+            },
+            {
+              "id": "a4",
+              "text": "Mudar dinamicamente o volume para o tipo IO1/IO2 (Provisioned IOPS) ou aumentar o tamanho do disco para ganhar cota base se a lentidão for crítica",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Usar comandos como iotop para validar processos ofensores",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Exato! Em ambientes Cloud, quando o saldo de IOPS zera, o disco entra em modo de estrangulamento (throttling), deixando o servidor extremamente lento."
+        },
+        {
+          "id": "noc_medio_09",
+          "level": "Urgente",
+          "alert": "Roteador de borda do data center de Goiânia apresenta sessão BGP oscilando intermitentemente (Route Flapping) com a operadora local. O tráfego cai e volta a cada 30 segundos.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Ajustar os timers do BGP sem a autorização da operadora",
+              "is_correct": false,
+              "feedback": "Desalinhar os timers de Keepalive e Hold Time fará a sessão cair de forma permanente. As duas pontas devem concordar."
+            },
+            {
+              "id": "a2",
+              "text": "Checar os logs de CPU do roteador (uma CPU em 100% não consegue processar os pacotes Keepalive do BGP e derruba a sessão)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar integridade do meio físico/Módulo óptico local e pedir testes na fibra óptica da última milha da operadora",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Desligar a porta por 5 minutos administrativamente (Shut) e abrir chamado crítico no NOC do ISP para evitar roteamento de buraco negro provisório",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Deletar as rotas estáticas internas do OSPF",
+              "is_correct": false,
+              "feedback": "O OSPF é o protocolo de rede interna e não deve ser desfeito por um problema externo do BGP."
+            }
+          ],
+          "success_message": "Belo trabalho com arquitetura de redes! Route flapping mata a estabilidade da internet. Desligar a rota oscilante estabiliza a rede via links secundários enquanto investiga a falha na fibra ou CPU do roteador."
+        },
+        {
+          "id": "noc_medio_10",
+          "level": "Urgente",
+          "alert": "Servidor Linux travou. Ao conectar diretamente via console (Hypervisor), aparece um erro de 'Kernel Panic - not syncing: VFS: Unable to mount root fs on unknown-block' após uma atualização do sistema.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Reiniciar o servidor em Modo de Segurança (Recovery Mode/Modo de Resgate)",
+              "is_correct": false,
+              "feedback": "O SO não consegue montar a raiz (/). Ele sequer chegará ao modo de recuperação local sem um disco de boot."
+            },
+            {
+              "id": "a2",
+              "text": "Dar Boot com uma ISO LiveCD (ex: Ubuntu Live ou SystemRescue)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Montar a partição principal manualmente, usar 'chroot' e reinstalar a imagem do kernel e o grub (update-initramfs)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Selecionar uma versão de kernel anterior (fallback) no menu do GRUB durante a inicialização",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Instalar um Antivírus pelo LiveCD",
+              "is_correct": false,
+              "feedback": "Kernel panic logo após update costuma ser falha na geração do Initramfs ou corrupção do pacote do kernel, e não um vírus."
+            }
+          ],
+          "success_message": "Resgate Linux avançado! Esse erro clássico de sysadmin ocorre quando o update do kernel não compila bem o initramfs. Dar boot na versão antiga do kernel pelo GRUB salva o dia instantaneamente."
+        },
+        {
+          "id": "noc_dificil_09",
+          "level": "Crítica",
+          "alert": "O Application Load Balancer (ALB) da AWS que atende o front-end está retornando erro '504 Gateway Time-out' nos horários de pico. O cluster não tem regras de auto-scaling configuradas.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Mudar a configuração do DNS para passar por fora do Load Balancer e ir direto para as instâncias",
+              "is_correct": false,
+              "feedback": "Isso anula os ganhos do balanceador, sobrecarrega apenas uma instância EC2 escolhida ao acaso e derruba o serviço de vez."
+            },
+            {
+              "id": "a2",
+              "text": "Verificar as métricas de latência dos Target Groups do backend no CloudWatch",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Aumentar o valor de 'Idle Timeout' do Load Balancer temporariamente",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Analisar se o banco de dados por trás do backend virou o gargalo (queries lentas travando as threads dos workers)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Desligar metade das instâncias para ver se o balanço se reorganiza",
+              "is_correct": false,
+              "feedback": "Com timeout em horário de pico, remover capacidade computacional é um suicídio de disponibilidade."
+            }
+          ],
+          "success_message": "Isso! O Erro 504 acontece quando o backend (ex: suas instâncias Node/React) demora tanto para responder que o Load Balancer desiste de esperar e encerra a conexão com o cliente."
+        },
+        {
+          "id": "noc_dificil_10",
+          "level": "Crítica",
+          "alert": "VLANs inteiras da infraestrutura física não se comunicam (Roteamento Inter-VLAN caiu). O Switch Core Layer 3 perdeu as SVIs. Ping para o gateway responde, mas as rotas falham.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Verificar se as VLANs (Layer 2) ainda estão criadas no banco de dados local do switch (show vlan brief)",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Trocar o cabo de internet do provedor",
+              "is_correct": false,
+              "feedback": "Falha de Roteamento Inter-VLAN é um incidente lógico da rede interna (LAN). O cabo do ISP externo não interfere."
+            },
+            {
+              "id": "a3",
+              "text": "Garantir que a função 'ip routing' (ou equivalente) não foi desativada acidentalmente no modo de configuração global",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Analisar auditoria de logs (AAA/Tacacs) para ver se alguém deletou a configuração das interfaces VLAN acidentalmente",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Limpar todas as tabelas ARP da rede com broadcast global",
+              "is_correct": false,
+              "feedback": "Se o gateway perdeu as rotas ativas (SVIs down), limpar a tabela ARP só vai gerar tráfego excessivo. O problema é na tabela de roteamento (Layer 3)."
+            }
+          ],
+          "success_message": "Exato. Quando rotas caem entre VLANs, o switch core L3 pode ter sido desconfigurado (ip routing desativado) ou a VLAN base no L2 foi deletada inadvertidamente por um VTP problemático."
+        }
+      ]
+    },
+    {
+      "id": "soc",
+      "name": "SOC",
+      "description": "Selecione as ações corretas de contenção, erradicação e resposta a incidentes de segurança.",
+      "color": "#ff4d6d",
+      "exercises": [
+        {
+          "id": "soc_facil_01",
+          "level": "Baixa",
+          "alert": "SIEM aciona alerta: 200 tentativas de login com erro (senha inválida) na conta de serviço 'BackupAdmin' vindas de um IP da Rússia.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Mudar a senha do usuário",
+              "is_correct": false,
+              "feedback": "Mudar a senha não para o ataque de força bruta no painel. O atacante continuará batendo até derrubar o serviço (DoS)."
+            },
+            {
+              "id": "a2",
+              "text": "Bloquear o IP de origem no Firewall de Borda / WAF",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Checar se houve algum login com SUCESSO desse IP nos logs",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Validar se essa conta de serviço deveria estar exposta para a internet",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Deletar a conta BackupAdmin",
+              "is_correct": false,
+              "feedback": "Deletar uma conta de sistema crítica vai quebrar os backups da empresa inteira."
+            }
+          ],
+          "success_message": "Correto! Conter a ameaça (bloquear IP), investigar comprometimento (logins bem sucedidos) e corrigir a postura (fechar a porta exposta)."
+        },
+        {
+          "id": "soc_facil_02",
+          "level": "Baixa",
+          "alert": "O EDR/Antivírus bloqueou e colocou em quarentena o arquivo 'nota_fiscal.exe' na máquina do setor financeiro.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Restaurar o arquivo e pedir para a usuária abrir para vermos se era vírus mesmo",
+              "is_correct": false,
+              "feedback": "Regra de ouro: NUNCA execute malware intencionalmente em ambiente de produção para 'ver o que acontece'."
+            },
+            {
+              "id": "a2",
+              "text": "Checar os logs do EDR para ver qual família de malware foi detectada",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Investigar como o arquivo chegou lá (ex: Phishing por e-mail, Pen Drive)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Apagar toda a pasta de documentos do usuário para garantir",
+              "is_correct": false,
+              "feedback": "Isso destrói dados corporativos de forma descuidada. O EDR já colocou o arquivo isolado em quarentena."
+            },
+            {
+              "id": "a5",
+              "text": "Enviar o hash do arquivo para o VirusTotal para análise",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Boa ação! Identificar o vetor de entrada (Phishing, Web, USB) é fundamental para impedir novos casos."
+        },
+        {
+          "id": "soc_medio_01",
+          "level": "Urgente",
+          "alert": "Um funcionário do RH informa que clicou em um link de recadastramento bancário, digitou a senha do AD dele e a tela ficou branca.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Dizer para o usuário não se preocupar, pois o banco tem seguro",
+              "is_correct": false,
+              "feedback": "A senha vazada foi a do Active Directory (rede corporativa), não a do banco! O risco interno é extremo."
+            },
+            {
+              "id": "a2",
+              "text": "Forçar o reset imediato da senha corporativa do usuário",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Matar todas as sessões ativas do usuário no Office 365 e Azure AD",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Formatar a máquina",
+              "is_correct": false,
+              "feedback": "Não há indícios de execução de malware local, apenas roubo de credencial via web (Phishing clássico). Formatar é precipitado."
+            },
+            {
+              "id": "a5",
+              "text": "Analisar logs de login para ver se o atacante já usou a senha vazada",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Exato! Phishing de credencial exige revogação imediata de token e reset de senha, além de caçada por movimentações suspeitas."
+        },
+        {
+          "id": "soc_medio_02",
+          "level": "Urgente",
+          "alert": "Firewall detecta servidor interno do banco de dados (que não tem acesso à internet) tentando comunicar com a porta TCP 4444 para um IP na Rússia.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Permitir a porta no firewall para ver qual serviço ele tenta acessar",
+              "is_correct": false,
+              "feedback": "Liberar tráfego suspeito C2 (Command & Control) dá controle total do servidor ao hacker."
+            },
+            {
+              "id": "a2",
+              "text": "Isolar a placa de rede do servidor (Quarentena na VLAN)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Reiniciar o servidor",
+              "is_correct": false,
+              "feedback": "Reiniciar destrói artefatos em memória RAM (como o processo do backdoor atrelado à porta 4444). A forense será prejudicada."
+            },
+            {
+              "id": "a4",
+              "text": "Coletar captura de tráfego (PCAP) e analisar conexões ativas (netstat)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Fazer dump de memória RAM do servidor para análise forense",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Correto! Tráfego outbound em portas obscuras (4444 é padrão do Metasploit) indica servidor altamente comprometido com Reverse Shell. Isolar e coletar artefatos é urgente."
+        },
+        {
+          "id": "soc_dificil_01",
+          "level": "Crítica",
+          "alert": "Alerta de DLP: Analista desenvolvedor que pediu demissão ontem está fazendo upload de 50GB compactados para um Google Drive pessoal.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Bloquear a conexão de rede da máquina dele remotamente",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Mandar um e-mail perguntando amigavelmente por que ele está copiando os dados",
+              "is_correct": false,
+              "feedback": "Alerta sobre investigação pode fazer o Insider Threat destruir evidências ou acelerar o vazamento."
+            },
+            {
+              "id": "a3",
+              "text": "Revogar as chaves de acesso VPN e Cloud do desenvolvedor",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Preservar logs do DLP (Data Loss Prevention) para o departamento jurídico",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Desligar o switch do andar onde o desenvolvedor senta",
+              "is_correct": false,
+              "feedback": "Afeta outros funcionários inocentes. A contenção deve ser direcionada ao endpoint do suspeito (EDR isolation)."
+            }
+          ],
+          "success_message": "Perfeito. Insider Threat (Vazamento de Dados por funcionário) é um problema severo que requer ação técnica e acionamento imediato do Jurídico/RH."
+        },
+        {
+          "id": "soc_dificil_02",
+          "level": "Crítica",
+          "alert": "Um ransomware de alta velocidade comprometeu o File Server. Os arquivos estão sendo criptografados rapidamente (extensão .Wanna).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Pagar o resgate usando a carteira Bitcoin da empresa imediatamente",
+              "is_correct": false,
+              "feedback": "Pagar resgate não garante a chave de decriptação, incentiva o crime e é contra compliance de grandes empresas."
+            },
+            {
+              "id": "a2",
+              "text": "Desconectar o cabo de rede/desativar a interface virtual do servidor afeto",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Manter o servidor LIGADO para não perder as chaves de criptografia na RAM",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Procurar nas sessões de rede (SMB) qual 'Máquina Paciente Zero' está acessando e cifrando o share",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Injetar um antivírus genérico por pendrive para tentar limpar o vírus ativo",
+              "is_correct": false,
+              "feedback": "Pendrives em máquinas infectadas com ransomware podem ser infectados. Além disso, AV genérico não descriptografa arquivos cifrados por AES."
+            }
+          ],
+          "success_message": "Fantástico! Desconectar a rede trava a propagação lateral (lateral movement). Manter ligado preserva a memória para análise do time de forense extrair a chave de criptografia, se houver falha no malware."
+        },
+        {
+          "id": "soc_facil_03",
+          "level": "Baixa",
+          "alert": "Cerca de 15 usuários repassaram para o SOC um e-mail de 'Atualização de Benefícios' que parece ser um Phishing.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Usar a ferramenta de segurança do e-mail para buscar e purgar a mensagem de todas as caixas (Search & Destroy)",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Bloquear o domínio do remetente malicioso no Secure Email Gateway (SEG)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar nos logs do Proxy/Firewall se algum funcionário clicou no link",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Ligar no número do golpista presente no e-mail para confrontá-lo",
+              "is_correct": false,
+              "feedback": "Absolutamente não. Nunca interaja com o atacante. Isso confirma a existência do alvo e gera retaliação."
+            },
+            {
+              "id": "a5",
+              "text": "Formatar os computadores das 15 pessoas que reportaram",
+              "is_correct": false,
+              "feedback": "Receber um phishing não infecta a máquina. Formatar apenas pelo recebimento é amadorismo extremo."
+            }
+          ],
+          "success_message": "Isso aí. Contenção no Gateway, busca proativa pelas caixas de quem não reportou e auditoria de cliques."
+        },
+        {
+          "id": "soc_facil_04",
+          "level": "Baixa",
+          "alert": "O software de Data Loss Prevention (DLP) acionou um bloqueio: um usuário inseriu um pen drive não criptografado na máquina local.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Auditar nos logs do DLP se ele tentou copiar arquivos confidenciais antes do bloqueio",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Enviar um aviso educativo sobre a Política de Segurança de Mídias Removíveis",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Demitir o usuário por justa causa imediatamente",
+              "is_correct": false,
+              "feedback": "O SOC reporta e investiga. Punições drásticas sem entender contexto (ex: erro honesto) cabem ao RH e compliance."
+            },
+            {
+              "id": "a4",
+              "text": "Sequestrar a máquina e colocar em rede de quarentena severa",
+              "is_correct": false,
+              "feedback": "O DLP fez o trabalho de bloquear. Isolar a máquina inteira por tentar plugar um pen drive atrapalha o negócio sem necessidade."
+            },
+            {
+              "id": "a5",
+              "text": "Verificar com o gestor da área se a exceção de pendrive faz parte do fluxo de trabalho deles",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Exato. Eventos de bloqueio simples exigem auditoria do evento, mas também orientação. A segurança deve habilitar o negócio, não pará-lo sem motivo."
+        },
+        {
+          "id": "soc_medio_03",
+          "level": "Urgente",
+          "alert": "O EDR detectou uma Tarefa Agendada no Windows Server rodando um script PowerShell longo e ilegível (ofuscado em Base64).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Isolar o servidor da rede logicamente mantendo-o ligado",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Deletar a tarefa agendada imediatamente sem ler o conteúdo",
+              "is_correct": false,
+              "feedback": "Nunca delete a evidência. Você perde o código malicioso, impossibilitando entender O QUE o atacante fez (ex: roubou dados?)."
+            },
+            {
+              "id": "a3",
+              "text": "Extrair o comando PowerShell e decodificar o Base64 em um ambiente seguro (CyberChef/Sandbox)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Procurar nos Event Logs do Windows (Id 4624/4698) qual usuário criou aquela tarefa",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Rodar antivírus comum e reiniciar",
+              "is_correct": false,
+              "feedback": "Malwares Fileless (que rodam direto na memória/PS) costumam sobreviver e enganar Antivírus tradicionais. A forense precisa ser manual."
+            }
+          ],
+          "success_message": "Cirúrgico. Isolar, coletar o payload em texto claro para análise e descobrir o vetor (quem agendou) é o passo de mestre no SOC."
+        },
+        {
+          "id": "soc_medio_04",
+          "level": "Urgente",
+          "alert": "Movimentação Lateral detectada: Um desktop do setor fiscal tentou acessar via RDP e falhou a senha em 12 servidores diferentes às 3h da manhã.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Bloquear o IP do desktop na ACL de firewalls internos/VLANs",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Desabilitar a porta 3389 (RDP) para a empresa inteira",
+              "is_correct": false,
+              "feedback": "Desabilitar o RDP corporativo pararia toda a TI e administração remota no dia seguinte. Seja cirúrgico na resposta."
+            },
+            {
+              "id": "a3",
+              "text": "Isolar a máquina do fiscal (ponto de origem) usando o EDR",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Checar se houve algum login RDP com SUCESSO partindo dessa mesma máquina",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Mandar um e-mail para o usuário do fiscal para ver se ele estava trabalhando de madrugada",
+              "is_correct": false,
+              "feedback": "Um desktop tentando RDP em 12 servidores de madrugada é certeza de worm/malware ou atacante remoto. Contactar o usuário atrasa a resposta técnica."
+            }
+          ],
+          "success_message": "Fantástico! Esse é um ataque de 'Lateral Movement'. Conter rapidamente o host infectado impede o comprometimento do Data Center."
+        },
+        {
+          "id": "soc_dificil_03",
+          "level": "Crítica",
+          "alert": "Serviço de Threat Intelligence (Dark Web) alerta que 50 e-mails e senhas válidos de diretores da sua empresa vazaram em um fórum hacker.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Ignorar, assumindo que as senhas são de cadastros de redes sociais antigas",
+              "is_correct": false,
+              "feedback": "Ignorar um alerta crítico de Intel expõe a empresa a ransomware via VPN ou ataques massivos. Toda credencial vazada é risco."
+            },
+            {
+              "id": "a2",
+              "text": "Forçar a expiração/reset de senha no Active Directory para todas as contas vazadas",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Validar se MFA (Múltiplo Fator) está ativado em 100% dos acessos VPN/Cloud para esses diretores",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Investigar no SIEM se houve acessos atípicos dessas contas (ex: Logins de países estranhos) nas últimas 48h",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Derrubar o fórum da Dark Web com DDoS próprio",
+              "is_correct": false,
+              "feedback": "Ilegal (Hack-back), impraticável tecnicamente e contra os princípios éticos de cibersegurança defensiva."
+            }
+          ],
+          "success_message": "Isso! Contas expostas em databreaches exigem força de reset e auditoria forense imediata no SIEM para garantir que as senhas não foram usadas na empresa."
+        },
+        {
+          "id": "soc_dificil_04",
+          "level": "Crítica",
+          "alert": "Analista descobre que a empresa roda um software com vulnerabilidade 'Zero-Day' crítica (RCE) anunciada hoje. A fabricante do software AINDA NÃO lançou o Patch.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Atualizar o Windows do servidor",
+              "is_correct": false,
+              "feedback": "Se a fabricante do sistema ainda não lançou o patch, o Windows Update não terá efeito na aplicação vulnerável."
+            },
+            {
+              "id": "a2",
+              "text": "Criar uma regra virtual (Virtual Patching) no WAF baseada nas assinaturas do exploit divulgado",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Restringir o acesso do servidor vulnerável apenas a IPs permitidos (Whitelisting no Firewall)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Avaliar com a diretoria desligar temporariamente a aplicação externa até a saída do patch",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Rodar o scan do antivírus para limpar a falha",
+              "is_correct": false,
+              "feedback": "Antivírus não corrige falha em código de programação (CVE). Ele detecta malware, não fecha brechas de software."
+            }
+          ],
+          "success_message": "Gestão de risco avançada! Contra falhas Zero-Day sem correção oficial (patch), as defesas de perímetro (WAF, IPS, Whitelisting) são a única barreira de proteção."
+        },
+        {
+          "id": "soc_facil_05",
+          "level": "Baixa",
+          "alert": "O painel do Firewall de borda está acusando cerca de 5.000 requisições TCP bloqueadas vindas de IP originário da China, direcionadas à porta 22 (SSH) da sua infraestrutura.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Desligar a internet da empresa preventivamente",
+              "is_correct": false,
+              "feedback": "O firewall já está agindo (bloqueando). Desligar a internet significa que a empresa faria um auto-DDoS e paralisaria o negócio por causa de simples botnets de scan."
+            },
+            {
+              "id": "a2",
+              "text": "Validar nas políticas de NAT/Forwarding do firewall se a porta 22 realmente não está exposta para fora",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Mudar a porta interna dos servidores de 22 para 2222",
+              "is_correct": false,
+              "feedback": "Sem necessidade imediata, pois a borda não está passando tráfego. Além disso, 'segurança por obscuridade' é fraca contra scans modernos."
+            },
+            {
+              "id": "a4",
+              "text": "Criar/ativar regra de bloqueio global de Geo-IP DropList (ex: Bloquear origens em massa) se não há negócios na região",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Certificar-se de que os acessos remotos para gestão de servidores exijam uso prévio de VPN corporativa",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Isso! Scans na internet são como ruído de fundo (acontecem 24h por dia). Validar postura de fechamento de portas e criar bloqueios massivos por IP protegem o ambiente silenciando os alarmes."
+        },
+        {
+          "id": "soc_facil_06",
+          "level": "Baixa",
+          "alert": "Diretor financeiro recebeu um e-mail em inglês que diz: 'Eu sei sua senha que é: [SenhaAntigaDoDiretor]. Tenho vídeos seus da webcam e vou vazar se não depositar Bitcoin'.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Instruir o financeiro a comprar o Bitcoin e pagar para evitar escândalos",
+              "is_correct": false,
+              "feedback": "Esse é um ataque clássico de 'Sextortion Scam' usando dados antigos. Pagar apenas confirma a extorsão."
+            },
+            {
+              "id": "a2",
+              "text": "Acalmar o usuário e confirmar que essa senha faz parte de um vazamento (Data Breach) antigo e público",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Certificar-se de que a senha descrita NÃO seja mais usada em nenhum sistema corporativo hoje",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Aconselhar o usuário a ignorar o e-mail e usar o botão de denunciar phishing do M365/Google",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Formatá-lo e apreender o computador para o laboratório forense",
+              "is_correct": false,
+              "feedback": "Esse e-mail não infecta máquinas e muito raramente envolve acesso real ao PC. É apenas chantagem emocional com banco de dados roubado."
+            }
+          ],
+          "success_message": "Exato! Sextortion scams usam bases do 'HaveIBeenPwned' antigas para gerar choque no alvo. Validar a atualização das credenciais e ignorar o blefe é o procedimento."
+        },
+        {
+          "id": "soc_medio_05",
+          "level": "Urgente",
+          "alert": "Antivírus Next-Gen (EDR) detectou e bloqueou a execução da ferramenta 'Mimikatz' (extrator de credenciais da memória) no Servidor de Arquivos Principal.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Clicar em 'Resolver' no console de antivírus e continuar as atividades diárias",
+              "is_correct": false,
+              "feedback": "Ameaças do nível Mimikatz em servidor não surgem do nada. Se foi detectado lá, um atacante humano ou worm tem acesso com privilégio administrativo (Admin local)."
+            },
+            {
+              "id": "a2",
+              "text": "Isolar logicamente o Servidor de Arquivos da rede interna",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Investigar via logs de eventos como a ferramenta entrou (SMB, RDP, exploit de vulnerabilidade)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Procurar nas últimas 24h por contas de administrador que logaram nesse servidor",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Fazer dump e analisar os eventos de segurança (EventID 4624)",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Perfeito. O Mimikatz busca as senhas gravadas na memória. Isso indica uma violação grave na infraestrutura. A postura correta é acionar a equipe de resposta (Incident Response) total."
+        },
+        {
+          "id": "soc_medio_06",
+          "level": "Urgente",
+          "alert": "Firewall alerta 'DNS Tunneling'. O tráfego partindo do desktop de um dev está fazendo dezenas de milhares de requisições DNS com payloads muito extensos para um domínio obscuro (.xyz).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Permitir todo tráfego DNS pela porta 53 sem restrição, afinal a internet depende disso",
+              "is_correct": false,
+              "feedback": "DNS Tunneling é usado por malwares modernos para exfiltrar dados roubados ou receber comandos (C2) usando consultas DNS legítimas, burlando proxies."
+            },
+            {
+              "id": "a2",
+              "text": "Isolar a máquina do desenvolvedor imediatamente",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Analisar com comandos ou ferramentas de EDR qual processo local (exe) está disparando esses pacotes DNS",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Bloquear o domínio .xyz suspeito e o IP de destino correspondente no bloqueio de DNS (ex: Umbrella, PiHole, NGFW)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Mudar o servidor DNS interno da empresa para o 8.8.8.8",
+              "is_correct": false,
+              "feedback": "Mudar o apontamento de DNS corporativo não impede que a máquina infectada continue 'tunelando' a comunicação por lá."
+            }
+          ],
+          "success_message": "Mandou bem. DNS Tunneling é uma técnica furtiva perigosa de bypass. Isolar a origem e caçar o processo ofensor garante contenção rápida."
+        },
+        {
+          "id": "soc_dificil_05",
+          "level": "Crítica",
+          "alert": "O Sentinel (SIEM) avisou: Uma nova conta com privilégio de 'Global Administrator' (Administrador Global) foi criada no Azure AD/Entra ID às 03:00 de domingo.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Mandar e-mail para a equipe de AD perguntando quem criou e esperar resposta segunda-feira",
+              "is_correct": false,
+              "feedback": "Global Admin tem o poder de destruir ou sequestrar a tenant inteira da empresa na Nuvem. O risco não pode esperar até segunda-feira."
+            },
+            {
+              "id": "a2",
+              "text": "Desabilitar a conta desconhecida provisoriamente no painel do Entra ID",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Investigar no Audit Log quem foi a conta criadora original dessa nova credencial",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Verificar se a conta matriz original sofreu roubo de token ou ataque com bypass de MFA no mesmo horário",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Adicionar a nova conta no grupo de Contabilidade e Finanças para ver o que ela faz",
+              "is_correct": false,
+              "feedback": "Isso concede acesso a dados confidenciais a um invasor em um evento ativo. Totalmente irresponsável."
+            }
+          ],
+          "success_message": "Ótima contenção! Criação de backdoor administrativo na nuvem é um 'Indicador de Comprometimento' altíssimo. Bloqueio imediato e varredura de rastros do criador."
+        },
+        {
+          "id": "soc_dificil_06",
+          "level": "Crítica",
+          "alert": "Alerta crítico de EDR e DLP: Em dois servidores de banco de dados e arquivos, milhares de MB foram enviados à internet via Rclone/MegaSync e logo depois as ferramentas de antivírus locais foram desligadas forçadamente.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Reformatar os servidores rapidamente antes de os arquivos serem criptografados",
+              "is_correct": false,
+              "feedback": "A formatação destrói a trilha de evidências forenses vitais (qual IP roubou os dados? o que ele levou?) e impossibilita entender a extensão da crise de vazamento de dados."
+            },
+            {
+              "id": "a2",
+              "text": "Desconectar imediatamente todas as placas de rede virtuais ou tirar os cabos físicos dos servidores",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Considerar isto um vazamento seguido de um provável ransomware iminente (Double Extortion)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Iniciar com o DPO e Jurídico as etapas de gestão de crise por vazamento de informações (Data Breach)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Fazer logoff do usuário atual no servidor",
+              "is_correct": false,
+              "feedback": "Atacantes utilizam serviços de sistema e backdoors. Apenas um Logoff do Windows em andamento não desativa a ameaça. Deve-se isolar no nível de rede."
+            }
+          ],
+          "success_message": "Fantástico, visão de liderança técnica! Os grupos modernos de Ransomware roubam os dados primeiro usando utilitários de sync de cloud, desligam defesas (AV) e depois jogam o Ransomware."
+        },
+        {
+          "id": "soc_facil_07",
+          "level": "Baixa",
+          "alert": "Antivírus alertou o bloqueio de um arquivo chamado 'EICAR.txt' na máquina de um analista júnior de segurança.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Acionar isolamento imediato da máquina, pois é uma invasão severa",
+              "is_correct": false,
+              "feedback": "Errado. O EICAR é um arquivo inofensivo de teste padrão da indústria usado apenas para validar se o antivírus está funcionando."
+            },
+            {
+              "id": "a2",
+              "text": "Perguntar ao analista se ele estava realizando testes de validação na ferramenta (AV/EDR)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Formatar o computador",
+              "is_correct": false,
+              "feedback": "Como o EICAR é uma string de texto inofensiva (teste falso positivo padrão), formatar a máquina é extremo."
+            },
+            {
+              "id": "a4",
+              "text": "Registrar o falso positivo/teste nos tickets do SOC e fechar o alerta",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Mudar a senha do Active Directory do analista",
+              "is_correct": false,
+              "feedback": "Ele apenas baixou um arquivo de teste. Não há comprometimento de credenciais envolvido."
+            }
+          ],
+          "success_message": "Excelente! Reconhecer arquivos padrão da área de cibersegurança (como o EICAR) previne crises e pânico gerados à toa no SOC."
+        },
+        {
+          "id": "soc_facil_08",
+          "level": "Baixa",
+          "alert": "Aleta de Risco de Login (Impossible Travel): Um usuário fez login com sucesso de São Paulo, e exatos 3 minutos depois, teve outro login de sucesso originado no Japão.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Ignorar, porque a senha estava certa e o usuário conseguiu logar",
+              "is_correct": false,
+              "feedback": "Impossible Travel significa que as credenciais dele foram comprometidas ou clonadas. Login com sucesso de outro país em 3 min é crítico."
+            },
+            {
+              "id": "a2",
+              "text": "Desabilitar a conta do usuário provisoriamente (Bloqueio de Sign-in)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se o usuário usa VPN comercial corporativa com 'nó' no Japão (ex: ExpressVPN)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Revogar as sessões (Tokens) atuais no portal Cloud",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Avisar que a viagem dele pro Japão foi muito rápida",
+              "is_correct": false,
+              "feedback": "Momento de brincadeira, mas tecnicamente inútil no SOC durante o tratamento inicial."
+            }
+          ],
+          "success_message": "Correto! Viagens impossíveis são bloqueios automáticos. Cortar as sessões do atacante (Revoke Tokens) e investigar se o acesso é VPN resolve a questão."
+        },
+        {
+          "id": "soc_medio_07",
+          "level": "Urgente",
+          "alert": "Um analista de rede (NOC) detectou um Ponto de Acesso Wi-Fi (AP) não autorizado, chamado 'Rede Aberta Teste', conectado fisicamente à tomada de rede na sala de reuniões.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Tentar hackear o AP falso para descobrir de quem é",
+              "is_correct": false,
+              "feedback": "Não perca tempo tentando hackear o dispositivo na sua rede. O risco é ele criar uma ponte irrestrita para a internet aberta na rua."
+            },
+            {
+              "id": "a2",
+              "text": "Rastrear na tabela MAC do switch principal qual porta está entregando tráfego para esse AP",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Desligar a porta do switch fisicamente (Shut) para conter o risco (Rogue AP Containment)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Acionar a equipe de infra para retirar o aparelho fisicamente da sala de reunião",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Desligar o servidor Active Directory preventivamente",
+              "is_correct": false,
+              "feedback": "Desligar a autenticação global afeta a empresa toda. Cortar apenas a porta da sala de reunião isola o invasor sem impacto extra."
+            }
+          ],
+          "success_message": "Isso! Dispositivos não homologados (Rogue APs) são brechas de ouro para vazamento de dados. Contenção a nível físico/Layer 2 é imediata."
+        },
+        {
+          "id": "soc_medio_08",
+          "level": "Urgente",
+          "alert": "O WAF (Web Application Firewall) registrou 40 bloqueios de injeção de SQL (SQLi) seguidos direcionados à página de login do site institucional.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Desligar o banco de dados do site por segurança",
+              "is_correct": false,
+              "feedback": "O WAF já está barrando os ataques. Desligar o banco por causa de tentativa falha bloqueada vai apenas tirar o site do ar à toa."
+            },
+            {
+              "id": "a2",
+              "text": "Validar nos logs do WAF e do servidor (Access.log) se alguma request suspeita passou antes do bloqueio (Status 200)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Bloquear o IP ofensor de forma contínua ou acionar Rate Limiting",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Avisar a equipe de desenvolvimento para checar se as validações e sanitizações contra SQL Injection estão adequadas",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Trocar a tecnologia do banco de dados (ex: MySQL para MongoDB)",
+              "is_correct": false,
+              "feedback": "Inviável comercialmente e estruturalmente, e NoSQL também sofre de injeção se o código estiver vulnerável."
+            }
+          ],
+          "success_message": "Postura analítica excelente! Ferramentas bloqueando não significam que o trabalho acabou: você valida a eficácia (se algo passou) e engaja o time que coda para agir na causa raiz."
+        },
+        {
+          "id": "soc_dificil_07",
+          "level": "Crítica",
+          "alert": "SIEM reportou um alerta de 'Kerberoasting'. Estão acontecendo dezenas de pedidos atípicos de Service Principal Name (SPN / TGS tickets) no Active Directory.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Reiniciar os Controladores de Domínio (Domain Controllers)",
+              "is_correct": false,
+              "feedback": "Reiniciar o DC não resolve, pois o atacante continuará pedindo tickets em offline e tentando quebrar o hash fora da rede."
+            },
+            {
+              "id": "a2",
+              "text": "Mudar a porta do AD para uma porta não padrão",
+              "is_correct": false,
+              "feedback": "Isso quebraria 100% da autenticação Kerberos do domínio, e ninguém mais faria login na empresa."
+            },
+            {
+              "id": "a3",
+              "text": "Investigar de qual IP interno estão partindo as requisições atípicas e isolá-lo da rede",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Verificar as Contas de Serviço (Service Accounts) afetadas e rotacionar as senhas delas por senhas complexas e longas (>25 chars)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Procurar por uso atípico de ferramentas como Rubeus ou Mimikatz na máquina atacante",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Fantástico! O Kerberoasting rouba tickets criptografados de Contas de Serviço fracas e quebra offline. Rotacionar senhas para um tamanho impenetrável e caçar o IP são os passos de mitigação."
+        },
+        {
+          "id": "soc_dificil_08",
+          "level": "Crítica",
+          "alert": "Analista forense encontrou uma DLL não assinada sendo carregada em memória no servidor IIS de produção, injetando uma cópia maliciosa antes do binário legítimo (DLL Hijacking).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Rodar 'sfc /scannow' para ver se a Microsoft conserta automático",
+              "is_correct": false,
+              "feedback": "O ataque explora a ordem de carregamento na mesma pasta da aplicação, não de binários do SO. A verificação do sistema não limpará a pasta do IIS."
+            },
+            {
+              "id": "a2",
+              "text": "Coletar o binário (DLL) para análise e engenharia reversa para entender a capacidade do malware (C2, keylogger, etc)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Isolar o servidor de aplicação imediatamente preservando a RAM",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Verificar através de ferramentas como Procmon como o arquivo foi gravado no disco",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Restaurar todas as máquinas virtuais do Data Center para o dia de ontem",
+              "is_correct": false,
+              "feedback": "Péssima postura de continuidade. Causaria uma perda imensa de dados recentes para toda a empresa."
+            }
+          ],
+          "success_message": "Alto nível de Maturidade Forense. Isolar preservando evidências voláteis, fazer dump e monitorar como a persistência da DLL foi orquestrada indicam maestria no tratamento do incidente."
+        },
+        {
+          "id": "soc_facil_09",
+          "level": "Baixa",
+          "alert": "Analista avisa que está recebendo pop-ups do Microsoft Authenticator (ou Duo/Okta) no celular a cada 30 segundos pedindo para aprovar um login, sem ele ter feito nada.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Aprovar apenas um para a mensagem parar de incomodar",
+              "is_correct": false,
+              "feedback": "Jamais. Isso se chama 'MFA Fatigue Attack'. O atacante tem a senha correta e fica floodando o app até a vítima aprovar por cansaço. Aprovar é liberar a invasão."
+            },
+            {
+              "id": "a2",
+              "text": "Negar o acesso no aplicativo e clicar na opção 'Reportar fraude / Suspeito'",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Trocar imediatamente a senha do usuário no Active Directory / Entra ID",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Desativar o MFA temporariamente para parar de chegar mensagem",
+              "is_correct": false,
+              "feedback": "Pior decisão possível. O MFA é a única coisa protegendo o atacante de acessar a rede agora. Removê-lo facilita a invasão."
+            },
+            {
+              "id": "a5",
+              "text": "Verificar nos logs de SignIn do Azure AD/SSO qual IP malicioso está realizando os floods contínuos",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Correto! O ataque de fadiga de MFA derrubou várias empresas (como no caso da Uber). Senha já vazou: a contenção é negar os pushes, bloquear a conta e trocar a senha."
+        },
+        {
+          "id": "soc_facil_10",
+          "level": "Baixa",
+          "alert": "Ferramenta de análise estática de código (SAST) em pipeline CI/CD encontrou chaves de acesso da Cloud (AWS Access Key ID) 'hardcoded' no repositório Git público do time de desenvolvimento mobile.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Deletar o repositório inteiro e demitir a equipe",
+              "is_correct": false,
+              "feedback": "Apagar o repositório destrói meses de código do projeto. O SOC deve gerir o incidente sem destruir o produto."
+            },
+            {
+              "id": "a2",
+              "text": "Ir imediatamente no console da Cloud (IAM) e Desativar (Inactivate) ou Deletar as chaves expostas",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Auditar as métricas de faturamento e logs (CloudTrail) para verificar se as chaves já foram usadas para subir máquinas de mineração cripto ou acessar dados",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Pedir aos Devs para retirar a credencial do código, usar variáveis de ambiente (ENV) e limpar o histórico do Git (git filter-repo)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Esconder a chave do código trocando a cor da fonte para branca no Git",
+              "is_correct": false,
+              "feedback": "Botnets e scrapers automatizados leem o código em texto puro. Truques visuais são inúteis contra a extração de secrets."
+            }
+          ],
+          "success_message": "Ótima resposta rápida. Credenciais no GitHub podem ser exploradas em menos de 2 minutos por bots. Revogar no provedor Cloud (IAM) é a prioridade zero."
+        },
+        {
+          "id": "soc_medio_09",
+          "level": "Urgente",
+          "alert": "SIEM detecta um servidor Linux gerando uso constante de CPU de 100% à noite e tráfego intenso nas portas TCP 3333 e 4444 para IPs em pools de mineração de criptomoedas (Stratum protocol).",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Comprar mais servidores para dividir a carga",
+              "is_correct": false,
+              "feedback": "Você estaria apenas patrocinando a mineração ilegal do invasor com recursos da empresa."
+            },
+            {
+              "id": "a2",
+              "text": "Isolar a máquina infectada (Quarentena/Security Groups restritos)",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar via EDR ou comandos manuais (top, ps, netstat) qual processo não autorizado está gerando o uso de CPU (CryptoJacking)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Checar vulnerabilidades de RCE não corrigidas nos serviços web (ex: Redis exposto, Jenkins desatualizado) que permitiram a infecção",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Formatar a internet do provedor",
+              "is_correct": false,
+              "feedback": "Termo sem sentido técnico. A infecção ocorre localmente na aplicação ou no container comprometido."
+            }
+          ],
+          "success_message": "Fantástico! Cryptojacking visa consumir recursos. O isolamento e o estudo de como a vulnerabilidade permitiu a entrada de um shell reverso para baixar o minerador é a chave para não ser infectado de novo."
+        },
+        {
+          "id": "soc_medio_10",
+          "level": "Urgente",
+          "alert": "Analista de SOC flagra a execução local de um comando do Active Directory: 'nltest /dclist:nomedodominio' seguido de 'csvde' e consulta de grupos administradores em um PC da recepção.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Entender que a recepcionista está apenas muito interessada em estudar TI",
+              "is_correct": false,
+              "feedback": "Esses comandos específicos ('nltest', exportação CSV) na mesma sequência indicam claramente enumeração de rede e reconhecimento por parte de um atacante avançado ou malware, nunca curiosidade."
+            },
+            {
+              "id": "a2",
+              "text": "Isolar imediatamente a máquina da recepcionista da LAN e Wi-Fi",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Fazer dump de memória e caçar processos suspeitos (Ferramentas como BloodHound, SharpHound ou módulos de recon do Metasploit)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Correlacionar logs para checar os últimos acessos físicos da sala da recepção ou via email (Vetor inicial - Phishing)",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Remover o acesso à internet da empresa inteira preventivamente",
+              "is_correct": false,
+              "feedback": "Técnica de contenção draconiana. O reconhecimento (Recon/Enumeração AD) ocorre na LAN. Isole apenas o endpoint ofensor (Patient Zero)."
+            }
+          ],
+          "success_message": "Atenção cirúrgica! Estes comandos representam a fase de 'Reconnaissance e Discovery' do MITRE ATT&CK. Bloquear nessa fase impede que o invasor avance para o mapeamento completo do Domínio."
+        },
+        {
+          "id": "soc_dificil_09",
+          "level": "Crítica",
+          "alert": "Ransomware Cloud: Uma conta comprometida conseguiu ler e apagar 3 Buckets S3 críticos de backup na AWS e deixou uma nota de resgate .txt no lugar dos arquivos de produção.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Ficar tranquilo pois Buckets da AWS têm antivírus automático",
+              "is_correct": false,
+              "feedback": "O S3 é um armazenamento de objetos. A menos que ferramentas específicas (GuardDuty, Macie) estejam ativas e em bloqueio, ele aceita tudo."
+            },
+            {
+              "id": "a2",
+              "text": "Revogar a Access Key usada pelo atacante imediatamente e mudar as senhas do usuário envolvido",
+              "is_correct": true
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se o 'Object Versioning' (Versionamento) ou MFA Delete do bucket S3 estava ativo para restaurar as versões originais apagadas",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Pagar o resgate usando o cartão corporativo",
+              "is_correct": false,
+              "feedback": "Além de criminoso, não há garantias na recuperação via chantagem."
+            },
+            {
+              "id": "a5",
+              "text": "Atuar na resposta a incidentes de Cloud: Revogar políticas do IAM permissivas demais (Wildcard *) que permitiram a destruição do bucket",
+              "is_correct": true
+            }
+          ],
+          "success_message": "Especialista em Cloud Security! Atacantes buscam buckets abertos ou exploram credenciais com permissão 'S3:DeleteObject'. O versionamento é a salvação de DR (Disaster Recovery) do ambiente Serverless."
+        },
+        {
+          "id": "soc_dificil_10",
+          "level": "Crítica",
+          "alert": "Logs confirmam que um atacante acessou a máquina de um Admin de TI e executou um 'Pass-the-Hash' (PTH), roubando um hash NTLM da memória e usando-o para acessar o Controlador de Domínio (DC) lateralmente, sem quebrar a senha em texto claro.",
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Exigir que o Admin troque de senha imediatamente duas vezes (Rotacionar hash) e acionar bloqueio da máquina local",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Configurar antivírus para dar scan diário",
+              "is_correct": false,
+              "feedback": "Ameaça já está na rede e possui controle do Domínio. Um simples scan agendado para amanhã não fará nada contra roubo de sessão ativo."
+            },
+            {
+              "id": "a3",
+              "text": "Verificar logs no DC (Event ID 4624 - Logon Type 3 com Authentication Package 'NTLM') para rastrear a invasão lateral",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Ativar mitigação emergencial forçando o grupo Protected Users e bloqueando NTLM v1 / desabilitando Delegação Insegura",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Apagar a conta do Active Directory e criar uma nova conta igual",
+              "is_correct": false,
+              "feedback": "Deletar as contas remove permissões de e-mail e quebra tudo para o usuário. Deve-se revogar o Token, resetar a senha, reiniciar o PC dele."
+            }
+          ],
+          "success_message": "Visão técnica perfeita! O PTH contorna a senha complexa reutilizando o hash já autenticado. Implementar defesas NTLM estritas, mitigação e bloqueio são a rotina principal para deter movimento lateral avançado."
+        }
+      ]
+    }
+  ]
+}
