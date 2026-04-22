@@ -17,6 +17,7 @@ import { ProgressCategoryCard } from './components/progress-category-card';
 import { ResetProgressButton } from './components/reset-progress-button';
 import { CodingPracticeStore } from '../coding-practice/coding-practice.store';
 import { LANGUAGES } from '../coding-practice/coding-practice.constants';
+import { DebugPracticeStore } from '../ache-o-erro/ache-o-erro.store';
 
 export function ProgressScreen() {
   const bottomPadding = useTabContentPadding();
@@ -49,6 +50,7 @@ export function ProgressScreen() {
   const [dcStats, setDcStats] = useState({ completed: 0, total: 0, avgTime: 0, avgMoves: 0, avgScore: 0 });
   const [codingStats, setCodingStats] = useState({ completed: 0, total: 0, avgTime: 0, avgMoves: 0 });
   const [quizStats, setQuizStats] = useState({ mastered: 0, total: 0, accuracy: 0, avgTime: 0 });
+  const [debugStats, setDebugStats] = useState({ completed: 0, total: 0, avgTime: 0, avgMoves: 0 });
   const isFirstLoad = useRef(true);
 
   const totalCodingExercises = useMemo(() => {
@@ -201,6 +203,21 @@ export function ProgressScreen() {
         accuracy: qTotal > 0 ? (qMastered / qTotal) * 100 : 0,
         avgTime: data.avgTimeMs ? data.avgTimeMs / 1000 : 0
       });
+
+      // 6. Ache o Erro
+      const allDebugEx = await DebugPracticeStore.getAllExercises();
+      const debugProgress = await DebugPracticeStore.getProgress(user.id);
+      const finishedDebug = Object.values(debugProgress).filter((p) => p.completed);
+      setDebugStats({
+        completed: finishedDebug.length,
+        total: allDebugEx.length,
+        avgTime: finishedDebug.length > 0
+          ? Math.round(finishedDebug.reduce((acc, curr) => acc + curr.bestTime, 0) / finishedDebug.length)
+          : 0,
+        avgMoves: finishedDebug.length > 0
+          ? Math.round(finishedDebug.reduce((acc, curr) => acc + (curr.bestMoves || 0), 0) / finishedDebug.length)
+          : 0,
+      });
     } catch (e) {
       console.error('Error loading progress:', e);
     } finally {
@@ -341,6 +358,23 @@ export function ProgressScreen() {
                   </View>
                 </ModernSection>
               </View>
+
+              {/* ACHE O ERRO */}
+              <View style={{ width: layoutMode === 'desktop' ? '49%' : '100%' }}>
+                <ModernSection title="Ache o Erro" subtitle="Debugging e Análise" icon="bug" iconColor="#A855F7" count={`${debugStats.completed}/${debugStats.total}`}>
+                  <View style={{ gap: 12 }}>
+                    <View style={{ height: 6, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
+                      <View style={{ height: '100%', width: `${debugStats.total > 0 ? (debugStats.completed / debugStats.total) * 100 : 0}%`, backgroundColor: '#A855F7' }} />
+                    </View>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+                      <InnerStatCard label="Tempo Médio" value={`${debugStats.avgTime}s`} icon="timer-outline" color="#A855F7" />
+                      <InnerStatCard label="Avg Movimentos" value={debugStats.avgMoves} icon="gesture-tap" color="#A855F7" />
+                      <InnerStatCard label="Conclusão" value={`${Math.round((debugStats.completed / (debugStats.total || 1)) * 100)}%`} icon="progress-check" color="#A855F7" />
+                      <InnerStatCard label="Resolvidos" value={debugStats.completed} icon="check-all" color="#A855F7" />
+                    </View>
+                  </View>
+                </ModernSection>
+              </View>
             </View>
           </View>
         )}
@@ -427,6 +461,21 @@ export function ProgressScreen() {
                 <InnerStatCard label="Eficiência" value={`${Math.round(dcStats.avgTime)}s`} icon="timer-outline" color="#8B5CF6" />
                 <InnerStatCard label="Movimentos" value={dcStats.avgMoves} icon="gesture-tap" color="#8B5CF6" />
                 <InnerStatCard label="Uptime" value="99.9%" icon="arrow-up-bold-circle-outline" color="#8B5CF6" />
+              </View>
+            </View>
+          </ModernSection>
+
+          {/* ACHE O ERRO */}
+          <ModernSection title="Ache o Erro" icon="bug" iconColor="#A855F7" count={`${debugStats.completed}/${debugStats.total}`}>
+            <View style={{ gap: 10 }}>
+              <View style={{ height: 6, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
+                <View style={{ height: '100%', width: `${debugStats.total > 0 ? (debugStats.completed / debugStats.total) * 100 : 0}%`, backgroundColor: '#A855F7' }} />
+              </View>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                <InnerStatCard label="T. Médio" value={`${debugStats.avgTime}s`} icon="timer-outline" color="#A855F7" />
+                <InnerStatCard label="Movimentos" value={debugStats.avgMoves} icon="gesture-tap" color="#A855F7" />
+                <InnerStatCard label="Conclusão" value={`${Math.round((debugStats.completed / (debugStats.total || 1)) * 100)}%`} icon="progress-check" color="#A855F7" />
+                <InnerStatCard label="Resolvidos" value={debugStats.completed} icon="check-all" color="#A855F7" />
               </View>
             </View>
           </ModernSection>

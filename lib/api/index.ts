@@ -11,6 +11,7 @@ export * from "./progress";
 export * from "./coding-practice";
 export * from "./quick-response";
 export * from "./datacenter";
+export * from "./ache-o-erro";
 export * from "./types";
 
 

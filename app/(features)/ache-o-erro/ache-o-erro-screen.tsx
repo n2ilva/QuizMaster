@@ -187,7 +187,7 @@ export function AcheOErroScreen() {
       const timeSecs = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
       setElapsedTime(timeSecs);
       
-      await DebugPracticeStore.saveResult(activeExercise.id, timeSecs, moveCount, user?.id);
+      await DebugPracticeStore.saveResult(activeExercise.id, timeSecs, moveCount, activeExercise.language, activeExercise.level, user?.id);
       await playSound('concluido');
 
       // Completion Overlay animation
