@@ -101,11 +101,9 @@ export function ReadyTrackCategoriesScreen() {
     return list.sort((a, b) => (statsMap[b]?.totalAnswered ?? 0) - (statsMap[a]?.totalAnswered ?? 0));
   }, [categories, searchTerm, fuse, statsMap]);
 
-  if (layoutMode === 'desktop') {
+    if (layoutMode === 'desktop') {
     return (
-      <View style={{ flex: 1, flexDirection: 'row', backgroundColor: QUIZ_COLORS.surfaceStrong }}>
-        <DesktopSidebar />
-        <ScrollView style={{ flex: 1, backgroundColor: QUIZ_COLORS.surfaceBase }} showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 32, paddingTop: 32, paddingBottom: 48 }}>
+      <ScrollView style={{ flex: 1, backgroundColor: QUIZ_COLORS.surfaceBase }} showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 32, paddingTop: 32, paddingBottom: 48 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 28, gap: 12 }}>
             <Pressable
               onPress={() => router.back()}
@@ -161,7 +159,6 @@ export function ReadyTrackCategoriesScreen() {
             )}
           </View>
         </ScrollView>
-      </View>
     );
   }
 

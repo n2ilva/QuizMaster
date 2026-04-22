@@ -281,116 +281,143 @@ export function QuickResponseScreen() {
   };
 
   const renderCategoryList = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: topPadding + 20, paddingBottom: bottomPadding + 40, paddingHorizontal: 20 }}>
-      <View style={{ marginBottom: 32 }}>
-        <TouchableOpacity onPress={() => router.back()} style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: surfaceColor, alignItems: 'center', justifyContent: 'center', marginBottom: 16, borderWidth: 1, borderColor: borderColor }}>
-          <MaterialIcons name="arrow-back" size={20} color={textPrimary} />
-        </TouchableOpacity>
-        <Text style={{ fontSize: 28, fontWeight: '800', color: textPrimary, letterSpacing: -0.5 }}>{data.game}</Text>
-        <Text style={{ fontSize: 15, color: textMuted, marginTop: 4, lineHeight: 22 }}>Encare incidentes reais de TI e prove que você é um especialista em suporte e infraestrutura.</Text>
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 20, paddingBottom: bottomPadding + 40 }}>
+      {/* Header - Full Width */}
+      <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, gap: 16 }}>
+          <TouchableOpacity 
+            onPress={() => router.back()} 
+            style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: surfaceColor, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: borderColor }}
+          >
+            <MaterialIcons name="arrow-back" size={20} color={textPrimary} />
+          </TouchableOpacity>
+          <Text style={{ fontSize: 28, fontWeight: '900', color: textPrimary, letterSpacing: -0.5 }}>{data.game}</Text>
+        </View>
+        <Text style={{ fontSize: 15, color: textMuted, lineHeight: 22 }}>
+          Encare incidentes reais de TI e prove que você é um especialista em suporte e infraestrutura.
+        </Text>
       </View>
-      <View style={{ gap: 16 }}>
-        {data.categories.map((cat) => {
-          const completedCount = cat.exercises.filter(ex => answeredStats[ex.id]).length;
-          const progress = completedCount / cat.exercises.length;
-          return (
-            <TouchableOpacity key={cat.id} activeOpacity={0.8} onPress={() => setSelectedCategory(cat)}>
-              <PanelCard style={{ backgroundColor: surfaceColor, borderRadius: 24, padding: 20, borderWidth: 1, borderColor: cat.color + '20' }}>
-                <View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
-                  <View style={{ width: 56, height: 56, borderRadius: 18, backgroundColor: cat.color + '15', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: cat.color + '30' }}>
-                    <MaterialCommunityIcons name={cat.id === 'suporte_tecnico' ? 'account-wrench' : cat.id === 'noc' ? 'lan' : 'shield-alert'} size={28} color={cat.color} />
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 18, fontWeight: '700', color: textPrimary }}>{cat.name}</Text>
-                    <Text style={{ fontSize: 13, color: textMuted, marginTop: 2 }} numberOfLines={2}>{cat.description}</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12 }}>
-                      <View style={{ flex: 1, height: 4, backgroundColor: isDark ? '#2D3139' : '#E2E8F0', borderRadius: 2 }}>
-                        <View style={{ width: `${progress * 100}%`, height: '100%', backgroundColor: cat.color, borderRadius: 2 }} />
-                      </View>
-                      <Text style={{ fontSize: 11, fontWeight: '700', color: textMuted }}>{completedCount}/{cat.exercises.length}</Text>
+
+      {/* Content - Constrained Width */}
+      <View style={[styles.maxContentWidth, { paddingHorizontal: 20 }]}>
+        <View style={{ gap: 16 }}>
+          {data.categories.map((cat) => {
+            const completedCount = cat.exercises.filter(ex => answeredStats[ex.id]).length;
+            const progress = completedCount / cat.exercises.length;
+            return (
+              <TouchableOpacity key={cat.id} activeOpacity={0.8} onPress={() => setSelectedCategory(cat)}>
+                <PanelCard style={{ backgroundColor: surfaceColor, borderRadius: 24, padding: 20, borderWidth: 1, borderColor: cat.color + '20' }}>
+                  <View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
+                    <View style={{ width: 56, height: 56, borderRadius: 18, backgroundColor: cat.color + '15', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: cat.color + '30' }}>
+                      <MaterialCommunityIcons name={cat.id === 'suporte_tecnico' ? 'account-wrench' : cat.id === 'noc' ? 'lan' : 'shield-alert'} size={28} color={cat.color} />
                     </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 18, fontWeight: '700', color: textPrimary }}>{cat.name}</Text>
+                      <Text style={{ fontSize: 13, color: textMuted, marginTop: 2 }} numberOfLines={2}>{cat.description}</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 12 }}>
+                        <View style={{ flex: 1, height: 4, backgroundColor: isDark ? '#2D3139' : '#E2E8F0', borderRadius: 2 }}>
+                          <View style={{ width: `${progress * 100}%`, height: '100%', backgroundColor: cat.color, borderRadius: 2 }} />
+                        </View>
+                        <Text style={{ fontSize: 11, fontWeight: '700', color: textMuted }}>{completedCount}/{cat.exercises.length}</Text>
+                      </View>
+                    </View>
+                    <MaterialIcons name="chevron-right" size={24} color={textMuted} />
                   </View>
-                  <MaterialIcons name="chevron-right" size={24} color={textMuted} />
-                </View>
-              </PanelCard>
-            </TouchableOpacity>
-          );
-        })}
+                </PanelCard>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </View>
     </ScrollView>
   );
 
   const renderExerciseList = () => (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: topPadding + 20, paddingBottom: bottomPadding + 40, paddingHorizontal: 20 }}>
-      <View style={{ marginBottom: 24 }}>
-        <TouchableOpacity onPress={() => setSelectedCategory(null)} style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: surfaceColor, alignItems: 'center', justifyContent: 'center', marginBottom: 16, borderWidth: 1, borderColor: borderColor }}>
-          <MaterialIcons name="arrow-back" size={20} color={textPrimary} />
-        </TouchableOpacity>
-        <Text style={{ fontSize: 12, fontWeight: '800', color: selectedCategory?.color, textTransform: 'uppercase', letterSpacing: 1 }}>{selectedCategory?.name}</Text>
-        <Text style={{ fontSize: 24, fontWeight: '800', color: textPrimary, marginTop: 4, letterSpacing: -0.5 }}>Selecione um Incidente</Text>
+    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 20, paddingBottom: bottomPadding + 40 }}>
+      {/* Header - Full Width */}
+      <View style={{ paddingHorizontal: 20, marginBottom: 24 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4, gap: 16 }}>
+          <TouchableOpacity 
+            onPress={() => setSelectedCategory(null)} 
+            style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: surfaceColor, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: borderColor }}
+          >
+            <MaterialIcons name="arrow-back" size={20} color={textPrimary} />
+          </TouchableOpacity>
+          <View style={{ flex: 1 }}>
+            <Text style={{ fontSize: 12, fontWeight: '800', color: selectedCategory?.color, textTransform: 'uppercase', letterSpacing: 1 }}>{selectedCategory?.name}</Text>
+            <Text style={{ fontSize: 24, fontWeight: '900', color: textPrimary, letterSpacing: -0.5 }}>Selecione um Incidente</Text>
+          </View>
+        </View>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }} contentContainerStyle={{ gap: 8 }}>
-        {['TODOS', 'BAIXA', 'URGENTE', 'CRÍTICA'].map((filter) => {
-          const isActive = priorityFilter === filter;
-          const filterColor = filter === 'BAIXA' ? '#22C55E' : filter === 'URGENTE' ? '#F59E0B' : filter === 'CRÍTICA' ? '#EF4444' : selectedCategory?.color;
-          return (
-            <TouchableOpacity 
-              key={filter} 
-              onPress={() => setPriorityFilter(filter as any)}
-              style={{
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-                borderRadius: 12,
-                backgroundColor: isActive ? filterColor : surfaceColor,
-                borderWidth: 1.5,
-                borderColor: isActive ? filterColor : borderColor,
-              }}
-            >
-              <Text style={{ color: isActive ? '#FFFFFF' : textMuted, fontWeight: '800', fontSize: 12 }}>{filter}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </ScrollView>
+      {/* Content - Constrained Width */}
+      <View style={[styles.maxContentWidth, { paddingHorizontal: 20 }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 20 }} contentContainerStyle={{ gap: 8 }}>
+          {['TODOS', 'BAIXA', 'URGENTE', 'CRÍTICA'].map((filter) => {
+            const isActive = priorityFilter === filter;
+            const filterColor = filter === 'BAIXA' ? '#22C55E' : filter === 'URGENTE' ? '#F59E0B' : filter === 'CRÍTICA' ? '#EF4444' : selectedCategory?.color;
+            return (
+              <TouchableOpacity 
+                key={filter} 
+                onPress={() => setPriorityFilter(filter as any)}
+                style={{
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  borderRadius: 12,
+                  backgroundColor: isActive ? filterColor : surfaceColor,
+                  borderWidth: 1.5,
+                  borderColor: isActive ? filterColor : borderColor,
+                }}
+              >
+                <Text style={{ color: isActive ? '#FFFFFF' : textMuted, fontWeight: '800', fontSize: 12 }}>{filter}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
 
-      <View style={{ gap: 12 }}>
-        {selectedCategory?.exercises
-          .filter(ex => priorityFilter === 'TODOS' || ex.level.toUpperCase() === priorityFilter)
-          .map((ex, index) => {
-          const stats = answeredStats[ex.id];
-          const isAnswered = !!stats;
-          return (
-            <TouchableOpacity key={ex.id} activeOpacity={0.8} onPress={() => handleSelectExercise(ex)}>
-              <PanelCard style={{ backgroundColor: isAnswered ? (isDark ? '#141818' : '#F0FDF4') : surfaceColor, borderRadius: 20, padding: 16, borderWidth: 1, borderColor: isAnswered ? 'rgba(34,197,94,0.2)' : borderColor }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                  <View style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: isAnswered ? 'rgba(34,197,94,0.15)' : (isDark ? '#2D3139' : '#F1F5F9'), alignItems: 'center', justifyContent: 'center' }}>
-                    {isAnswered ? <MaterialIcons name="check" size={20} color="#22C55E" /> : <Text style={{ fontWeight: '800', color: textMuted }}>{index + 1}</Text>}
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 15, fontWeight: '600', color: textPrimary }} numberOfLines={1}>{ex.alert}</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
-                      <View style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4, backgroundColor: ex.level === 'Baixa' ? '#22C55E20' : ex.level === 'Urgente' ? '#F59E0B20' : '#EF444420' }}>
-                        <Text style={{ fontSize: 10, fontWeight: '800', color: ex.level === 'Baixa' ? '#22C55E' : ex.level === 'Urgente' ? '#F59E0B' : '#EF4444' }}>{ex.level.toUpperCase()}</Text>
-                      </View>
-                      {isAnswered && (
-                        <>
-                          <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: textMuted + '40' }} />
-                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                            <MaterialIcons name="timer" size={12} color={stats.withinSLA ? '#22C55E' : '#EF4444'} />
-                            <Text style={{ fontSize: 11, fontWeight: '700', color: stats.withinSLA ? '#22C55E' : '#EF4444' }}>{stats.withinSLA ? 'SLA OK' : 'SLA OUT'}</Text>
-                          </View>
-                          <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: textMuted + '40' }} />
-                          <Text style={{ fontSize: 11, fontWeight: '700', color: textMuted }}>{stats.attempts} {stats.attempts === 1 ? 'TENTATIVA' : 'TENTATIVAS'}</Text>
-                        </>
-                      )}
+        <View style={{ gap: 12 }}>
+          {selectedCategory?.exercises
+            .filter(ex => priorityFilter === 'TODOS' || ex.level.toUpperCase() === priorityFilter)
+            .sort((a, b) => {
+              const weights: Record<string, number> = { 'Baixa': 1, 'Urgente': 2, 'Crítica': 3 };
+              return (weights[a.level] || 0) - (weights[b.level] || 0);
+            })
+            .map((ex, index) => {
+            const stats = answeredStats[ex.id];
+            const isAnswered = !!stats;
+            return (
+              <TouchableOpacity key={ex.id} activeOpacity={0.8} onPress={() => handleSelectExercise(ex)}>
+                <PanelCard style={{ backgroundColor: isAnswered ? (isDark ? '#141818' : '#F0FDF4') : surfaceColor, borderRadius: 20, padding: 16, borderWidth: 1, borderColor: isAnswered ? 'rgba(34,197,94,0.2)' : borderColor }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                    <View style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: isAnswered ? 'rgba(34,197,94,0.15)' : (isDark ? '#2D3139' : '#F1F5F9'), alignItems: 'center', justifyContent: 'center' }}>
+                      {isAnswered ? <MaterialIcons name="check" size={20} color="#22C55E" /> : <Text style={{ fontWeight: '800', color: textMuted }}>{index + 1}</Text>}
                     </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ fontSize: 15, fontWeight: '600', color: textPrimary }} numberOfLines={1}>{ex.alert}</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
+                        <View style={{ paddingHorizontal: 8, paddingVertical: 2, borderRadius: 4, backgroundColor: ex.level === 'Baixa' ? '#22C55E20' : ex.level === 'Urgente' ? '#F59E0B20' : '#EF444420' }}>
+                          <Text style={{ fontSize: 10, fontWeight: '800', color: ex.level === 'Baixa' ? '#22C55E' : ex.level === 'Urgente' ? '#F59E0B' : '#EF4444' }}>{ex.level.toUpperCase()}</Text>
+                        </View>
+                        {isAnswered && (
+                          <>
+                            <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: textMuted + '40' }} />
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                              <MaterialIcons name="timer" size={12} color={stats.withinSLA ? '#22C55E' : '#EF4444'} />
+                              <Text style={{ fontSize: 11, fontWeight: '700', color: stats.withinSLA ? '#22C55E' : '#EF4444' }}>{stats.withinSLA ? 'SLA OK' : 'SLA OUT'}</Text>
+                            </View>
+                            <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: textMuted + '40' }} />
+                            <Text style={{ fontSize: 11, fontWeight: '700', color: textMuted }}>{stats.attempts} {stats.attempts === 1 ? 'TENTATIVA' : 'TENTATIVAS'}</Text>
+                          </>
+                        )}
+                      </View>
+                    </View>
+                    <MaterialIcons name="play-arrow" size={20} color={textMuted} />
                   </View>
-                  <MaterialIcons name="play-arrow" size={20} color={textMuted} />
-                </View>
-              </PanelCard>
-            </TouchableOpacity>
-          );
-        })}
+                </PanelCard>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </View>
     </ScrollView>
   );
@@ -399,89 +426,92 @@ export function QuickResponseScreen() {
     if (!activeExercise) return null;
     return (
       <View style={{ flex: 1, backgroundColor: bg }}>
-        <View style={{ paddingTop: topPadding + 10, paddingHorizontal: 20, paddingBottom: 20, borderBottomWidth: 1, borderBottomColor: borderColor, backgroundColor: surfaceColor }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-            <TouchableOpacity onPress={() => setConfirmExitOpen(true)} style={{ padding: 8, marginLeft: -8 }}>
-              <MaterialIcons name="close" size={24} color={textPrimary} />
-            </TouchableOpacity>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <MaterialCommunityIcons name="fire-extinguisher" size={18} color="#F43F5E" />
-              <Text style={{ fontWeight: '800', color: textPrimary, fontSize: 14 }}>SLA: {timeLeft}s</Text>
-            </View>
-            <View style={{ width: 40, height: 6, backgroundColor: isDark ? '#2D3139' : '#E2E8F0', borderRadius: 3, overflow: 'hidden' }}>
-              <View style={{ width: `${(timeLeft / maxTime) * 100}%`, height: '100%', backgroundColor: timeLeft < (maxTime * 0.25) ? '#F43F5E' : (timeLeft < (maxTime * 0.5) ? '#F59E0B' : '#22C55E') }} />
-            </View>
-          </View>
-          <View style={{ backgroundColor: isDark ? '#2D161B' : '#FFF1F2', borderRadius: 16, padding: 20, borderWidth: 1, borderColor: '#F43F5E30' }}>
-            <View style={{ flexDirection: 'row', gap: 12, marginBottom: 12 }}>
-              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#F43F5E', alignItems: 'center', justifyContent: 'center' }}>
-                <MaterialIcons name="notifications-active" size={22} color="#FFFFFF" />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: '#F43F5E', fontSize: 11, fontWeight: '800', letterSpacing: 1, marginBottom: 2 }}>ALERTA DE SISTEMA</Text>
-                <Text style={{ color: isDark ? '#FFD1D9' : '#9F1239', fontSize: 14, fontWeight: '700' }}>Ação imediata requerida</Text>
+        {/* Active Exercise Header - Full Width Background, Constrained Content */}
+        <View style={{ borderBottomWidth: 1, borderBottomColor: borderColor, backgroundColor: surfaceColor }}>
+          <View style={[styles.maxContentWidth, { paddingHorizontal: 20, paddingTop: 10, paddingBottom: 20 }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+              <TouchableOpacity onPress={() => setConfirmExitOpen(true)} style={{ padding: 8, marginLeft: -8 }}>
+                <MaterialIcons name="close" size={24} color={textPrimary} />
+              </TouchableOpacity>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <MaterialCommunityIcons name="fire-extinguisher" size={18} color="#F43F5E" />
+                  <Text style={{ fontWeight: '800', color: textPrimary, fontSize: 14 }}>SLA: {timeLeft}s</Text>
+                </View>
+                <View style={{ width: 60, height: 6, backgroundColor: isDark ? '#2D3139' : '#E2E8F0', borderRadius: 3, overflow: 'hidden' }}>
+                  <View style={{ width: `${(timeLeft / maxTime) * 100}%`, height: '100%', backgroundColor: timeLeft < (maxTime * 0.25) ? '#F43F5E' : (timeLeft < (maxTime * 0.5) ? '#F59E0B' : '#22C55E') }} />
+                </View>
               </View>
             </View>
-            <GlossaryText 
-              text={`"${activeExercise.alert}"`} 
-              track="Incidentes"
-              style={{ fontSize: 16, color: isDark ? '#ECEDEE' : '#11181C', lineHeight: 24, fontWeight: '600' }} 
-            />
+            <View style={{ backgroundColor: isDark ? '#2D161B' : '#FFF1F2', borderRadius: 16, padding: 20, borderWidth: 1, borderColor: '#F43F5E30' }}>
+              <View style={{ flexDirection: 'row', gap: 12, marginBottom: 12 }}>
+                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#F43F5E', alignItems: 'center', justifyContent: 'center' }}>
+                  <MaterialIcons name="notifications-active" size={22} color="#FFFFFF" />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={{ color: '#F43F5E', fontSize: 11, fontWeight: '800', letterSpacing: 1, marginBottom: 2 }}>ALERTA DE SISTEMA</Text>
+                  <Text style={{ color: isDark ? '#FFD1D9' : '#9F1239', fontSize: 14, fontWeight: '700' }}>Ação imediata requerida</Text>
+                </View>
+              </View>
+              <GlossaryText 
+                text={`"${activeExercise.alert}"`} 
+                track="Incidentes"
+                style={{ fontSize: 16, color: isDark ? '#ECEDEE' : '#11181C', lineHeight: 24, fontWeight: '600' }} 
+              />
+            </View>
           </View>
         </View>
 
-        <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottomPadding + 100 }} showsVerticalScrollIndicator={false}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 16 }}>
-            <View>
-              <Text style={{ fontSize: 12, fontWeight: '800', color: textMuted, letterSpacing: 1, textTransform: 'uppercase' }}>Como você deseja proceder?</Text>
-              <Text style={{ fontSize: 13, color: '#38BDF8', fontWeight: '700', marginTop: 2 }}>ESTE INCIDENTE REQUER {activeExercise.actions.filter(a => a.is_correct).length} AÇÕES CORRETAS</Text>
+        <ScrollView contentContainerStyle={{ paddingVertical: 20, paddingBottom: bottomPadding + 100 }} showsVerticalScrollIndicator={false}>
+          <View style={[styles.maxContentWidth, { paddingHorizontal: 20 }]}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 16 }}>
+              <View>
+                <Text style={{ fontSize: 12, fontWeight: '800', color: textMuted, letterSpacing: 1, textTransform: 'uppercase' }}>Como você deseja proceder?</Text>
+                <Text style={{ fontSize: 13, color: '#38BDF8', fontWeight: '700', marginTop: 2 }}>ESTE INCIDENTE REQUER {activeExercise.actions.filter(a => a.is_correct).length} AÇÕES CORRETAS</Text>
+              </View>
+              <Text style={{ fontSize: 12, fontWeight: '800', color: selectedIds.size === activeExercise.actions.filter(a => a.is_correct).length ? '#22C55E' : textMuted }}>
+                {selectedIds.size}/{activeExercise.actions.filter(a => a.is_correct).length}
+              </Text>
             </View>
-            <Text style={{ fontSize: 12, fontWeight: '800', color: selectedIds.size === activeExercise.actions.filter(a => a.is_correct).length ? '#22C55E' : textMuted }}>
-              {selectedIds.size}/{activeExercise.actions.filter(a => a.is_correct).length}
-            </Text>
-          </View>
 
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-            {activeExercise.actions.map((option) => {
-              const isSelected = selectedIds.has(option.id);
-              const showResult = isValidated;
-              const isCorrect = option.is_correct;
-              return (
-                <TouchableOpacity 
-                  key={option.id} 
-                  activeOpacity={0.7} 
-                  onPress={() => handleToggleOption(option.id)} 
-                  disabled={isValidated} 
-                  style={{ 
-                    backgroundColor: showResult && isSelected ? (isCorrect ? '#22C55E15' : '#EF444415') : (isSelected ? (isDark ? '#00d4ff15' : '#E0F7FF') : (isDark ? '#1A1D21' : '#FFFFFF')), 
-                    borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, borderWidth: 2, 
-                    borderColor: showResult && isSelected ? (isCorrect ? '#22C55E' : '#EF4444') : (isSelected ? '#00d4ff' : borderColor), 
-                    alignSelf: 'flex-start' 
-                  }}
-                >
-                  <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-                    <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: showResult && isSelected ? (isCorrect ? '#22C55E' : '#EF4444') : (isSelected ? '#00d4ff' : (isDark ? '#2D3139' : '#F1F5F9')), alignItems: 'center', justifyContent: 'center' }}>
-                      {showResult && isSelected && isCorrect ? <MaterialIcons name="check" size={12} color="#FFFFFF" /> : <Text style={{ fontWeight: '800', color: isSelected ? '#FFFFFF' : textMuted, fontSize: 10 }}>{option.id.toUpperCase()}</Text>}
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+              {activeExercise.actions.map((option) => {
+                const isSelected = selectedIds.has(option.id);
+                const showResult = isValidated;
+                const isCorrect = option.is_correct;
+                return (
+                  <TouchableOpacity 
+                    key={option.id} 
+                    activeOpacity={0.7} 
+                    onPress={() => handleToggleOption(option.id)} 
+                    disabled={isValidated} 
+                    style={{ 
+                      backgroundColor: showResult && isSelected ? (isCorrect ? '#22C55E15' : '#EF444415') : (isSelected ? (isDark ? '#00d4ff15' : '#E0F7FF') : (isDark ? '#1A1D21' : '#FFFFFF')), 
+                      borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, borderWidth: 2, 
+                      borderColor: showResult && isSelected ? (isCorrect ? '#22C55E' : '#EF4444') : (isSelected ? '#00d4ff' : borderColor), 
+                      alignSelf: 'flex-start' 
+                    }}
+                  >
+                    <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+                      <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: showResult && isSelected ? (isCorrect ? '#22C55E' : '#EF4444') : (isSelected ? '#00d4ff' : (isDark ? '#2D3139' : '#F1F5F9')), alignItems: 'center', justifyContent: 'center' }}>
+                        {showResult && isSelected && isCorrect ? <MaterialIcons name="check" size={12} color="#FFFFFF" /> : <Text style={{ fontWeight: '800', color: isSelected ? '#FFFFFF' : textMuted, fontSize: 10 }}>{option.id.toUpperCase()}</Text>}
+                      </View>
+                      <Text style={{ fontSize: 13, color: textPrimary, fontWeight: '600' }}>{option.text}</Text>
                     </View>
-                    <Text style={{ fontSize: 13, color: textPrimary, fontWeight: '600' }}>{option.text}</Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
 
-          {!isValidated && !isSmallScreen && (
-            <TouchableOpacity onPress={handleValidate} disabled={selectedIds.size === 0 || isSyncing} style={{ backgroundColor: selectedIds.size > 0 ? '#22C55E' : textMuted, paddingVertical: 16, borderRadius: 16, alignItems: 'center', marginTop: 24, opacity: selectedIds.size > 0 ? 1 : 0.5 }}>
-              <Text style={{ color: '#FFFFFF', fontWeight: '800', fontSize: 16 }}>{isSyncing ? 'SINCRONIZANDO...' : 'VALIDAR'}</Text>
-            </TouchableOpacity>
-          )}
+          </View>
         </ScrollView>
-        {!isValidated && isSmallScreen && (
+
+        {!isValidated && (
           <ValidationFab
             onPress={handleValidate}
             disabled={selectedIds.size === 0 || isSyncing}
             icon="fact-check"
-            bottomInset={bottomPadding}
+            bottomInset={bottomPadding + 16}
           />
         )}
       </View>
@@ -489,7 +519,7 @@ export function QuickResponseScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: bg }}>
+    <View style={{ flex: 1, backgroundColor: bg, paddingTop: topPadding }}>
       {!selectedCategory ? renderCategoryList() : (!activeExercise ? renderExerciseList() : renderActiveExercise())}
       
       <Modal visible={!!feedback} transparent animationType="fade" onRequestClose={() => setFeedback(null)}>
@@ -606,4 +636,10 @@ export function QuickResponseScreen() {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  maxContentWidth: {
+    maxWidth: 800,
+    width: '100%',
+    alignSelf: 'center',
+  },
+});

@@ -83,17 +83,22 @@ export function PuzzlePiece({
           style={{
             alignItems: 'center',
             justifyContent: 'center',
-            paddingHorizontal: 10,
-            paddingVertical: 8,
-            borderRadius: 8,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            borderRadius: 10,
             borderStyle: 'solid',
-            backgroundColor: used ? 'transparent' : '#1E2128',
+            backgroundColor: used ? 'transparent' : '#1F2937',
             borderWidth: 1.5,
-            borderColor: used ? '#1A1D21' : '#3A3F47',
-            borderBottomWidth: used ? 1.5 : 3,
+            borderColor: used ? '#111316' : '#374151',
+            borderBottomWidth: used ? 1.5 : 4,
             opacity: used ? 0.3 : 1,
-            minWidth: 32,
-            minHeight: 34,
+            minWidth: 36,
+            minHeight: 40,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+            elevation: 4,
             ...(Platform.OS === 'web' && !used && {
               cursor: 'pointer',
             } as any),
@@ -101,10 +106,10 @@ export function PuzzlePiece({
         >
           <Text
             style={{
-              color: used ? '#4B5563' : '#D1D5DB',
-              fontSize: 13,
-              fontWeight: '700',
-              fontFamily: 'monospace',
+              color: used ? '#4B5563' : '#E5E7EB',
+              fontSize: 14,
+              fontWeight: '800',
+              fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
               letterSpacing: 0.1,
             }}
           >
@@ -133,12 +138,12 @@ export function PuzzlePiece({
 
   // Answer variant (inside the answer area)
   return (
-    <View style={{ position: 'relative', marginHorizontal: 2, marginVertical: 2 }}>
+    <View style={{ position: 'relative', marginHorizontal: 3, marginVertical: 3 }}>
       <Animated.View style={{
         position: 'absolute',
-        top: -3, bottom: -3, left: -3, right: -3,
-        backgroundColor: '#34D399',
-        borderRadius: 11,
+        top: -4, bottom: -4, left: -4, right: -4,
+        backgroundColor: '#10B981',
+        borderRadius: 12,
         opacity: glowAnim,
       }} />
       <DraggableTokenWrapper
@@ -158,23 +163,28 @@ export function PuzzlePiece({
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
-          paddingHorizontal: 10,
-          paddingVertical: 5,
-          borderRadius: 8,
+          paddingHorizontal: 12,
+          paddingVertical: 7,
+          borderRadius: 10,
           borderStyle: 'solid',
           borderWidth: 1.5,
-          borderBottomWidth: 3,
-          backgroundColor: '#1E2128',
-          borderColor: '#3A3F47',
-          minHeight: 30,
+          borderBottomWidth: 4,
+          backgroundColor: '#0D0F12',
+          borderColor: '#1E2328',
+          minHeight: 34,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.4,
+          shadowRadius: 4,
+          elevation: 5,
         }}
       >
         <Text
           style={{
-            color: '#D1D5DB',
-            fontSize: 12,
-            fontWeight: '700',
-            fontFamily: 'monospace',
+            color: '#10B981',
+            fontSize: 14,
+            fontWeight: '900',
+            fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
             letterSpacing: 0.1,
           }}
         >

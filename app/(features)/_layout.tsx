@@ -10,22 +10,6 @@ export default function FeaturesLayout() {
     <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#151718' } }}>
       <Stack.Screen name="(main)" options={{ headerShown: false }} />
       <Stack.Screen
-        name="track/[track]"
-        options={{
-          title: 'Categorias',
-          headerBackTitle: 'Voltar',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="study"
-        options={{
-          title: 'Quizzes',
-          headerBackTitle: 'Voltar',
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
         name="planning"
         options={{
           title: 'Planejamento de Estudos',

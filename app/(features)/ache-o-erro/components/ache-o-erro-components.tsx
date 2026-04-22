@@ -244,18 +244,30 @@ export function DebugToken({
         onPress={onPress}
         activeOpacity={0.7}
         style={{
-          paddingHorizontal: 4,
-          paddingVertical: 3,
-          borderRadius: 5,
-          backgroundColor: isPool ? '#252930' : '#1E2128',
-          borderWidth: 1,
-          borderColor: isPool ? '#3A3F47' : '#4B5563',
-          borderBottomWidth: 1.5,
-          margin: 1,
+          paddingHorizontal: 8,
+          paddingVertical: 5,
+          borderRadius: 8,
+          backgroundColor: isPool ? '#1F2937' : '#111316',
+          borderWidth: 1.5,
+          borderColor: isPool ? '#374151' : '#1E2328',
+          borderBottomWidth: 3,
+          margin: 2,
+          minWidth: 32,
           alignItems: 'center',
+          justifyContent: 'center',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 3,
+          elevation: 3,
         }}
       >
-        <Text style={{ color: '#D1D5DB', fontSize: 13, fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace', fontWeight: '700' }}>
+        <Text style={{ 
+          color: isPool ? '#E5E7EB' : '#10B981', 
+          fontSize: 14, 
+          fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', 
+          fontWeight: '800' 
+        }}>
           {token.value}
         </Text>
       </TouchableOpacity>
@@ -304,7 +316,7 @@ type ExerciseHeaderProps = {
 
 export function ExerciseHeader({ exercise, isDark, hintCount, onClose, onOpenHints }: ExerciseHeaderProps) {
   return (
-    <View style={{ padding: 12, flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
+    <View style={{ padding: 12, flexDirection: 'row', gap: 10, alignItems: 'flex-start', marginTop: 12 }}>
       <TouchableOpacity onPress={onClose} style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#1C1F24', alignItems: 'center', justifyContent: 'center' }}>
         <MaterialIcons name="close" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
       </TouchableOpacity>

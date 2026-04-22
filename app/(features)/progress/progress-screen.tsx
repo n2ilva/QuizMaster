@@ -276,7 +276,7 @@ export function ProgressScreen() {
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 16 }}>
               {/* QUIZ */}
               <View style={{ width: layoutMode === 'desktop' ? '49%' : '100%' }}>
-                <ModernSection title="Quiz de Certificação" subtitle="Consistência teórica" icon="school" iconColor="#38BDF8" count={`${quizStats.mastered}/${quizStats.total}`}>
+                <ModernSection title="Quiz" subtitle="Consistência teórica" icon="school" iconColor="#38BDF8" count={`${quizStats.mastered}/${quizStats.total}`}>
                   <View style={{ gap: 12 }}>
                     <View style={{ height: 6, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
                       <View style={{ height: '100%', width: `${quizStats.total > 0 ? (quizStats.mastered / quizStats.total) * 100 : 0}%`, backgroundColor: '#38BDF8' }} />
@@ -372,7 +372,7 @@ export function ProgressScreen() {
           </View>
 
           {/* QUIZ */}
-          <ModernSection title="Quiz de Certificação" icon="school" iconColor="#38BDF8" count={`${quizStats.mastered}/${quizStats.total}`}>
+          <ModernSection title="Quiz" icon="school" iconColor="#38BDF8" count={`${quizStats.mastered}/${quizStats.total}`}>
             <View style={{ gap: 10 }}>
               <View style={{ height: 6, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', borderRadius: 3, overflow: 'hidden' }}>
                 <View style={{ height: '100%', width: `${quizStats.total > 0 ? (quizStats.mastered / quizStats.total) * 100 : 0}%`, backgroundColor: '#38BDF8' }} />

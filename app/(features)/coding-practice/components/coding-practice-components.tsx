@@ -453,7 +453,7 @@ export function QuestionCard({
   const isDark = colorScheme === 'dark';
 
   return (
-    <View style={{ paddingHorizontal: 20, paddingBottom: 16 }}>
+    <View style={{ paddingHorizontal: 20, paddingBottom: 16, marginTop: 12 }}>
       {/* Top bar: back + progress + hints */}
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 12 }}>
         <TouchableOpacity
@@ -771,19 +771,30 @@ export function AnswerArea({
 
   return (
     <View style={{ paddingHorizontal: 20, marginBottom: 20 }}>
-      {/* Separator line */}
+      {/* Editor Container */}
       <View
         style={{
-          borderTopWidth: 2,
-          borderBottomWidth: 2,
+          borderWidth: 1.5,
           borderColor,
-          borderStyle: 'dashed',
-          borderRadius: 16,
-          backgroundColor: bgColor,
-          minHeight: 80,
-          padding: 12,
+          borderRadius: 20,
+          backgroundColor: '#0D0F12',
+          minHeight: 120,
+          padding: 16,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.3,
+          shadowRadius: 15,
+          elevation: 10,
         }}
       >
+        {/* Window controls */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 8 }}>
+          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#FF5F56' }} />
+          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#FFBD2E' }} />
+          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#27C93F' }} />
+          <Text style={{ color: '#4B5563', fontSize: 11, fontWeight: '700', marginLeft: 8, textTransform: 'uppercase', letterSpacing: 1 }}>puzzle.code</Text>
+        </View>
+
         <DraxView
           style={{ flex: 1, minHeight: 60 }}
           receptive
@@ -798,9 +809,9 @@ export function AnswerArea({
           }}
           receivingStyle={{
             borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.05)',
             borderWidth: 2,
             borderRadius: 14,
-            backgroundColor: 'rgba(16, 185, 129, 0.08)',
           }}
         >
           {/* Clear button */}
@@ -986,8 +997,6 @@ export function TokenKeyboard({ pool, allTokens, onAddToken }: TokenKeyboardProp
     <View
       style={{
         backgroundColor: isDark ? '#111316' : '#F8FAFC',
-        borderTopWidth: 1,
-        borderTopColor: isDark ? '#1E2328' : '#E2E8F0',
         paddingTop: 10,
         paddingBottom: 6,
         paddingHorizontal: 4,

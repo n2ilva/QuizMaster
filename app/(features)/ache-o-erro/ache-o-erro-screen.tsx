@@ -328,7 +328,9 @@ export function AcheOErroScreen() {
       );
     }
 
-    const levelExercises = langExercises.filter(e => e.level === selectedLevel);
+    const levelExercises = langExercises
+      .filter(e => e.level === selectedLevel)
+      .sort((a, b) => a.title.localeCompare(b.title));
 
     return (
       <View style={[{ flex: 1, paddingHorizontal: 20 }, styles.maxContentWidth]}>
@@ -418,98 +420,124 @@ export function AcheOErroScreen() {
     return (
       <View style={{ flex: 1 }}>
         <DraxProvider>
-          <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
-            <ExerciseHeader
-              exercise={activeExercise}
-              isDark={isDark}
-              hintCount={totalHints}
-              onClose={() => setConfirmExitOpen(true)}
-              onOpenHints={() => {
-                setCurrentHintIndex(0);
-                setShowHintsModal(true);
-              }}
-            />
-
-          {/* Code Area */}
-          <View style={[styles.codeArea, { borderColor: isCorrect === false ? DEBUG_COLORS.error : DEBUG_COLORS.border }]}>
-            <ScrollView contentContainerStyle={{ padding: 12 }}>
-                <>
-                      {placedRows.map((row, rowIdx) => (
-                        <View key={`row-${rowIdx}`} style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', marginLeft: row.indent * 20, marginBottom: 2 }}>
-                          {row.tokens.map((p) => (
-                            <View key={p.instanceId} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                              <DraxView
-                                receptive
-                                onReceiveDragDrop={(e) => {
-                                  const drag = parseDragPayload(e.dragged.payload as string);
-                                  if (!drag) return;
-                                  if (drag.source === 'pool') handleAddToPlaced(drag.instanceId, p.globalIndex);
-                                  if (drag.source === 'code') handleReorderPlaced(drag.instanceId, p.globalIndex);
-                                }}
-                              >
-                                <View style={styles.dropZone} />
-                              </DraxView>
-
-                              <DebugToken 
-                                 token={{ id: p.tokenId, value: p.value }} 
-                                 instanceId={p.instanceId} 
-                                 variant="code" 
-                                 onPress={() => handleRemoveFromPlaced(p.instanceId)}
-                                 receptive
-                                 onReceiveDragDrop={(e) => {
-                                   const drag = parseDragPayload(e.dragged.payload as string);
-                                   if (!drag) return;
-                                   if (drag.source === 'pool') handleAddToPlaced(drag.instanceId, p.globalIndex);
-                                   if (drag.source === 'code') handleReorderPlaced(drag.instanceId, p.globalIndex);
-                                 }}
-                              />
-                            </View>
-                          ))}
-                        </View>
-                      ))}
-                      
-                      {/* Final drop target at the bottom of all lines */}
-                      <DraxView
-                         style={{ minHeight: 60, marginTop: 12, borderRadius: 12, justifyContent: 'center', alignItems: 'center' }}
-                         receptive
-                         receivingStyle={{ backgroundColor: 'rgba(34, 197, 94, 0.05)', borderWidth: 1, borderColor: '#22C55E44', borderStyle: 'dotted' }}
-                         onReceiveDragDrop={(e) => {
-                           const drag = parseDragPayload(e.dragged.payload as string);
-                           if (!drag) return;
-                           if (drag.source === 'pool') handleAddToPlaced(drag.instanceId, placed.length);
-                           if (drag.source === 'code') handleReorderPlaced(drag.instanceId, placed.length);
-                         }}
-                      >
-                         {placed.length === 0 ? (
-                            <Text style={{ color: '#4B5563', fontSize: 13 }}>Arraste as peças aqui para começar</Text>
-                         ) : (
-                            <View style={{ width: 40, height: 4, backgroundColor: '#1E2328', borderRadius: 2 }} />
-                         )}
-                      </DraxView>
-                </>
-            </ScrollView>
-          </View>
-
-          {/* Instructions */}
-          <View style={{ paddingHorizontal: 16, marginTop: 8 }}>
-            <Text style={{ color: isDark ? '#9BA1A6' : '#64748B', fontSize: 13, textAlign: 'center' }}>
-              Traga as peças ausentes da barra abaixo para o código, ou arraste as peças já posicionadas para reorganizá-las.
-            </Text>
-          </View>
-
-          {/* Pool Area */}
-          <DraxView
-            style={styles.poolArea}
-            receptive
-            onReceiveDragDrop={(e) => {
-              const payload = e.dragged.payload as string;
-              if (payload.startsWith('code_')) {
-                handleRemoveFromPlaced(payload.replace('code_', ''));
-              }
-            }}
+          <ScrollView 
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}
           >
-            <Text style={styles.poolTitle}>Ferramentas:</Text>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+            <View style={styles.maxContentWidth}>
+              <ExerciseHeader
+                exercise={activeExercise}
+                isDark={isDark}
+                hintCount={totalHints}
+                onClose={() => setConfirmExitOpen(true)}
+                onOpenHints={() => {
+                  setCurrentHintIndex(0);
+                  setShowHintsModal(true);
+                }}
+              />
+
+              {/* Code Editor Area */}
+              <View style={[styles.codeArea, { 
+                borderColor: isCorrect === false ? DEBUG_COLORS.error : '#1E2328',
+                backgroundColor: '#0B0D0F',
+                padding: 16,
+                margin: 16,
+                minHeight: 300,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 10 },
+                shadowOpacity: 0.4,
+                shadowRadius: 20,
+                elevation: 10
+              }]}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 8 }}>
+                  <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#FF5F56' }} />
+                  <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#FFBD2E' }} />
+                  <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: '#27C93F' }} />
+                  <Text style={{ color: '#4B5563', fontSize: 11, fontWeight: '700', marginLeft: 8, textTransform: 'uppercase', letterSpacing: 1 }}>bug-fix.js</Text>
+                </View>
+
+                {placedRows.map((row, rowIdx) => (
+                  <View key={`row-${rowIdx}`} style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', marginLeft: row.indent * 24, marginBottom: 4 }}>
+                    {row.tokens.map((p) => (
+                      <View key={p.instanceId} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <DraxView
+                          receptive
+                          onReceiveDragDrop={(e) => {
+                            const drag = parseDragPayload(e.dragged.payload as string);
+                            if (!drag) return;
+                            if (drag.source === 'pool') handleAddToPlaced(drag.instanceId, p.globalIndex);
+                            if (drag.source === 'code') handleReorderPlaced(drag.instanceId, p.globalIndex);
+                          }}
+                        >
+                          <View style={{ width: 4, height: 32 }} />
+                        </DraxView>
+
+                        <DebugToken 
+                           token={{ id: p.tokenId, value: p.value }} 
+                           instanceId={p.instanceId} 
+                           variant="code" 
+                           onPress={() => handleRemoveFromPlaced(p.instanceId)}
+                           receptive
+                           onReceiveDragDrop={(e) => {
+                             const drag = parseDragPayload(e.dragged.payload as string);
+                             if (!drag) return;
+                             if (drag.source === 'pool') handleAddToPlaced(drag.instanceId, p.globalIndex);
+                             if (drag.source === 'code') handleReorderPlaced(drag.instanceId, p.globalIndex);
+                           }}
+                        />
+                      </View>
+                    ))}
+                  </View>
+                ))}
+                
+                {/* Final drop target */}
+                <DraxView
+                   style={{ minHeight: 80, marginTop: 16, borderRadius: 12, justifyContent: 'center', alignItems: 'center', borderStyle: 'dashed', borderWidth: 1, borderColor: '#1E2328' }}
+                   receptive
+                   receivingStyle={{ backgroundColor: 'rgba(34, 197, 94, 0.05)', borderColor: '#22C55E' }}
+                   onReceiveDragDrop={(e) => {
+                     const drag = parseDragPayload(e.dragged.payload as string);
+                     if (!drag) return;
+                     if (drag.source === 'pool') handleAddToPlaced(drag.instanceId, placed.length);
+                     if (drag.source === 'code') handleReorderPlaced(drag.instanceId, placed.length);
+                   }}
+                >
+                   {placed.length === 0 ? (
+                      <Text style={{ color: '#4B5563', fontSize: 13, fontWeight: '600' }}>Arraste as peças aqui para começar</Text>
+                   ) : (
+                      <View style={{ width: 30, height: 2, backgroundColor: '#1E2328' }} />
+                   )}
+                </DraxView>
+              </View>
+
+              {/* Instructions */}
+              <View style={{ paddingHorizontal: 24, marginBottom: 20 }}>
+                <View style={{ backgroundColor: '#1C1F24', padding: 16, borderRadius: 16, borderWidth: 1, borderColor: '#30363D' }}>
+                  <Text style={{ color: '#9BA1A6', fontSize: 13, textAlign: 'center', lineHeight: 20 }}>
+                    <MaterialIcons name="info-outline" size={14} color="#22C55E" /> Encontre a lógica incorreta e substitua pelas peças corretas da barra inferior.
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </ScrollView>
+
+          {/* Fixed Bottom Panel (Tools) */}
+          <View style={{ 
+            position: 'absolute', 
+            bottom: 0, 
+            left: 0, 
+            right: 0, 
+            backgroundColor: '#111316', 
+            paddingBottom: Math.max(insets.bottom, 16),
+            paddingTop: 16,
+            paddingHorizontal: 16,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: -10 },
+            shadowOpacity: 0.3,
+            shadowRadius: 15,
+            elevation: 20
+          }}>
+            <View style={[styles.maxContentWidth, { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 4 }]}>
                 {pool.map(p => (
                   <DebugToken 
                     key={p.instanceId}
@@ -520,11 +548,10 @@ export function AcheOErroScreen() {
                   />
                 ))}
             </View>
-          </DraxView>
-        </ScrollView>
-      </DraxProvider>
+          </View>
+        </DraxProvider>
 
-        <ValidationFab onPress={handleValidate} disabled={placed.length === 0} bottomInset={isSmallScreen ? 0 : 4} />
+        <ValidationFab onPress={handleValidate} disabled={placed.length === 0} bottomInset={Math.max(insets.bottom, 16) + 70} />
 
         <HintsModal
           visible={showHintsModal}
@@ -542,23 +569,25 @@ export function AcheOErroScreen() {
       <View style={[styles.container, { paddingTop: topPadding }]}>
         {!activeExercise && (
           <>
-            <View style={{ paddingHorizontal: 20, marginBottom: 16, marginTop: 12, flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ paddingHorizontal: 20, marginBottom: 24, marginTop: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 8 }}>
               <TouchableOpacity 
                 onPress={() => router.push('/(features)/(main)/practice')} 
                 style={{ 
                   width: 40, height: 40, borderRadius: 20, 
                   backgroundColor: isDark ? '#1C1F24' : '#F1F5F9', 
                   alignItems: 'center', justifyContent: 'center', 
-                  marginRight: 16 
+                  borderWidth: 1, borderColor: isDark ? '#30363D' : '#E2E8F0'
                 }}
               >
                 <MaterialIcons name="arrow-back" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
               </TouchableOpacity>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 28, fontWeight: '900', color: isDark ? '#ECEDEE' : '#11181C', letterSpacing: -0.5 }}>Ache o Erro</Text>
-                <Text style={{ color: DEBUG_COLORS.textMuted, marginTop: 2, fontSize: 13 }}>Escolha linguagem e senioridade.</Text>
-              </View>
+              <Text style={{ fontSize: 28, fontWeight: '900', color: isDark ? '#ECEDEE' : '#11181C', letterSpacing: -0.5 }}>Ache o Erro</Text>
             </View>
+            <Text style={{ color: DEBUG_COLORS.textMuted, fontSize: 15, lineHeight: 22 }}>
+              Analise o código, encontre a falha e posicione as peças corretas para resolver o bug.
+            </Text>
+          </View>
 
             <View style={styles.maxContentWidth}>
               <LanguageSelector 

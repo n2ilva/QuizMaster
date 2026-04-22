@@ -221,7 +221,7 @@ export function CodingPracticeScreen() {
   );
 
   const categories = useMemo(() => {
-    return Array.from(new Set(exercisesForLang.map((e) => e.exerciseType)));
+    return Array.from(new Set(exercisesForLang.map((e) => e.exerciseType))).sort((a, b) => a.localeCompare(b));
   }, [exercisesForLang]);
 
   const categoryCounts = useMemo(() => {
@@ -244,8 +244,10 @@ export function CodingPracticeScreen() {
   }, [exercisesForCategory]);
 
   const exercises = useMemo(() => {
-    if (!selectedDifficulty) return exercisesForCategory;
-    return exercisesForCategory.filter((e) => e.difficulty === selectedDifficulty);
+    const filtered = !selectedDifficulty
+      ? exercisesForCategory
+      : exercisesForCategory.filter((e) => e.difficulty === selectedDifficulty);
+    return [...filtered].sort((a, b) => a.title.localeCompare(b.title));
   }, [exercisesForCategory, selectedDifficulty]);
 
   const allLangTokens = LANGUAGE_TOKENS[selectedLang.id as Language];
@@ -701,46 +703,35 @@ export function CodingPracticeScreen() {
                 </ScrollView>
               </View>
 
-              {/* ③④ Painel fixo na base: peças + botão verificar */}
+              {/* Fixed Bottom Panel (Keyboard) */}
               <View
-                className="bg-white dark:bg-[#111316] border-t border-gray-200 dark:border-[#1E2328]"
                 style={{
-                  paddingBottom: Math.max(insets.bottom, 12),
+                  backgroundColor: '#111316',
+                  paddingBottom: Math.max(insets.bottom, 16),
+                  paddingTop: 16,
+                  paddingHorizontal: 16,
                   shadowColor: '#000',
-                  shadowOffset: { width: 0, height: -3 },
-                  shadowOpacity: 0.12,
-                  shadowRadius: 8,
-                  elevation: 12,
+                  shadowOffset: { width: 0, height: -10 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 15,
+                  elevation: 20,
                   alignItems: 'center',
                 }}
               >
-                <View style={{ width: '100%', maxWidth: 768 }}>
-                  <View>
-                    {/* ③ Teclado de peças — fixo, sempre visível */}
-                    <TokenKeyboard
-                      pool={pool}
-                      allTokens={availableTokens}
-                      onAddToken={handleAddToken}
-                    />
-
-                    {/* ④ Botão verificar */}
-                    {!isSmallScreen && (
-                      <ValidateButton
-                        onPress={handleValidate}
-                        disabled={placed.filter(p => p.tokenId !== 'sym_newline').length < activeExercise.solution.length}
-                        isCorrect={isCorrect}
-                      />
-                    )}
-                  </View>
+                <View style={{ width: '100%', maxWidth: 880 }}>
+                  <TokenKeyboard
+                    pool={pool}
+                    allTokens={availableTokens}
+                    onAddToken={handleAddToken}
+                  />
                 </View>
               </View>
-              {isSmallScreen && (
-                <ValidationFab
-                  onPress={handleValidate}
-                  disabled={placed.filter(p => p.tokenId !== 'sym_newline').length < activeExercise.solution.length}
-                  bottomInset={Math.max(insets.bottom, 12)}
-                />
-              )}
+              
+              <ValidationFab
+                onPress={handleValidate}
+                disabled={placed.filter(p => p.tokenId !== 'sym_newline').length < activeExercise.solution.length}
+                bottomInset={Math.max(insets.bottom, 12) + 8}
+              />
             </View>
           </DraxProvider>
         </GestureHandlerRootView>
@@ -754,22 +745,22 @@ export function CodingPracticeScreen() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingTop: topPadding, paddingBottom: bottomPadding + 16 }}
         >
-          {/* Header - Padrão Quiz/Categorias */}
-          <View className="px-5 mb-4 mt-5 flex-row items-center">
-            <TouchableOpacity 
-              onPress={() => router.push('/(features)/(main)/practice')} 
-              style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: isDark ? '#1C1F24' : '#F1F5F9', alignItems: 'center', justifyContent: 'center', marginRight: 16 }}
-            >
-              <MaterialIcons name="arrow-back" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
-            </TouchableOpacity>
-            <View>
-              <Text className="text-2xl font-bold text-[#11181C] dark:text-[#ECEDEE]">
+          {/* Header - Padrão Unificado */}
+          <View style={{ paddingHorizontal: 20, marginBottom: 24, marginTop: 20 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 8 }}>
+              <TouchableOpacity 
+                onPress={() => router.push('/(features)/(main)/practice')} 
+                style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: isDark ? '#1C1F24' : '#F1F5F9', alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: isDark ? '#30363D' : '#E2E8F0' }}
+              >
+                <MaterialIcons name="arrow-back" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
+              </TouchableOpacity>
+              <Text style={{ fontSize: 28, fontWeight: '900', color: isDark ? '#ECEDEE' : '#11181C', letterSpacing: -0.5 }}>
                 Prática de Código
               </Text>
-              <Text className="mt-1 text-[#687076] dark:text-[#9BA1A6] text-sm">
-                Monte a sintaxe como blocos de quebra-cabeça.
-              </Text>
             </View>
+            <Text style={{ fontSize: 15, color: isDark ? '#9BA1A6' : '#687076', lineHeight: 22 }}>
+              Monte a sintaxe como blocos de quebra-cabeça e domine a lógica de programação.
+            </Text>
           </View>
 
           {isLoadingExercises ? (

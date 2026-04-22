@@ -34,48 +34,6 @@ export function PracticeHubScreen() {
       </View>
 
       <View style={{ gap: 20 }}>
-        {/* Quebra-Cabeça Card */}
-        <TouchableOpacity activeOpacity={0.7} onPress={navigateToCodingPractice}>
-          <PanelCard compact={false} style={{
-            backgroundColor: isDark ? '#1C1F24' : '#FFFFFF',
-            borderColor: isDark ? 'rgba(63,81,181,0.2)' : 'rgba(63,81,181,0.1)',
-            borderWidth: 1,
-            borderRadius: 24,
-            padding: 24,
-            shadowColor: '#3F51B5',
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: isDark ? 0.2 : 0.08,
-            shadowRadius: 16,
-            elevation: 4,
-          }}>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 20 }}>
-              <View style={{ 
-                width: 64, 
-                height: 64, 
-                borderRadius: 20, 
-                backgroundColor: 'rgba(63,81,181,0.15)', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                borderWidth: 1,
-                borderColor: 'rgba(63,81,181,0.3)',
-              }}>
-                <MaterialIcons name="extension" size={32} color="#3F51B5" />
-              </View>
-              <View style={{ flex: 1, paddingTop: 4 }}>
-                <Text style={{ fontSize: 20, fontWeight: '800', color: isDark ? '#ECEDEE' : '#11181C', marginBottom: 6, letterSpacing: -0.5 }}>
-                  Prática de Código
-                </Text>
-                <Text style={{ fontSize: 14, lineHeight: 22, color: isDark ? '#9BA1A6' : '#687076' }}>
-                  Monte códigos como quebra-cabeças.
-                </Text>
-              </View>
-              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
-                <MaterialIcons name="arrow-forward" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
-              </View>
-            </View>
-          </PanelCard>
-        </TouchableOpacity>
-
         {/* Ache o Erro Card */}
         <TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/ache-o-erro')}>
           <PanelCard compact={false} style={{
@@ -109,90 +67,6 @@ export function PracticeHubScreen() {
                 </Text>
                 <Text style={{ fontSize: 14, lineHeight: 22, color: isDark ? '#9BA1A6' : '#687076' }}>
                   Identifique e corrija bugs reordenando as peças do código.
-                </Text>
-              </View>
-              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
-                <MaterialIcons name="arrow-forward" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
-              </View>
-            </View>
-          </PanelCard>
-        </TouchableOpacity>
-
-        {/* Quiz Card */}
-        <TouchableOpacity activeOpacity={0.7} onPress={navigateToQuiz}>
-          <PanelCard compact={false} style={{
-            backgroundColor: isDark ? '#1C1F24' : '#FFFFFF',
-            borderColor: isDark ? 'rgba(14,165,233,0.2)' : 'rgba(14,165,233,0.1)',
-            borderWidth: 1,
-            borderRadius: 24,
-            padding: 24,
-            shadowColor: '#0EA5E9',
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: isDark ? 0.2 : 0.08,
-            shadowRadius: 16,
-            elevation: 4,
-          }}>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 20 }}>
-              <View style={{ 
-                width: 64, 
-                height: 64, 
-                borderRadius: 20, 
-                backgroundColor: 'rgba(14,165,233,0.12)', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                borderWidth: 1,
-                borderColor: 'rgba(14,165,233,0.25)',
-              }}>
-                <MaterialIcons name="quiz" size={32} color="#0EA5E9" />
-              </View>
-              <View style={{ flex: 1, paddingTop: 4 }}>
-                <Text style={{ fontSize: 20, fontWeight: '800', color: isDark ? '#ECEDEE' : '#11181C', marginBottom: 6, letterSpacing: -0.5 }}>
-                  Quiz
-                </Text>
-                <Text style={{ fontSize: 14, lineHeight: 22, color: isDark ? '#9BA1A6' : '#687076' }}>
-                  Se desafie respondendo questões desafiadoras.
-                </Text>
-              </View>
-              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
-                <MaterialIcons name="arrow-forward" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
-              </View>
-            </View>
-          </PanelCard>
-        </TouchableOpacity>
-
-        {/* Apaga o Incidente (Quick Response) Card */}
-        <TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/quick-response')}>
-          <PanelCard compact={false} style={{
-            backgroundColor: isDark ? '#1C1F24' : '#FFFFFF',
-            borderColor: isDark ? 'rgba(244,63,94,0.2)' : 'rgba(244,63,94,0.1)',
-            borderWidth: 1,
-            borderRadius: 24,
-            padding: 24,
-            shadowColor: '#F43F5E',
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: isDark ? 0.2 : 0.08,
-            shadowRadius: 16,
-            elevation: 4,
-          }}>
-            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 20 }}>
-              <View style={{ 
-                width: 64, 
-                height: 64, 
-                borderRadius: 20, 
-                backgroundColor: 'rgba(244,63,94,0.12)', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                borderWidth: 1,
-                borderColor: 'rgba(244,63,94,0.25)',
-              }}>
-                <MaterialIcons name="fire-extinguisher" size={32} color="#F43F5E" />
-              </View>
-              <View style={{ flex: 1, paddingTop: 4 }}>
-                <Text style={{ fontSize: 20, fontWeight: '800', color: isDark ? '#ECEDEE' : '#11181C', marginBottom: 6, letterSpacing: -0.5 }}>
-                  Gestão de Incidentes
-                </Text>
-                <Text style={{ fontSize: 14, lineHeight: 22, color: isDark ? '#9BA1A6' : '#687076' }}>
-                  Resposta rápida para incidentes de suporte e segurança.
                 </Text>
               </View>
               <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
@@ -243,6 +117,132 @@ export function PracticeHubScreen() {
                 </Text>
                 <Text style={{ fontSize: 14, lineHeight: 22, color: isDark ? '#9BA1A6' : '#687076' }}>
                   Simule a montagem e conexão de um rack real.
+                </Text>
+              </View>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
+                <MaterialIcons name="arrow-forward" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
+              </View>
+            </View>
+          </PanelCard>
+        </TouchableOpacity>
+
+        {/* Gestão de Incidentes (Quick Response) Card */}
+        <TouchableOpacity activeOpacity={0.7} onPress={() => router.push('/quick-response')}>
+          <PanelCard compact={false} style={{
+            backgroundColor: isDark ? '#1C1F24' : '#FFFFFF',
+            borderColor: isDark ? 'rgba(244,63,94,0.2)' : 'rgba(244,63,94,0.1)',
+            borderWidth: 1,
+            borderRadius: 24,
+            padding: 24,
+            shadowColor: '#F43F5E',
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: isDark ? 0.2 : 0.08,
+            shadowRadius: 16,
+            elevation: 4,
+          }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 20 }}>
+              <View style={{ 
+                width: 64, 
+                height: 64, 
+                borderRadius: 20, 
+                backgroundColor: 'rgba(244,63,94,0.12)', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                borderWidth: 1,
+                borderColor: 'rgba(244,63,94,0.25)',
+              }}>
+                <MaterialIcons name="fire-extinguisher" size={32} color="#F43F5E" />
+              </View>
+              <View style={{ flex: 1, paddingTop: 4 }}>
+                <Text style={{ fontSize: 20, fontWeight: '800', color: isDark ? '#ECEDEE' : '#11181C', marginBottom: 6, letterSpacing: -0.5 }}>
+                  Gestão de Incidentes
+                </Text>
+                <Text style={{ fontSize: 14, lineHeight: 22, color: isDark ? '#9BA1A6' : '#687076' }}>
+                  Resposta rápida para incidentes de suporte e segurança.
+                </Text>
+              </View>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
+                <MaterialIcons name="arrow-forward" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
+              </View>
+            </View>
+          </PanelCard>
+        </TouchableOpacity>
+
+        {/* Prática de Código Card */}
+        <TouchableOpacity activeOpacity={0.7} onPress={navigateToCodingPractice}>
+          <PanelCard compact={false} style={{
+            backgroundColor: isDark ? '#1C1F24' : '#FFFFFF',
+            borderColor: isDark ? 'rgba(63,81,181,0.2)' : 'rgba(63,81,181,0.1)',
+            borderWidth: 1,
+            borderRadius: 24,
+            padding: 24,
+            shadowColor: '#3F51B5',
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: isDark ? 0.2 : 0.08,
+            shadowRadius: 16,
+            elevation: 4,
+          }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 20 }}>
+              <View style={{ 
+                width: 64, 
+                height: 64, 
+                borderRadius: 20, 
+                backgroundColor: 'rgba(63,81,181,0.15)', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                borderWidth: 1,
+                borderColor: 'rgba(63,81,181,0.3)',
+              }}>
+                <MaterialIcons name="extension" size={32} color="#3F51B5" />
+              </View>
+              <View style={{ flex: 1, paddingTop: 4 }}>
+                <Text style={{ fontSize: 20, fontWeight: '800', color: isDark ? '#ECEDEE' : '#11181C', marginBottom: 6, letterSpacing: -0.5 }}>
+                  Prática de Código
+                </Text>
+                <Text style={{ fontSize: 14, lineHeight: 22, color: isDark ? '#9BA1A6' : '#687076' }}>
+                  Monte códigos como quebra-cabeças.
+                </Text>
+              </View>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>
+                <MaterialIcons name="arrow-forward" size={20} color={isDark ? '#ECEDEE' : '#11181C'} />
+              </View>
+            </View>
+          </PanelCard>
+        </TouchableOpacity>
+
+        {/* Quiz Card */}
+        <TouchableOpacity activeOpacity={0.7} onPress={navigateToQuiz}>
+          <PanelCard compact={false} style={{
+            backgroundColor: isDark ? '#1C1F24' : '#FFFFFF',
+            borderColor: isDark ? 'rgba(14,165,233,0.2)' : 'rgba(14,165,233,0.1)',
+            borderWidth: 1,
+            borderRadius: 24,
+            padding: 24,
+            shadowColor: '#0EA5E9',
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: isDark ? 0.2 : 0.08,
+            shadowRadius: 16,
+            elevation: 4,
+          }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 20 }}>
+              <View style={{ 
+                width: 64, 
+                height: 64, 
+                borderRadius: 20, 
+                backgroundColor: 'rgba(14,165,233,0.12)', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                borderWidth: 1,
+                borderColor: 'rgba(14,165,233,0.25)',
+              }}>
+                <MaterialIcons name="quiz" size={32} color="#0EA5E9" />
+              </View>
+              <View style={{ flex: 1, paddingTop: 4 }}>
+                <Text style={{ fontSize: 20, fontWeight: '800', color: isDark ? '#ECEDEE' : '#11181C', marginBottom: 6, letterSpacing: -0.5 }}>
+                  Quiz
+                </Text>
+                <Text style={{ fontSize: 14, lineHeight: 22, color: isDark ? '#9BA1A6' : '#687076' }}>
+                  Se desafie respondendo questões desafiadoras.
                 </Text>
               </View>
               <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', alignItems: 'center', justifyContent: 'center', alignSelf: 'center' }}>

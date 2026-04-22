@@ -34,6 +34,8 @@ function DesktopTabLayout() {
           <Tabs.Screen name="quick-response" options={{ href: null }} />
           <Tabs.Screen name="datacenter-builder" options={{ href: null }} />
           <Tabs.Screen name="ache-o-erro" options={{ href: null }} />
+          <Tabs.Screen name="study" options={{ href: null }} />
+          <Tabs.Screen name="track/[track]" options={{ href: null }} />
           <Tabs.Screen name="progress" options={{ title: 'Progresso' }} />
           <Tabs.Screen name="community" options={{ title: 'Comunidade' }} />
         </Tabs>
@@ -103,6 +105,14 @@ function CompactTabLayout() {
           />
           <Tabs.Screen
             name="ache-o-erro"
+            options={{ href: null }}
+          />
+          <Tabs.Screen
+            name="study"
+            options={{ href: null }}
+          />
+          <Tabs.Screen
+            name="track/[track]"
             options={{ href: null }}
           />
           <Tabs.Screen

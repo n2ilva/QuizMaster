@@ -1,5 +1,5 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
 import { PanelCard } from '@/components/quiz/panel-card';
@@ -64,19 +64,24 @@ export function HomeScreen() {
     return count;
   }, []);
 
-  const themes: HomeThemeItem[] = trackCatalog.map((item) => {
-    const style = trackStyles[item.key] ?? TRACK_STYLE_FALLBACK;
-    return {
-      key: item.key,
-      label: item.label,
-      icon: style.icon,
-      color: style.color,
-    };
-  });
+  const themes: HomeThemeItem[] = trackCatalog
+    .map((item) => {
+      const style = trackStyles[item.key] ?? TRACK_STYLE_FALLBACK;
+      return {
+        key: item.key,
+        label: item.label,
+        icon: style.icon,
+        color: style.color,
+      };
+    })
+    .sort((a, b) => a.label.localeCompare(b.label, 'pt-BR'));
 
   const textPrimary = '#ECEDEE';
   const textMuted = '#9BA1A6';
   const surfaceColor = '#1A1D21';
+
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
+  const displayFeatures = showAllFeatures ? HOME_FEATURES : HOME_FEATURES.slice(0, 6);
 
   return (
     <ScrollView
@@ -227,30 +232,6 @@ export function HomeScreen() {
           <View style={{ gap: 16 }}>
             {[
               {
-                id: 'quiz',
-                title: 'Quiz de Certificação',
-                desc: 'Teste seus conhecimentos teóricos em Redes, Cloud, Segurança e mais. Sistema de repetição espaçada para fixação máxima.',
-                icon: 'school',
-                color: '#38BDF8',
-                route: '/quiz'
-              },
-              {
-                id: 'code',
-                title: 'Prática de Código',
-                desc: 'Domine a sintaxe de linguagens como TypeScript e Python montando blocos de código em desafios de lógica interativos.',
-                icon: 'terminal',
-                color: '#F59E0B',
-                route: '/coding-practice'
-              },
-              {
-                id: 'incidents',
-                title: 'Gestão de Incidentes',
-                desc: 'Resolva problemas críticos de infraestrutura sob pressão. Tome decisões rápidas para restaurar serviços e manter o SLA.',
-                icon: 'shield-checkmark',
-                color: '#F43F5E',
-                route: '/quick-response'
-              },
-              {
                 id: 'ache-o-erro',
                 title: 'Ache o Erro',
                 desc: 'Identifique e corrija bugs em códigos reais. Melhore seu Debugging em múltiplas linguagens.',
@@ -265,6 +246,30 @@ export function HomeScreen() {
                 icon: 'server',
                 color: '#10B981',
                 route: '/datacenter-builder'
+              },
+              {
+                id: 'incidents',
+                title: 'Gestão de Incidentes',
+                desc: 'Resolva problemas críticos de infraestrutura sob pressão. Tome decisões rápidas para restaurar serviços e manter o SLA.',
+                icon: 'shield-checkmark',
+                color: '#F43F5E',
+                route: '/quick-response'
+              },
+              {
+                id: 'code',
+                title: 'Prática de Código',
+                desc: 'Domine a sintaxe de linguagens como TypeScript e Python montando blocos de código em desafios de lógica interativos.',
+                icon: 'terminal',
+                color: '#F59E0B',
+                route: '/coding-practice'
+              },
+              {
+                id: 'quiz',
+                title: 'Quiz',
+                desc: 'Teste seus conhecimentos teóricos em Redes, Cloud, Segurança e mais. Sistema de repetição espaçada para fixação máxima.',
+                icon: 'school',
+                color: '#38BDF8',
+                route: '/quiz'
               }
             ].map((lab) => (
               <TouchableOpacity
@@ -325,11 +330,11 @@ export function HomeScreen() {
             </View>
             <View style={{ gap: 16 }}>
               {[
-                { icon: "school", text: "Quiz: Reforce a teoria com questões dinâmicas", color: "#38BDF8" },
-                { icon: "terminal", text: "Código: Pratique lógica com desafios interativos", color: "#F59E0B" },
                 { icon: "bug", text: "Bugs: Treine seu olhar clínico corrigindo erros reais", color: "#A855F7" },
+                { icon: "terminal", text: "Código: Pratique lógica com desafios interativos", color: "#F59E0B" },
                 { icon: "shield-checkmark", text: "Incidentes: Gerencie crises em cenários reais", color: "#F43F5E" },
-                { icon: "server", text: "Infra: Simule a montagem física de um Data Center", color: "#10B981" }
+                { icon: "server", text: "Infra: Simule a montagem física de um Data Center", color: "#10B981" },
+                { icon: "school", text: "Quiz: Reforce a teoria com questões dinâmicas", color: "#38BDF8" }
               ].map((step, index) => (
                 <View key={index} style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
                   <View style={{ width: 32, height: 32, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.03)', alignItems: 'center', justifyContent: 'center' }}>
@@ -353,7 +358,7 @@ export function HomeScreen() {
             </View>
 
             <View style={{ gap: 12 }}>
-              {HOME_FEATURES.slice(0, 8).map((feature, index) => (
+              {displayFeatures.map((feature, index) => (
                 <View key={index} style={{ 
                   flexDirection: 'row', 
                   alignItems: 'center', 
@@ -375,6 +380,7 @@ export function HomeScreen() {
 
             <TouchableOpacity 
               activeOpacity={0.7}
+              onPress={() => setShowAllFeatures(!showAllFeatures)}
               style={{ 
                 marginTop: 20, 
                 backgroundColor: 'rgba(99,102,241,0.1)', 
@@ -385,7 +391,9 @@ export function HomeScreen() {
                 borderColor: 'rgba(99,102,241,0.2)'
               }}
             >
-              <Text style={{ color: '#818CF8', fontSize: 13, fontWeight: '700' }}>Ver todos os recursos</Text>
+              <Text style={{ color: '#818CF8', fontSize: 13, fontWeight: '700' }}>
+                {showAllFeatures ? 'Ver menos' : 'Ver todos os recursos'}
+              </Text>
             </TouchableOpacity>
           </PanelCard>
 

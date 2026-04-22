@@ -114,11 +114,8 @@ export function DataCenterBuilderScreen() {
   // usamos um fallback vazio para não quebrar renderização.
   const data = useMemo(() => normalizeCatalog(datacenterCatalog), [datacenterCatalog]);
 
-  const isCompactChrome = windowWidth < DC_BREAKPOINTS.compactChrome;
-  // On stacked layouts we render either the rack OR the laptop at a time, so
-  // asking the user to click the laptop's serial port is awkward — we
-  // auto-complete the console cable connection to the laptop instead.
-  const isStackedCanvas = windowWidth < DC_BREAKPOINTS.stackCanvas;
+  const isCompactChrome = true;
+  const isStackedCanvas = true;
 
   // ----------------------------------------------------------------- state
   const [activeLevel, setActiveLevel] = useState<DataCenterLevel | null>(null);
@@ -666,59 +663,58 @@ export function DataCenterBuilderScreen() {
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        padding: 20,
-        paddingTop: topPadding + 20,
+        paddingTop: 20,
         paddingBottom: bottomPadding + 20,
-        gap: 16,
-        maxWidth: 1200,
-        width: "100%",
-        alignSelf: "center",
       }}
     >
-      <View style={styles.levelHeader}>
-        <Pressable
-          onPress={() => router.back()}
-          style={({ hovered }: { hovered?: boolean }) => [
-            styles.iconButton,
-            { backgroundColor: hovered ? DC_COLORS.bgSurfaceHover : DC_COLORS.bgSurface },
-          ]}
-          accessibilityRole="button"
-          accessibilityLabel="Voltar"
-        >
-          <MaterialIcons name="arrow-back" size={20} color={DC_COLORS.textSecondary} />
-        </Pressable>
-        <View style={{ flex: 1, minWidth: 0 }}>
+      {/* Header - Full Width */}
+      <View style={{ paddingHorizontal: 20, marginBottom: 32 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 16, marginBottom: 8 }}>
+          <Pressable
+            onPress={() => router.back()}
+            style={({ hovered }: { hovered?: boolean }) => [
+              styles.iconButton,
+              { backgroundColor: hovered ? DC_COLORS.bgSurfaceHover : DC_COLORS.bgSurface },
+            ]}
+            accessibilityRole="button"
+            accessibilityLabel="Voltar"
+          >
+            <MaterialIcons name="arrow-back" size={20} color={DC_COLORS.textSecondary} />
+          </Pressable>
           <Text style={styles.title} numberOfLines={1}>
             {data.game.name}
           </Text>
-          <Text style={styles.subtitle} numberOfLines={2}>
-            Simulador profissional de infraestrutura física. Selecione um cenário para começar.
-          </Text>
         </View>
+        <Text style={styles.subtitle}>
+          Simulador profissional de infraestrutura física. Selecione um cenário para começar.
+        </Text>
       </View>
 
-      <View style={styles.statsRow}>
-        <StatBlock value={String(data.levels.length)} label="Cenários" />
-        <StatBlock value={String(completedLevels.size)} label="Concluídos" />
-        <StatBlock
-          value={
-            data.levels.length === 0
-              ? "0%"
-              : `${Math.round((completedLevels.size / data.levels.length) * 100)}%`
-          }
-          label="Progresso"
-        />
-      </View>
-
-      <View style={styles.levelGrid}>
-        {data.levels.map((lvl) => (
-          <LevelCard
-            key={lvl.id}
-            level={lvl}
-            completed={completedLevels.has(lvl.id)}
-            onPress={() => handleLevelSelect(lvl)}
+      {/* Content - Constrained Width */}
+      <View style={[styles.maxContentWidth, { paddingHorizontal: 20, gap: 16 }]}>
+        <View style={styles.statsRow}>
+          <StatBlock value={String(data.levels.length)} label="Cenários" />
+          <StatBlock value={String(completedLevels.size)} label="Concluídos" />
+          <StatBlock
+            value={
+              data.levels.length === 0
+                ? "0%"
+                : `${Math.round((completedLevels.size / data.levels.length) * 100)}%`
+            }
+            label="Progresso"
           />
-        ))}
+        </View>
+
+        <View style={styles.levelGrid}>
+          {data.levels.map((lvl) => (
+            <LevelCard
+              key={lvl.id}
+              level={lvl}
+              completed={completedLevels.has(lvl.id)}
+              onPress={() => handleLevelSelect(lvl)}
+            />
+          ))}
+        </View>
       </View>
     </ScrollView>
   );
@@ -806,24 +802,8 @@ export function DataCenterBuilderScreen() {
           </View>
         </View>
 
-        {isCompactChrome ? null : (
-          <WorkbenchToolbar
-            compact={false}
-            actions={[
-              ...helpActions,
-              {
-                id: "validate",
-                icon: "fact-check",
-                label: "Validar",
-                variant: "success",
-                onPress: handleValidate,
-              },
-            ]}
-          />
-        )}
-
         <View
-          style={styles.canvasSurface}
+          style={[styles.canvasSurface, styles.maxContentWidth]}
           onLayout={(e) => {
             canvasSurfaceYRef.current = e.nativeEvent.layout.y;
           }}
@@ -860,22 +840,18 @@ export function DataCenterBuilderScreen() {
           />
         </View>
       </ScrollView>
-      {isCompactChrome ? (
-        <>
-          {/* Validate sits on the bottom (thumb-friendly zone); the help
-              speed-dial is stacked just above it. */}
-          <ValidationFab
-            onPress={handleValidate}
-            icon="fact-check"
-            bottomInset={bottomPadding}
-          />
-          <WorkbenchFab
-            actions={helpActions}
-            bottomInset={bottomPadding + FAB_SIZE + FAB_STACK_GAP}
-          />
-        </>
-      ) : null}
-      </View>
+
+      {/* Floating Action Buttons - Unified FAB experience */}
+      <ValidationFab
+        onPress={handleValidate}
+        icon="fact-check"
+        bottomInset={bottomPadding}
+      />
+      <WorkbenchFab
+        actions={helpActions}
+        bottomInset={bottomPadding + FAB_SIZE + FAB_STACK_GAP}
+      />
+    </View>
     );
   };
 
@@ -1438,5 +1414,10 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "600",
     marginTop: 2,
+  },
+  maxContentWidth: {
+    maxWidth: 800,
+    width: "100%",
+    alignSelf: "center",
   },
 });
