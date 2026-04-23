@@ -108,15 +108,21 @@ export function CommunityUserCard({
                 <Text style={{ color: textSecondary, fontSize: 11 }}>Códigos: {userProfile.totalCodingCompleted}</Text>
               </View>
             )}
-            {(userProfile.totalIncidentsCompleted ?? 0) > 0 && (
+            {(userProfile.totalDebugCompleted ?? 0) > 0 && (
               <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
                 {(userProfile.totalQuestionsAnswered > 0 || userProfile.totalCodingCompleted > 0) && <Text style={{ color: textSecondary, fontSize: 11 }}>•</Text>}
+                <Text style={{ color: textSecondary, fontSize: 11 }}>Bugs: {userProfile.totalDebugCompleted}</Text>
+              </View>
+            )}
+            {(userProfile.totalIncidentsCompleted ?? 0) > 0 && (
+              <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
+                {(userProfile.totalQuestionsAnswered > 0 || userProfile.totalCodingCompleted > 0 || (userProfile.totalDebugCompleted ?? 0) > 0) && <Text style={{ color: textSecondary, fontSize: 11 }}>•</Text>}
                 <Text style={{ color: textSecondary, fontSize: 11 }}>Incidentes: {userProfile.totalIncidentsCompleted}</Text>
               </View>
             )}
             {(userProfile.totalDataCenterCompleted ?? 0) > 0 && (
               <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
-                {(userProfile.totalQuestionsAnswered > 0 || userProfile.totalCodingCompleted > 0 || (userProfile.totalIncidentsCompleted ?? 0) > 0) && <Text style={{ color: textSecondary, fontSize: 11 }}>•</Text>}
+                {(userProfile.totalQuestionsAnswered > 0 || userProfile.totalCodingCompleted > 0 || (userProfile.totalDebugCompleted ?? 0) > 0 || (userProfile.totalIncidentsCompleted ?? 0) > 0) && <Text style={{ color: textSecondary, fontSize: 11 }}>•</Text>}
                 <Text style={{ color: textSecondary, fontSize: 11 }}>DC: {userProfile.totalDataCenterCompleted}</Text>
               </View>
             )}
@@ -208,6 +214,36 @@ export function CommunityUserCard({
               </>
             )}
 
+            {/* Debug Info */}
+            {(userProfile.totalDebugCompleted ?? 0) > 0 && (
+              <>
+                <View style={{ height: 1, backgroundColor: isDark ? '#30363D' : '#E2E8F0', opacity: 0.5 }} />
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: compact ? 10 : 12 }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ color: textSecondary, fontSize: 10, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 4 }}>
+                      Ache o Erro
+                    </Text>
+                    <Text style={{ color: textPrimary, fontSize: 14, fontWeight: '800', letterSpacing: -0.3 }}>
+                      Quality Assurance
+                    </Text>
+                  </View>
+                  <View style={{ alignItems: 'center', gap: 2 }}>
+                    <Text style={{ color: textSecondary, fontSize: 10 }}>Bugs</Text>
+                    <Text style={{ color: '#F59E0B', fontSize: 16, fontWeight: '800' }}>
+                      {userProfile.totalDebugCompleted}
+                    </Text>
+                  </View>
+                  <View style={{ width: 1, height: 36, backgroundColor: isDark ? '#30363D' : '#E2E8F0' }} />
+                  <View style={{ alignItems: 'center', gap: 2 }}>
+                    <Text style={{ color: textSecondary, fontSize: 10 }}>T. Médio</Text>
+                    <Text style={{ color: '#F59E0B', fontSize: 14, fontWeight: '800' }}>
+                      {userProfile.avgDebugTimeMs ? `${(userProfile.avgDebugTimeMs / 1000).toFixed(0)}s` : '—'}
+                    </Text>
+                  </View>
+                </View>
+              </>
+            )}
+
             {/* Incidents Info */}
             {(userProfile.totalIncidentsCompleted ?? 0) > 0 && (
               <>
@@ -275,7 +311,7 @@ export function CommunityUserCard({
               </>
             )}
 
-            {!(userProfile.topCategory || userProfile.topCodingCategory || (userProfile.totalIncidentsCompleted ?? 0) > 0 || (userProfile.totalDataCenterCompleted ?? 0) > 0) && (
+            {!(userProfile.topCategory || userProfile.topCodingCategory || (userProfile.totalDebugCompleted ?? 0) > 0 || (userProfile.totalIncidentsCompleted ?? 0) > 0 || (userProfile.totalDataCenterCompleted ?? 0) > 0) && (
               <Text style={{ color: textSecondary, fontSize: 12, textAlign: 'center' }}>Nenhuma atividade específica ainda.</Text>
             )}
           </View>

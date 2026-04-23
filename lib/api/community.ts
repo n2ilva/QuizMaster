@@ -24,6 +24,7 @@ import {
   calculateCodingExerciseScore
 } from "./progress";
 import { fetchCodingPracticeProgress, fetchCodingExercises } from "./coding-practice";
+import { fetchAcheOErroProgress } from "./ache-o-erro";
 import { fetchQuickResponseProgress } from "./quick-response";
 import { fetchDataCenterProgress } from "./datacenter";
 import type {
@@ -48,9 +49,10 @@ export async function updateUserProfile(
   const lessonsRef = collection(db, "users", uid, "lessons");
   
   // Fetch everything in parallel for the hybrid score
-  const [lessonsSnapshot, codingResults, quickProgress, dcProgress] = await Promise.all([
+  const [lessonsSnapshot, codingResults, debugProgress, quickProgress, dcProgress] = await Promise.all([
     getDocs(lessonsRef),
     fetchCodingPracticeProgress(uid),
+    fetchAcheOErroProgress(uid),
     fetchQuickResponseProgress(uid),
     fetchDataCenterProgress(uid)
   ]);
@@ -152,10 +154,15 @@ export async function updateUserProfile(
     }
   });
 
-  // Calculate Incidents & DataCenter summary for profile
   const totalIncidentsCompleted = Object.keys(quickProgress).length;
   const avgIncidentTimeMs = totalIncidentsCompleted > 0
     ? Math.round(Object.values(quickProgress).reduce((acc: any, curr: any) => acc + (curr.bestTime || 0), 0) / totalIncidentsCompleted * 1000)
+    : 0;
+
+  // Calculate Debug (Ache o Erro) summary for profile
+  const totalDebugCompleted = Object.keys(debugProgress).length;
+  const avgDebugTimeMs = totalDebugCompleted > 0
+    ? Math.round(Object.values(debugProgress).reduce((acc: any, curr: any) => acc + (curr.bestTime || 0), 0) / totalDebugCompleted * 1000)
     : 0;
 
   const totalDataCenterCompleted = Object.keys(dcProgress).length;
@@ -169,7 +176,18 @@ export async function updateUserProfile(
     ? Math.round(Object.values(dcProgress).reduce((acc: any, curr: any) => acc + (curr.bestMoves || 0), 0) / totalDataCenterCompleted)
     : 0;
 
-  const totalScore = quizScore + codingScore;
+  let debugScore = 0;
+  Object.values(debugProgress).forEach((res) => {
+    if (res.completed) {
+      // Base score per bug
+      let pts = 20;
+      if (res.level === 'pleno') pts = 35;
+      if (res.level === 'senior') pts = 50;
+      debugScore += pts;
+    }
+  });
+
+  const totalScore = quizScore + codingScore + debugScore;
   const summaryLevel = getSummaryLevel(accuracy);
   const scoreLevel = getScoreLevel(totalScore);
 
@@ -210,6 +228,8 @@ export async function updateUserProfile(
     topCodingCategory,
     topCodingAccuracy,
     topCodingAvgTimeMs,
+    totalDebugCompleted,
+    avgDebugTimeMs,
     updatedAt: serverTimestamp(),
   } as UserProgressData);
 
@@ -238,6 +258,8 @@ export async function updateUserProfile(
     avgDataCenterScore,
     avgDataCenterTimeMs,
     avgDataCenterMoves,
+    totalDebugCompleted,
+    avgDebugTimeMs,
     updatedAt: serverTimestamp(),
   };
 
@@ -300,6 +322,10 @@ export async function fetchUsersByLevel(
               (d.data().totalIncidentsCompleted as number) ?? 0,
             avgIncidentTimeMs:
               (d.data().avgIncidentTimeMs as number) ?? 0,
+            totalDebugCompleted:
+              (d.data().totalDebugCompleted as number) ?? 0,
+            avgDebugTimeMs:
+              (d.data().avgDebugTimeMs as number) ?? 0,
             totalDataCenterCompleted:
               (d.data().totalDataCenterCompleted as number) ?? 0,
             avgDataCenterScore:

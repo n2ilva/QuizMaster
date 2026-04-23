@@ -65,6 +65,7 @@ export type ProgressSummary = {
   streak: number;
   categories: CategoryProgress[];
   extraStats?: {
+    debug?: { completed: number; total: number; avgTime: number; avgMoves: number };
     incidents: { completed: number; total: number; slaRate: number };
     datacenter: { completed: number; total: number; avgTime: number; avgMoves: number; avgScore: number };
   };
@@ -89,6 +90,8 @@ export type UserProfile = {
   score: number;
   totalQuestionsAnswered: number;
   totalCodingCompleted: number;
+  totalDebugCompleted?: number;
+  avgDebugTimeMs?: number;
   totalIncidentsCompleted?: number;
   avgIncidentTimeMs?: number;
   totalDataCenterCompleted?: number;
@@ -115,6 +118,7 @@ export type UserProgressData = {
   score: number;
   totalQuestionsAnswered: number;
   totalCodingCompleted: number;
+  totalDebugCompleted?: number;
   overallAccuracy: number;
   avgTimePerQuestion: number;
   topCodingCategory?: string;
