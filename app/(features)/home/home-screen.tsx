@@ -23,7 +23,6 @@ export function HomeScreen() {
     trackCatalog,
     dbStats: stats,
     userProgress: progress,
-    datacenterCatalog,
     quickResponseCatalog,
   } = useData();
   const layoutMode = useLayoutMode();
@@ -42,9 +41,13 @@ export function HomeScreen() {
   }, [quickResponseCatalog]);
 
   const totalDataCenter = useMemo(() => {
-    const levels = (datacenterCatalog?.levels as unknown[] | undefined) ?? [];
-    return levels.length;
-  }, [datacenterCatalog]);
+    // Lê direto do JSON local — mesma lógica do normalizeCatalog no
+    // datacenter-builder-screen: só conta níveis com inventário preenchido
+    // (os demais são apenas documentação e não aparecem no jogo).
+    const dc = require('@/data/data-center/datacenterbuild.json');
+    const levels = (dc?.levels as { inventory?: unknown[] }[] | undefined) ?? [];
+    return levels.filter((lvl) => (lvl.inventory?.length ?? 0) > 0).length;
+  }, []);
 
   const totalDebug = useMemo(() => {
     // Import json data directly for stats

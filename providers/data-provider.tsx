@@ -12,6 +12,7 @@ import { AppState, Platform } from 'react-native';
 
 import { preloadGlossary } from '@/components/glossary-text';
 import {
+  fetchAcheOErroCatalog,
   fetchDataCenterCatalog,
   fetchQuickResponseCatalog,
   fetchUserProgress,
@@ -40,6 +41,8 @@ type DataContextValue = {
   datacenterCatalog: Record<string, unknown> | null;
   /** Cached Quick Response / Suporte Técnico catalog (categories/exercises) */
   quickResponseCatalog: Record<string, unknown> | null;
+  /** Cached Ache o Erro catalog (languages/exercises) */
+  acheOErroCatalog: Record<string, unknown> | null;
 
   /** Re-fetch user progress (after a lesson ends, etc.) */
   refreshUserProgress: () => Promise<void>;
@@ -76,21 +79,23 @@ export function DataProvider({ children }: PropsWithChildren) {
   const [userProgress, setUserProgress] = useState<ProgressSummary | null>(null);
   const [datacenterCatalog, setDatacenterCatalog] = useState<Record<string, unknown> | null>(null);
   const [quickResponseCatalog, setQuickResponseCatalog] = useState<Record<string, unknown> | null>(null);
+  const [acheOErroCatalog, setAcheOErroCatalog] = useState<Record<string, unknown> | null>(null);
 
   const refreshCatalog = useCallback(async () => {
     try {
-      // Invalida cache local para forçar busca fresca do Firestore
       await Promise.all([cacheRemove('catalog'), cacheRemove('dbStats')]);
-      const [catalog, stats, dcCatalog, qrCatalog] = await Promise.all([
+      const [catalog, stats, dcCatalog, qrCatalog, aoerroCatalog] = await Promise.all([
         getTrackCatalog(),
         getDatabaseStats(),
         fetchDataCenterCatalog(),
         fetchQuickResponseCatalog(),
+        fetchAcheOErroCatalog(),
       ]);
       setTrackCatalog(catalog);
       setDbStats(stats);
       setDatacenterCatalog(dcCatalog);
       setQuickResponseCatalog(qrCatalog);
+      setAcheOErroCatalog(aoerroCatalog);
     } catch (error) {
       console.error('[DataProvider] Erro ao carregar catálogo:', error);
     }
@@ -128,13 +133,14 @@ export function DataProvider({ children }: PropsWithChildren) {
 
         // Step 1: Catalog + Stats + Glossary + Game catalogs (independent of user)
         setPreloadProgress(10);
-        const [catalog, stats, , dcCatalog, qrCatalog] = await withRetry(() =>
+        const [catalog, stats, , dcCatalog, qrCatalog, aoerroCatalog] = await withRetry(() =>
           Promise.all([
             getTrackCatalog(),
             getDatabaseStats(),
             preloadGlossary(),
             fetchDataCenterCatalog(),
             fetchQuickResponseCatalog(),
+            fetchAcheOErroCatalog(),
           ])
         );
         if (cancelled) return;
@@ -142,6 +148,7 @@ export function DataProvider({ children }: PropsWithChildren) {
         setDbStats(stats);
         setDatacenterCatalog(dcCatalog);
         setQuickResponseCatalog(qrCatalog);
+        setAcheOErroCatalog(aoerroCatalog);
         setPreloadProgress(50);
 
         // Step 2: User progress
@@ -210,6 +217,7 @@ export function DataProvider({ children }: PropsWithChildren) {
       userProgress,
       datacenterCatalog,
       quickResponseCatalog,
+      acheOErroCatalog,
       refreshUserProgress,
       refreshCatalog,
     }),
@@ -221,6 +229,7 @@ export function DataProvider({ children }: PropsWithChildren) {
       userProgress,
       datacenterCatalog,
       quickResponseCatalog,
+      acheOErroCatalog,
       refreshUserProgress,
       refreshCatalog,
     ],

@@ -1,6 +1,6 @@
 {
   "game": "Gestão de Incidentes - Troubleshooting",
-  "version": "3.0",
+  "version": "4.0",
   "categories": [
     {
       "id": "suporte_tecnico",
@@ -1058,6 +1058,109 @@
             }
           ],
           "success_message": "Excepcional! GPOs e Autenticação do Windows exigem DNS perfeitamente apontado para o DC e o horário rigorosamente sincronizado. Ping atesta apenas rede física/L3."
+        },
+        {
+          "id": "st_facil_11",
+          "level": "Baixa",
+          "alert": "Usuário relata que perdeu o celular onde tinha o Microsoft Authenticator configurado. Agora não consegue fazer login em nenhum sistema corporativo (M365, VPN, ERP).",
+          "context": {
+            "ticket_id": "#INC-2024-1122",
+            "system": "Microsoft 365 / Entra ID (Azure AD)",
+            "affected_users": "1 usuário — Analista Financeiro Sr.",
+            "opened_by": "Carlos Mendes — Gerente Financeiro",
+            "priority_sla": "P3 — SLA: 8h",
+            "topology_hint": "Ambiente: Microsoft 365 E3 com MFA obrigatório via Conditional Access. Política: sem senhas de app, sem SMS como fallback."
+          },
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Verificar se o usuário tem método de backup de MFA configurado (email alternativo, SMS, chave FIDO2)",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Desativar o MFA da conta para ele entrar imediatamente",
+              "is_correct": false,
+              "feedback": "Jamais desative o MFA de um usuário sem aprovação formal. Isso viola a política de segurança e pode ser auditado."
+            },
+            {
+              "id": "a3",
+              "text": "Abrir chamado prioritário e acionar o gestor para autorizar o reset do MFA via Entra ID Admin Center",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Fazer reset do MFA via Entra ID: Users > selecionar usuário > Authentication Methods > Reset",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Criar uma nova conta de usuário para ele usar temporariamente",
+              "is_correct": false,
+              "feedback": "Uma nova conta não teria as permissões, licenças nem caixas de e-mail do usuário original. Gera um caos maior."
+            }
+          ],
+          "success_message": "Correto! Reset de MFA exige autorização do gestor e deve ser feito pelo admin no Entra ID. Nunca exponha a conta desativando o MFA.",
+          "explanation": "O MFA via Authenticator usa TOTP (Time-based One-Time Password) vinculado ao dispositivo. Ao perder o celular, o único caminho seguro é o administrador fazer o reset dos métodos de autenticação no portal do Entra ID, após validar a identidade do usuário por outros meios (RH, videoconferência, crachá).",
+          "runbook_steps": [
+            "Validar identidade do usuário por canal alternativo (ligação para gestor ou RH)",
+            "Acessar portal.azure.com > Azure Active Directory > Usuários",
+            "Selecionar o usuário > Métodos de Autenticação > Exigir Novo Registro de MFA",
+            "Orientar o usuário a instalar o Authenticator no novo dispositivo e fazer o fluxo de cadastro",
+            "Registrar a ocorrência no ITSM e alertar o time de segurança sobre o dispositivo perdido (eventual wipe remoto)"
+          ]
+        },
+        {
+          "id": "st_medio_11",
+          "level": "Urgente",
+          "alert": "Computador do usuário do setor jurídico não consegue fazer login no domínio. Mensagem: \"O domínio especificado não está disponível\". Outros colegas do mesmo setor entram normalmente.",
+          "context": {
+            "ticket_id": "#INC-2024-1205",
+            "system": "Windows 11 Pro 22H2 ingressado no AD (empresa.local)",
+            "affected_users": "1 usuário — Dr. Roberto Alves (Advogado Sênior)",
+            "opened_by": "Dr. Roberto Alves",
+            "priority_sla": "P2 — SLA: 4h",
+            "log_snippet": "NETLOGON 5719: Este computador não pôde autenticar no domínio empresa.local.\nNetlogon: A sessão de NetLogon foi interrompida.\nKDC_ERR_ETYPE_NOSUPP",
+            "topology_hint": "AD Windows Server 2022. DCs: DC01 (192.168.1.10) e DC02 (192.168.1.11). O PC tem IP fixo 192.168.5.100 em VLAN isolada (movimento recente de sala)."
+          },
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Confirmar conectividade com os Domain Controllers (ping dc01.empresa.local, ping 192.168.1.10)",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Reformatar o computador imediatamente",
+              "is_correct": false,
+              "feedback": "Ação destrutiva sem diagnóstico. O problema é de conectividade ou sincronização com o AD, não de sistema."
+            },
+            {
+              "id": "a3",
+              "text": "Verificar se o computador está na VLAN correta e se o firewall/ACL permite tráfego Kerberos (porta 88) e LDAP (389) para os DCs",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Testar login com conta local (.\\Administrator) para confirmar se o problema é de rede ou de conta do AD",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Reiniciar o Active Directory Domain Services no DC01",
+              "is_correct": false,
+              "feedback": "Reiniciar o ADDS em produção sem diagnóstico pode derrubar a autenticação de toda a empresa."
+            }
+          ],
+          "success_message": "Perfeito! O PC foi movido para uma VLAN diferente que bloqueia o tráfego Kerberos para os DCs. Diagnosticar por camadas: rede > firewall > AD.",
+          "explanation": "Kerberos requer acesso às portas UDP/TCP 88 (KDC), 389 (LDAP) e 445 (SMB) para os Domain Controllers. Quando um host é movido de VLAN sem ajuste de ACL no switch/firewall, a autenticação no domínio falha silenciosamente para aquele único endpoint.",
+          "runbook_steps": [
+            "Fazer login local (.\\Administrator ou conta LAPS) para ter acesso à máquina",
+            "Executar: ping dc01.empresa.local e nslookup empresa.local",
+            "Verificar a VLAN do switch port onde o PC está conectado (comando: show mac address-table no switch)",
+            "Checar ACLs entre a VLAN atual e a VLAN dos DCs — liberar portas 88, 389, 445, 636",
+            "Após restaurar a conectividade, executar: nltest /sc_verify:empresa.local para validar o canal seguro"
+          ]
         }
       ]
     },
@@ -2116,6 +2219,58 @@
             }
           ],
           "success_message": "Exato. Quando rotas caem entre VLANs, o switch core L3 pode ter sido desconfigurado (ip routing desativado) ou a VLAN base no L2 foi deletada inadvertidamente por um VTP problemático."
+        },
+        {
+          "id": "noc_facil_11",
+          "level": "Baixa",
+          "alert": "Zabbix alerta: DHCP Pool \"VLAN-40-USUARIOS\" com 97% de utilização. Endereços disponíveis: 8 de 250. Horário: 08h42 (início do expediente).",
+          "context": {
+            "ticket_id": "#NOC-2024-0311",
+            "system": "Windows Server 2022 — DHCP Server (192.168.1.10)",
+            "affected_users": "Potencialmente todos os ~240 usuários da VLAN 40",
+            "opened_by": "Zabbix — Alerta Automático",
+            "priority_sla": "P3 — SLA: 4h",
+            "log_snippet": "DHCP Server: Pool VLAN-40 — Active Leases: 242/250\nLease Time: 8 dias\nScopes: 192.168.40.10 - 192.168.40.254",
+            "topology_hint": "Switch Core: Cisco Catalyst 9300. DHCP centralizado no AD (Windows Server). Pool único por VLAN, sem superscope configurado."
+          },
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Verificar no console DHCP quais IPs estão ativos e se há dispositivos desconhecidos ou IPs fantasmas (leases não renovadas de PCs desligados)",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Reiniciar o serviço DHCP Server imediatamente para liberar todos os leases",
+              "is_correct": false,
+              "feedback": "Reiniciar o DHCP derrubaria a conectividade de todos os 242 usuários ativos ao mesmo tempo. Nunca em produção sem janela de manutenção."
+            },
+            {
+              "id": "a3",
+              "text": "Checar se há dispositivos com IP fixo dentro do range dinâmico causando conflito e tornando IPs indisponíveis",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Ampliar temporariamente o pool ou configurar um escopo adicional enquanto investiga",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Reduzir o lease time de 8 dias para 2 horas em produção imediatamente",
+              "is_correct": false,
+              "feedback": "Reduzir drasticamente o lease time sem aviso gera storm de requests DHCP no horário de expiração, podendo sobrecarregar o servidor."
+            }
+          ],
+          "success_message": "Ótimo! Diagnóstico correto: identificar leases fantasmas e IPs fixos no range dinâmico, depois ampliar o pool como mitigação imediata.",
+          "explanation": "O pool DHCP esgota-se por dois motivos principais: (1) dispositivos que saíram da rede mas ainda têm lease ativo (impressoras trocadas, notebooks de visitantes, VMs deletadas); (2) dispositivos com IP estático configurado manualmente dentro do range dinâmico, \"roubando\" endereços do pool. Reduzir o lease time é uma solução, mas deve ser feita com cuidado para evitar burst de renovações.",
+          "runbook_steps": [
+            "Acessar DHCP Server console > Identificar leases expiradas há mais de 48h e limpar (reconcile scopes)",
+            "Filtrar leases ativas por MAC address e identificar fabricantes desconhecidos (site: macvendors.com)",
+            "Verificar reservas DHCP e IPs estáticos no range — mover para fora do range dinâmico",
+            "Expandir temporariamente o pool para 192.168.40.10–192.168.40.253 (adicionar /23 se necessário)",
+            "Planejar migração para IPAM (IP Address Management) para evitar recorrência"
+          ]
         }
       ]
     },
@@ -3174,6 +3329,58 @@
             }
           ],
           "success_message": "Visão técnica perfeita! O PTH contorna a senha complexa reutilizando o hash já autenticado. Implementar defesas NTLM estritas, mitigação e bloqueio são a rotina principal para deter movimento lateral avançado."
+        },
+        {
+          "id": "soc_medio_11",
+          "level": "Urgente",
+          "alert": "SIEM detecta: conta de serviço \"svc_backup\" realizou login interativo (RDP) às 03h47 em um servidor de produção DB-PROD-01. Esta service account nunca deveria realizar login interativo.",
+          "context": {
+            "ticket_id": "#SOC-2024-0892",
+            "system": "Windows Server 2022 — DB-PROD-01 (SQL Server 2022)",
+            "affected_users": "Servidor de banco de dados de produção — impacto potencial em todo sistema ERP",
+            "opened_by": "Microsoft Sentinel — Regra: Unusual Service Account Activity",
+            "priority_sla": "P2 — SLA: 1h",
+            "log_snippet": "Event ID 4624 (Logon): svc_backup logon type: 10 (RemoteInteractive/RDP)\nSource IP: 10.20.5.44 (Workstation: WKS-FINANCE-07)\nTime: 03:47:12 UTC\nEvent ID 4688: Process created: cmd.exe (parent: explorer.exe)",
+            "topology_hint": "Rede segmentada: Servidores em VLAN 10, Workstations em VLAN 20. RDP dos servidores só deveria ser acessível de IPs do time de infra (VLAN 30). WKS-FINANCE-07 é computador do setor financeiro."
+          },
+          "actions": [
+            {
+              "id": "a1",
+              "text": "Isolar imediatamente o servidor DB-PROD-01 da rede (bloquear no firewall/switch) e bloquear a conta svc_backup no AD",
+              "is_correct": true
+            },
+            {
+              "id": "a2",
+              "text": "Apenas trocar a senha da conta svc_backup e fechar o chamado",
+              "is_correct": false,
+              "feedback": "Mudar só a senha não elimina uma sessão ativa e não investiga se o atacante já executou código malicioso ou exfiltrou dados."
+            },
+            {
+              "id": "a3",
+              "text": "Coletar e preservar logs de autenticação do DC (Event ID 4624/4625/4648) e logs de processo do servidor (Event ID 4688)",
+              "is_correct": true
+            },
+            {
+              "id": "a4",
+              "text": "Identificar a origem: investigar WKS-FINANCE-07 (IP 10.20.5.44) — possível ponto de comprometimento lateral",
+              "is_correct": true
+            },
+            {
+              "id": "a5",
+              "text": "Esperar o horário comercial para acionar o time de segurança",
+              "is_correct": false,
+              "feedback": "Incidente ativo às 03h47 em servidor de produção não pode aguardar. Cada minuto aumenta o risco de exfiltração ou destruição de dados."
+            }
+          ],
+          "success_message": "Excelente! Movimentação lateral via service account comprometida é altamente indicativa de APT. Isolar, preservar evidências e investigar a origem é o protocolo correto.",
+          "explanation": "Service accounts (svc_*) raramente precisam de login interativo. Quando um atacante compromete um host via phishing ou exploração de vulnerabilidade, frequentemente dumpa credenciais da memória (LSASS) via Mimikatz. Se a svc_backup tinha senha fraca ou estava no AD sem proteção, o hash pode ter sido roubado e usado para RDP em outros servidores (Pass-the-Hash ou Pass-the-Ticket).",
+          "runbook_steps": [
+            "Bloquear conta svc_backup no AD imediatamente (Set-ADAccountEnabled -Identity svc_backup -Enabled )",
+            "Adicionar regra de firewall bloqueando tráfego RDP de VLAN 20 para VLAN 10 (correção de segmentação)",
+            "Coletar memory dump do WKS-FINANCE-07 antes de reiniciar (ferramentas: WinPmem, Magnet RAM Capture)",
+            "Executar análise de timeline no DC: Get-WinEvent -FilterHashtable para eventos 4624, 4625, 4672 das últimas 72h",
+            "Resetar KRBTGT duas vezes se suspeita de Golden/Silver Ticket, e auditar todas as service accounts do domínio"
+          ]
         }
       ]
     }

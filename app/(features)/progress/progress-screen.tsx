@@ -17,13 +17,13 @@ import { ProgressCategoryCard } from './components/progress-category-card';
 import { ResetProgressButton } from './components/reset-progress-button';
 import { CodingPracticeStore } from '../coding-practice/coding-practice.store';
 import { LANGUAGES } from '../coding-practice/coding-practice.constants';
-import { DebugPracticeStore } from '../ache-o-erro/ache-o-erro.store';
+import { DebugPracticeStore, parseCatalogToExercises } from '../ache-o-erro/ache-o-erro.store';
 
 export function ProgressScreen() {
   const bottomPadding = useTabContentPadding();
   const topPadding = useTopContentPadding();
   const { user } = useAuth();
-  const { userProgress: cachedProgress, refreshUserProgress, dbStats: stats, trackCatalog } = useData();
+  const { userProgress: cachedProgress, refreshUserProgress, dbStats: stats, trackCatalog, acheOErroCatalog } = useData();
   const layoutMode = useLayoutMode();
   const { isDesktop } = useScreenSize();
   const { width: windowWidth } = useWindowDimensions();
@@ -205,7 +205,7 @@ export function ProgressScreen() {
       });
 
       // 6. Ache o Erro
-      const allDebugEx = await DebugPracticeStore.getAllExercises();
+      const allDebugEx = parseCatalogToExercises(acheOErroCatalog);
       const debugProgress = await DebugPracticeStore.getProgress(user.id);
       const finishedDebug = Object.values(debugProgress).filter((p) => p.completed);
       setDebugStats({
@@ -223,13 +223,13 @@ export function ProgressScreen() {
     } finally {
       setLoading(false);
     }
-  }, [user, stats, trackCatalog]);
+  }, [user, stats, trackCatalog, acheOErroCatalog]);
 
   useEffect(() => {
-    if (!isFirstLoad.current && (stats || trackCatalog.length > 0)) {
+    if (!isFirstLoad.current && (stats || trackCatalog.length > 0 || acheOErroCatalog)) {
       void loadProgress();
     }
-  }, [stats, trackCatalog, loadProgress]);
+  }, [stats, trackCatalog, acheOErroCatalog, loadProgress]);
 
   useFocusEffect(
     useCallback(() => {

@@ -445,7 +445,7 @@ export function QuestionCard({
   progressPercent = 0,
   liveTimer = 0
 }: QuestionCardProps) {
-  const diff = DIFFICULTY_CONFIG[exercise.difficulty];
+  const diff = DIFFICULTY_CONFIG[exercise.difficulty] || { label: exercise.difficulty, color: '#9BA1A6', bg: '#1A1D21' };
   const maxHints = exercise.hints?.length ?? 0;
   const remainingHints = Math.max(0, maxHints - hintIndex);
   const clampedProgress = Math.min(100, Math.max(0, progressPercent));
@@ -558,7 +558,7 @@ export function QuestionCard({
             borderColor: diff.color + '44',
           }}
         >
-          <Text style={{ color: diff.color, fontSize: 10, fontWeight: '700' }}>{diff.label}</Text>
+          <Text style={{ color: diff.color, fontSize: 10, fontWeight: '700', textTransform: 'capitalize' }}>{diff.label}</Text>
         </View>
         <Text style={{ color: isDark ? '#374151' : '#CBD5E1', fontSize: 11 }}>•</Text>
         <Text style={{ color: isDark ? '#4B5563' : '#94A3B8', fontSize: 11, fontWeight: '600' }}>{language.label}</Text>

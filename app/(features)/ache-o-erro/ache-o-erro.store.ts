@@ -1,10 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { fetchAcheOErroProgress, saveAcheOErroResult } from '@/lib/api/ache-o-erro';
 import { DebugExercise, Level } from './ache-o-erro.types';
-import javascriptData from '@/data/ache-o-erro/javascript.json';
-import javaData from '@/data/ache-o-erro/java.json';
-import pythonData from '@/data/ache-o-erro/python.json';
-import csharpData from '@/data/ache-o-erro/c-sharp.json';
 
 const STORAGE_KEY = 'debug-practice-progress';
 
@@ -18,37 +14,57 @@ export type ExerciseProgress = {
 
 export type GlobalProgress = Record<string, ExerciseProgress>;
 
-export const DebugPracticeStore = {
-  async getAllExercises(): Promise<DebugExercise[]> {
-    const exercises: DebugExercise[] = [];
+/**
+ * Converte o catálogo bruto vindo do Firestore (ache_o_erro_catalog/main)
+ * para uma lista plana de DebugExercise — o mesmo formato que a screen consome.
+ *
+ * Estrutura do catálogo Firestore:
+ *   { version, languages: { javascript: { javascript: { levels: { junior: { questions: [...] } } } } } }
+ *
+ * A chave duplicada (ex: languages.javascript.javascript) existe porque cada
+ * JSON local tem a linguagem como chave raiz. O script de upload manteve essa
+ * estrutura para não precisar alterar os JSONs.
+ */
+export function parseCatalogToExercises(
+  catalog: Record<string, unknown> | null,
+): DebugExercise[] {
+  if (!catalog) return [];
 
-    const dataSources = [
-      { data: javascriptData, key: 'javascript' },
-      { data: javaData, key: 'java' },
-      { data: pythonData, key: 'python' },
-      { data: csharpData, key: 'csharp' },
-    ];
+  const exercises: DebugExercise[] = [];
+  const languages = catalog.languages as Record<string, unknown> | undefined;
+  if (!languages) return [];
 
-    dataSources.forEach(({ data, key }) => {
-      const langData = (data as any)[key];
-      if (langData && langData.levels) {
-        const levels = langData.levels;
-        (Object.keys(levels) as Level[]).forEach((levelKey) => {
-          const levelData = levels[levelKey];
-          levelData.questions.forEach((q: any) => {
-            exercises.push({
-              ...q,
-              level: levelKey,
-              language: key,
-            });
-          });
+  const LANG_KEYS: { outerKey: string; innerKey: string }[] = [
+    { outerKey: 'javascript', innerKey: 'javascript' },
+    { outerKey: 'java',       innerKey: 'java' },
+    { outerKey: 'python',     innerKey: 'python' },
+    { outerKey: 'csharp',     innerKey: 'csharp' },
+    { outerKey: 'sql',        innerKey: 'sql' },
+  ];
+
+  for (const { outerKey, innerKey } of LANG_KEYS) {
+    const outerData = languages[outerKey] as Record<string, unknown> | undefined;
+    if (!outerData) continue;
+
+    const langData = outerData[innerKey] as { levels?: Record<string, { questions: any[] }> } | undefined;
+    if (!langData?.levels) continue;
+
+    (Object.keys(langData.levels) as Level[]).forEach((levelKey) => {
+      const levelData = langData.levels![levelKey];
+      (levelData.questions ?? []).forEach((q: any) => {
+        exercises.push({
+          ...q,
+          level: levelKey,
+          language: outerKey,
         });
-      }
+      });
     });
+  }
 
-    return exercises;
-  },
+  return exercises;
+}
 
+export const DebugPracticeStore = {
   async getProgress(uid?: string): Promise<GlobalProgress> {
     // 1. Load local cache first (fast)
     let localData: GlobalProgress = {};

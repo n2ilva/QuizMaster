@@ -1,7 +1,7 @@
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
-import { Modal, Text, TouchableOpacity, View, useColorScheme, useWindowDimensions, Platform } from 'react-native';
+import { Modal, Text, TouchableOpacity, View, useColorScheme, useWindowDimensions, Platform, Animated } from 'react-native';
 import { DraggableTokenWrapper } from '@/components/ui/draggable-token-wrapper';
 import { DEBUG_COLORS, LEVEL_CONFIG } from '../ache-o-erro.constants';
 import { DebugExercise, PlacedToken, Token, Level, LanguageInfo } from '../ache-o-erro.types';
@@ -196,6 +196,7 @@ type DebugTokenProps = {
   variant: 'pool' | 'code';
   receptive?: boolean;
   onReceiveDragDrop?: (event: any) => void;
+  isCorrectPosition?: boolean;
 };
 
 export function DebugToken({ 
@@ -204,7 +205,8 @@ export function DebugToken({
   onPress, 
   variant, 
   receptive, 
-  onReceiveDragDrop 
+  onReceiveDragDrop,
+  isCorrectPosition = false
 }: DebugTokenProps) {
   const isPool = variant === 'pool';
   const isTouchDevice =
@@ -213,6 +215,28 @@ export function DebugToken({
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(pointer: coarse)').matches);
   const dragLiftY = isTouchDevice ? -64 : 0;
+
+  const glowAnim = React.useRef(new Animated.Value(0)).current;
+
+  React.useEffect(() => {
+    if (isCorrectPosition && !isPool) {
+      Animated.sequence([
+        Animated.timing(glowAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(glowAnim, {
+          toValue: 0,
+          duration: 1000,
+          delay: 500,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else if (!isCorrectPosition) {
+      glowAnim.setValue(0);
+    }
+  }, [isCorrectPosition, isPool, glowAnim]);
   
   return (
     <DraggableTokenWrapper
@@ -240,37 +264,45 @@ export function DebugToken({
         zIndex: 30,
       }}
     >
-      <TouchableOpacity
-        onPress={onPress}
-        activeOpacity={0.7}
-        style={{
-          paddingHorizontal: 8,
-          paddingVertical: 5,
-          borderRadius: 8,
-          backgroundColor: isPool ? '#1F2937' : '#111316',
-          borderWidth: 1.5,
-          borderColor: isPool ? '#374151' : '#1E2328',
-          borderBottomWidth: 3,
-          margin: 2,
-          minWidth: 32,
-          alignItems: 'center',
-          justifyContent: 'center',
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2,
-          shadowRadius: 3,
-          elevation: 3,
-        }}
-      >
-        <Text style={{ 
-          color: isPool ? '#E5E7EB' : '#10B981', 
-          fontSize: 14, 
-          fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', 
-          fontWeight: '800' 
-        }}>
-          {token.value}
-        </Text>
-      </TouchableOpacity>
+      <View style={{ position: 'relative', margin: 2 }}>
+        <Animated.View style={{
+          position: 'absolute',
+          top: -3, bottom: -3, left: -3, right: -3,
+          backgroundColor: '#10B981',
+          borderRadius: 10,
+          opacity: glowAnim,
+        }} />
+        <TouchableOpacity
+          onPress={onPress}
+          activeOpacity={0.7}
+          style={{
+            paddingHorizontal: 8,
+            paddingVertical: 5,
+            borderRadius: 8,
+            backgroundColor: isPool ? '#1F2937' : '#111316',
+            borderWidth: 1.5,
+            borderColor: isPool ? '#374151' : '#1E2328',
+            borderBottomWidth: 3,
+            minWidth: 32,
+            alignItems: 'center',
+            justifyContent: 'center',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 3,
+            elevation: 3,
+          }}
+        >
+          <Text style={{ 
+            color: isPool ? '#E5E7EB' : '#10B981', 
+            fontSize: 14, 
+            fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', 
+            fontWeight: '800' 
+          }}>
+            {token.value}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </DraggableTokenWrapper>
   );
 }

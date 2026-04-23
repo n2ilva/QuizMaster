@@ -1,4 +1,4 @@
-export type Language = 'javascript' | 'java' | 'csharp' | 'python' | 'typescript';
+export type Language = 'javascript' | 'java' | 'csharp' | 'python' | 'typescript' | 'sql';
 
 export type TokenCategory =
   | 'keyword'
@@ -44,7 +44,26 @@ export type ExerciseType =
   | 'Módulos'
   | 'Tipagem'
   | 'Arquivos'
-  | 'Generics';
+  | 'Generics'
+  // SQL types
+  | 'SELECT'
+  | 'WHERE'
+  | 'ORDER BY'
+  | 'Funções de Agregação'
+  | 'DISTINCT'
+  | 'LIMIT'
+  | 'INSERT'
+  | 'DELETE'
+  | 'GROUP BY'
+  | 'JOIN'
+  | 'HAVING'
+  | 'UPDATE'
+  | 'Alias'
+  | 'Subquery'
+  | 'CASE WHEN'
+  | 'Window Function'
+  | 'CTE'
+  | 'CTE Recursiva';
 
 export type SyntaxToken = {
   id: string;

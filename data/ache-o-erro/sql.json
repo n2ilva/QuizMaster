@@ -1,0 +1,899 @@
+{
+  "sql": {
+    "levels": {
+      "junior": {
+        "label": "Desenvolvedor SQL Júnior",
+        "questions": [
+          {
+            "id": "sql_jr_1",
+            "title": "A Coluna Fantasma",
+            "description": "A query deveria retornar o nome dos clientes, mas está retornando um erro de coluna não encontrada. O que está errado?",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"Nome"},
+              {"id":"t3","value":"FROM"},
+              {"id":"t4","value":"clientes"},
+              {"id":"t5","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"nome"},
+              {"id":"ex2","value":"NOME"}
+            ],
+            "correct_order": ["t1","ex1","t3","t4","t5"],
+            "explanation": "SQL é case-sensitive para nomes de colunas dependendo do banco de dados. A coluna foi criada como 'nome' (minúsculo), mas a query busca 'Nome' (com N maiúsculo). Sempre verifique a capitalização exata dos identificadores.",
+            "hints": [
+              "Olhe com atenção para a capitalização da coluna no SELECT.",
+              "A coluna na tabela foi criada com letras minúsculas. Compare 'Nome' com 'nome'.",
+              "Substitua 'Nome' por 'nome' em minúsculo para corresponder ao nome real da coluna."
+            ]
+          },
+          {
+            "id": "sql_jr_2",
+            "title": "O Filtro que Não Filtra",
+            "description": "A query deveria retornar apenas os produtos da categoria 'Eletrônicos', mas está trazendo todos os produtos da tabela.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"*"},
+              {"id":"t3","value":"FROM"},
+              {"id":"t4","value":"produtos"},
+              {"id":"t5","value":"categoria"},
+              {"id":"t6","value":"="},
+              {"id":"t7","value":"'Eletrônicos'"},
+              {"id":"t8","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"WHERE"},
+              {"id":"ex2","value":"HAVING"},
+              {"id":"ex3","value":"AND"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","ex1","t5","t6","t7","t8"],
+            "explanation": "Sem a cláusula WHERE, a condição de filtro nunca é aplicada e o banco retorna todos os registros. O WHERE é obrigatório para restringir as linhas retornadas por um SELECT.",
+            "hints": [
+              "A query tem uma condição (categoria = 'Eletrônicos'), mas está faltando a palavra-chave que a ativa.",
+              "Em SQL, filtros de linha precisam de uma cláusula específica entre o FROM e a condição.",
+              "Arraste WHERE entre 'produtos' e 'categoria' para ativar o filtro."
+            ]
+          },
+          {
+            "id": "sql_jr_3",
+            "title": "A Ordem Importa",
+            "description": "A query deveria listar os 5 produtos mais caros, mas está retornando os 5 mais baratos. O que precisa mudar?",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"nome"},
+              {"id":"t3","value":","},
+              {"id":"t4","value":"preco"},
+              {"id":"t5","value":"FROM"},
+              {"id":"t6","value":"produtos"},
+              {"id":"t7","value":"ORDER BY"},
+              {"id":"t8","value":"preco"},
+              {"id":"t9","value":"ASC"},
+              {"id":"t10","value":"LIMIT"},
+              {"id":"t11","value":"5"},
+              {"id":"t12","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"DESC"},
+              {"id":"ex2","value":"TOP"},
+              {"id":"ex3","value":"MAX"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","t8","ex1","t10","t11","t12"],
+            "explanation": "ASC ordena do menor para o maior, então LIMIT 5 retorna os mais baratos. Para os mais caros, é preciso ordenar em DESC (decrescente), trazendo os maiores valores primeiro.",
+            "hints": [
+              "A query ordena e limita corretamente, mas na direção errada.",
+              "ASC significa crescente (menor primeiro). Qual seria a ordenação para trazer os maiores valores primeiro?",
+              "Substitua ASC por DESC para ordenar do mais caro para o mais barato antes de aplicar o LIMIT 5."
+            ]
+          },
+          {
+            "id": "sql_jr_4",
+            "title": "A Contagem Enganosa",
+            "description": "O relatório precisa mostrar quantos pedidos existem, mas a query está retornando NULL em vez de um número.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"COUNT"},
+              {"id":"t3","value":"("},
+              {"id":"t4","value":"id_pedido"},
+              {"id":"t5","value":")"},
+              {"id":"t6","value":"FROM"},
+              {"id":"t7","value":"pedidos"},
+              {"id":"t8","value":"WHERE"},
+              {"id":"t9","value":"id_pedido"},
+              {"id":"t10","value":"IS"},
+              {"id":"t11","value":"NULL"},
+              {"id":"t12","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"IS NOT NULL"},
+              {"id":"ex2","value":"= 0"},
+              {"id":"ex3","value":"NOT"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","ex1","t12"],
+            "explanation": "A cláusula WHERE id_pedido IS NULL filtra apenas linhas onde o id é nulo — que não deveriam existir em uma chave primária. Isso retorna 0 linhas, e COUNT retorna 0 (ou o relatório parece errado). O correto é IS NOT NULL, ou remover o filtro.",
+            "hints": [
+              "O WHERE está filtrando algo, mas será que está filtrando corretamente?",
+              "IS NULL retorna apenas linhas onde o valor é nulo. Queremos contar pedidos existentes.",
+              "Substitua 'NULL' por 'NOT NULL' para contar apenas os registros que de fato existem."
+            ]
+          },
+          {
+            "id": "sql_jr_5",
+            "title": "O INSERT Incompleto",
+            "description": "A query tenta inserir um novo produto, mas o banco retorna erro de sintaxe. O que está faltando?",
+            "code_tokens": [
+              {"id":"t1","value":"INSERT INTO"},
+              {"id":"t2","value":"produtos"},
+              {"id":"t3","value":"("},
+              {"id":"t4","value":"nome"},
+              {"id":"t5","value":","},
+              {"id":"t6","value":"preco"},
+              {"id":"t7","value":")"},
+              {"id":"t8","value":"'Notebook'"},
+              {"id":"t9","value":","},
+              {"id":"t10","value":"3500"},
+              {"id":"t11","value":")"},
+              {"id":"t12","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"VALUES"},
+              {"id":"ex2","value":"SET"},
+              {"id":"ex3","value":"("}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","ex1","ex3","t8","t9","t10","t11","t12"],
+            "explanation": "O INSERT INTO requer a palavra-chave VALUES antes dos dados a inserir, e os valores devem estar entre parênteses. Sem VALUES e o parêntese de abertura, o banco não sabe interpretar os valores fornecidos.",
+            "hints": [
+              "A estrutura do INSERT tem duas partes: a lista de colunas e os valores. Algo está faltando para separar essas duas partes.",
+              "Após a lista de colunas, o SQL espera uma palavra-chave específica seguida dos valores.",
+              "Adicione VALUES e o parêntese de abertura ( entre o fechamento das colunas e os dados."
+            ]
+          },
+          {
+            "id": "sql_jr_6",
+            "title": "A Duplicata Indesejada",
+            "description": "A query lista as cidades dos clientes, mas retorna 'São Paulo' dezenas de vezes. Queremos apenas uma ocorrência de cada cidade.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"cidade"},
+              {"id":"t3","value":"FROM"},
+              {"id":"t4","value":"clientes"},
+              {"id":"t5","value":"ORDER BY"},
+              {"id":"t6","value":"cidade"},
+              {"id":"t7","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"DISTINCT"},
+              {"id":"ex2","value":"UNIQUE"},
+              {"id":"ex3","value":"GROUP BY cidade"}
+            ],
+            "correct_order": ["t1","ex1","t2","t3","t4","t5","t6","t7"],
+            "explanation": "Sem DISTINCT, o SELECT retorna uma linha para cada registro na tabela, incluindo duplicatas. DISTINCT elimina linhas com valores repetidos na(s) coluna(s) selecionada(s).",
+            "hints": [
+              "O SELECT está trazendo todas as linhas, inclusive as repetidas.",
+              "Existe uma palavra-chave em SQL que elimina valores duplicados do resultado.",
+              "Adicione DISTINCT logo após SELECT para garantir que cada cidade apareça apenas uma vez."
+            ]
+          },
+          {
+            "id": "sql_jr_7",
+            "title": "O DELETE Sem Freio",
+            "description": "O sistema deveria deletar apenas o cliente com id 42, mas ao executar a query todos os clientes foram removidos. O que deu errado?",
+            "code_tokens": [
+              {"id":"t1","value":"DELETE FROM"},
+              {"id":"t2","value":"clientes"},
+              {"id":"t3","value":"id"},
+              {"id":"t4","value":"="},
+              {"id":"t5","value":"42"},
+              {"id":"t6","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"WHERE"},
+              {"id":"ex2","value":"HAVING"},
+              {"id":"ex3","value":"AND"}
+            ],
+            "correct_order": ["t1","t2","ex1","t3","t4","t5","t6"],
+            "explanation": "Um DELETE sem WHERE apaga TODOS os registros da tabela sem exceção. A cláusula WHERE é fundamental para restringir quais linhas serão afetadas pela operação de exclusão.",
+            "hints": [
+              "Olhe para a query: existe algo filtrando qual cliente será deletado?",
+              "Sem uma cláusula de filtro, o DELETE age sobre toda a tabela.",
+              "Insira WHERE antes de 'id = 42' para que apenas o cliente correto seja removido."
+            ]
+          },
+          {
+            "id": "sql_jr_8",
+            "title": "O Alias Mal Posicionado",
+            "description": "A query tenta renomear a coluna 'preco' para 'valor_unitario' no resultado, mas retorna erro de sintaxe.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"nome"},
+              {"id":"t3","value":","},
+              {"id":"t4","value":"valor_unitario"},
+              {"id":"t5","value":"preco"},
+              {"id":"t6","value":"FROM"},
+              {"id":"t7","value":"produtos"},
+              {"id":"t8","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"AS"},
+              {"id":"ex2","value":"="},
+              {"id":"ex3","value":"RENAME"}
+            ],
+            "correct_order": ["t1","t2","t3","t5","ex1","t4","t6","t7","t8"],
+            "explanation": "Para criar um alias em SQL, a sintaxe correta é: nome_coluna AS alias. O alias vem depois da coluna, não antes. Além disso, a palavra-chave AS deve estar entre a coluna e o alias.",
+            "hints": [
+              "A ordem dos elementos na linha do alias está invertida.",
+              "Em SQL, o alias (apelido) sempre vem depois do nome original da coluna.",
+              "A sintaxe correta é: preco AS valor_unitario. Reordene os tokens e adicione AS."
+            ]
+          },
+          {
+            "id": "sql_jr_9",
+            "title": "O Número Entre Aspas",
+            "description": "A query filtra produtos com preço maior que 100, mas não retorna nenhum resultado mesmo havendo produtos acima desse valor.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"*"},
+              {"id":"t3","value":"FROM"},
+              {"id":"t4","value":"produtos"},
+              {"id":"t5","value":"WHERE"},
+              {"id":"t6","value":"preco"},
+              {"id":"t7","value":">"},
+              {"id":"t8","value":"'100'"},
+              {"id":"t9","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"100"},
+              {"id":"ex2","value":"100.0"},
+              {"id":"ex3","value":"CAST(100 AS DECIMAL)"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","ex1","t9"],
+            "explanation": "Quando um número é colocado entre aspas simples ('100'), o banco o trata como uma string (texto). A comparação entre um número e uma string pode falhar silenciosamente ou produzir resultados inesperados. Valores numéricos devem ser escritos sem aspas.",
+            "hints": [
+              "O valor 100 está sendo interpretado como texto em vez de número. Observe as aspas ao redor.",
+              "Em SQL, aspas simples delimitam strings. Números não precisam de aspas.",
+              "Remova as aspas simples de '100' e use o valor numérico 100 diretamente."
+            ]
+          },
+          {
+            "id": "sql_jr_10",
+            "title": "A Atualização Universal",
+            "description": "O sistema deveria atualizar apenas o email do cliente com id 7, mas ao executar, o email de todos os clientes foi alterado para o mesmo valor.",
+            "code_tokens": [
+              {"id":"t1","value":"UPDATE"},
+              {"id":"t2","value":"clientes"},
+              {"id":"t3","value":"SET"},
+              {"id":"t4","value":"email"},
+              {"id":"t5","value":"="},
+              {"id":"t6","value":"'novo@email.com'"},
+              {"id":"t7","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"WHERE id = 7"},
+              {"id":"ex2","value":"AND id = 7"},
+              {"id":"ex3","value":"LIMIT 1"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","ex1","t7"],
+            "explanation": "Assim como o DELETE, um UPDATE sem WHERE afeta todas as linhas da tabela. É obrigatório usar WHERE para identificar especificamente qual(is) registro(s) deve(m) ser atualizado(s).",
+            "hints": [
+              "O UPDATE está completo em sintaxe, mas está faltando algo para dizer qual cliente atualizar.",
+              "Sem um filtro, o SET é aplicado a todos os registros da tabela.",
+              "Adicione WHERE id = 7 antes do ponto e vírgula final para restringir a atualização."
+            ]
+          }
+        ]
+      },
+      "pleno": {
+        "label": "Desenvolvedor SQL Pleno",
+        "questions": [
+          {
+            "id": "sql_pl_1",
+            "title": "O JOIN Que Multiplica",
+            "description": "A query deveria retornar os pedidos com o nome do cliente, mas está retornando muito mais linhas do que o esperado — algumas duplicadas. O que está errado?",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"c.nome"},
+              {"id":"t3","value":","},
+              {"id":"t4","value":"p.total"},
+              {"id":"t5","value":"FROM"},
+              {"id":"t6","value":"clientes"},
+              {"id":"t7","value":"c"},
+              {"id":"t8","value":"JOIN"},
+              {"id":"t9","value":"pedidos"},
+              {"id":"t10","value":"p"},
+              {"id":"t11","value":"ON"},
+              {"id":"t12","value":"c.id"},
+              {"id":"t13","value":"="},
+              {"id":"t14","value":"p.id"},
+              {"id":"t15","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"p.cliente_id"},
+              {"id":"ex2","value":"p.pedido_id"},
+              {"id":"ex3","value":"c.cliente_id"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12","t13","ex1","t15"],
+            "explanation": "O JOIN está usando a chave errada: p.id é o ID do pedido, não a chave estrangeira que liga o pedido ao cliente. O correto é ON c.id = p.cliente_id. Usar a coluna errada no ON pode gerar um produto cartesiano parcial ou resultados incorretos.",
+            "hints": [
+              "A query faz JOIN entre clientes e pedidos, mas observe qual coluna está sendo usada para a ligação na tabela pedidos.",
+              "A tabela pedidos possui duas colunas de ID: seu próprio ID (id) e a chave estrangeira que aponta para o cliente.",
+              "Substitua p.id por p.cliente_id no ON para criar a ligação correta entre as tabelas."
+            ]
+          },
+          {
+            "id": "sql_pl_2",
+            "title": "O GROUP BY Incompleto",
+            "description": "A query tenta mostrar departamento, cargo e a média de salário, mas retorna erro. Qual é o problema?",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"departamento"},
+              {"id":"t3","value":","},
+              {"id":"t4","value":"cargo"},
+              {"id":"t5","value":","},
+              {"id":"t6","value":"AVG(salario)"},
+              {"id":"t7","value":"AS"},
+              {"id":"t8","value":"media_salario"},
+              {"id":"t9","value":"FROM"},
+              {"id":"t10","value":"funcionarios"},
+              {"id":"t11","value":"GROUP BY"},
+              {"id":"t12","value":"departamento"},
+              {"id":"t13","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":", cargo"},
+              {"id":"ex2","value":", AVG(salario)"},
+              {"id":"ex3","value":"HAVING cargo"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12","ex1","t13"],
+            "explanation": "Toda coluna não-agregada no SELECT deve aparecer no GROUP BY. Como 'cargo' está no SELECT mas não no GROUP BY, o banco não sabe qual valor de cargo exibir para o grupo. A regra é: agrupe por todas as colunas que não são funções de agregação.",
+            "hints": [
+              "Observe as colunas no SELECT: quais delas não são funções de agregação como AVG()?",
+              "O GROUP BY agrupa por 'departamento', mas o SELECT também exibe 'cargo'. Esse campo precisa estar no agrupamento.",
+              "Adicione ', cargo' ao GROUP BY para que o banco saiba agrupar por ambas as dimensões."
+            ]
+          },
+          {
+            "id": "sql_pl_3",
+            "title": "WHERE vs HAVING",
+            "description": "A query tenta mostrar departamentos com mais de 5 funcionários, mas está retornando erro de coluna inválida na cláusula WHERE.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"departamento"},
+              {"id":"t3","value":","},
+              {"id":"t4","value":"COUNT(*)"},
+              {"id":"t5","value":"AS"},
+              {"id":"t6","value":"total"},
+              {"id":"t7","value":"FROM"},
+              {"id":"t8","value":"funcionarios"},
+              {"id":"t9","value":"WHERE"},
+              {"id":"t10","value":"COUNT(*)"},
+              {"id":"t11","value":">"},
+              {"id":"t12","value":"5"},
+              {"id":"t13","value":"GROUP BY"},
+              {"id":"t14","value":"departamento"},
+              {"id":"t15","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"HAVING"},
+              {"id":"ex2","value":"ORDER BY"},
+              {"id":"ex3","value":"FILTER"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","t8","t13","t14","ex1","t10","t11","t12","t15"],
+            "explanation": "WHERE filtra linhas individuais ANTES do agrupamento, por isso não pode usar funções de agregação como COUNT(). HAVING filtra os grupos APÓS o GROUP BY, sendo o lugar correto para condições com funções de agregação.",
+            "hints": [
+              "Funções de agregação como COUNT() não podem ser usadas em uma cláusula WHERE.",
+              "Existe outra cláusula em SQL, usada após o GROUP BY, que permite filtrar por resultados de agregações.",
+              "Substitua WHERE por HAVING e mova-o para depois do GROUP BY departamento."
+            ]
+          },
+          {
+            "id": "sql_pl_4",
+            "title": "A Subquery Correlacionada Errada",
+            "description": "A query tenta buscar o salário máximo de cada departamento para comparar com cada funcionário, mas retorna o máximo global, ignorando o departamento.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"nome"},
+              {"id":"t3","value":","},
+              {"id":"t4","value":"salario"},
+              {"id":"t5","value":"FROM"},
+              {"id":"t6","value":"funcionarios"},
+              {"id":"t7","value":"f"},
+              {"id":"t8","value":"WHERE"},
+              {"id":"t9","value":"salario"},
+              {"id":"t10","value":"="},
+              {"id":"t11","value":"(SELECT MAX(salario) FROM funcionarios)"},
+              {"id":"t12","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"(SELECT MAX(salario) FROM funcionarios WHERE departamento = f.departamento)"},
+              {"id":"ex2","value":"(SELECT MAX(salario) FROM funcionarios GROUP BY departamento)"},
+              {"id":"ex3","value":"MAX(salario) OVER (PARTITION BY departamento)"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","ex1","t12"],
+            "explanation": "A subquery (SELECT MAX(salario) FROM funcionarios) calcula o máximo de TODA a tabela. Para ser correlacionada por departamento, precisa referenciar o alias da query externa: WHERE departamento = f.departamento.",
+            "hints": [
+              "A subquery calcula um MAX geral. Ela precisa ser 'correlacionada' com o departamento do funcionário da query externa.",
+              "Note que a tabela principal usa o alias 'f'. A subquery precisa referenciar esse alias.",
+              "Substitua a subquery por uma que filtre pelo departamento da linha atual: WHERE departamento = f.departamento."
+            ]
+          },
+          {
+            "id": "sql_pl_5",
+            "title": "O LEFT JOIN Filtrado",
+            "description": "A query deveria listar TODOS os clientes e seus pedidos (se houver), mas está se comportando como um INNER JOIN e excluindo clientes sem pedidos.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"c.nome"},
+              {"id":"t3","value":","},
+              {"id":"t4","value":"p.total"},
+              {"id":"t5","value":"FROM"},
+              {"id":"t6","value":"clientes"},
+              {"id":"t7","value":"c"},
+              {"id":"t8","value":"LEFT JOIN"},
+              {"id":"t9","value":"pedidos"},
+              {"id":"t10","value":"p"},
+              {"id":"t11","value":"ON"},
+              {"id":"t12","value":"c.id"},
+              {"id":"t13","value":"="},
+              {"id":"t14","value":"p.cliente_id"},
+              {"id":"t15","value":"WHERE"},
+              {"id":"t16","value":"p.total"},
+              {"id":"t17","value":">"},
+              {"id":"t18","value":"0"},
+              {"id":"t19","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"p.total IS NOT NULL"},
+              {"id":"ex2","value":"p.total IS NULL OR p.total > 0"},
+              {"id":"ex3","value":"COALESCE(p.total, 0) > 0"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","t11","t12","t13","t14","t15","ex2","t19"],
+            "explanation": "Um WHERE na coluna da tabela direita (p.total > 0) anula o efeito do LEFT JOIN, pois clientes sem pedidos terão p.total = NULL, e NULL > 0 é falso. Para manter os clientes sem pedidos, o filtro deve aceitar NULL: p.total IS NULL OR p.total > 0.",
+            "hints": [
+              "O LEFT JOIN está correto, mas o WHERE está desfazendo seu efeito. Por quê?",
+              "Clientes sem pedidos terão p.total = NULL após o LEFT JOIN. O que acontece quando você compara NULL > 0?",
+              "Ajuste o WHERE para também incluir registros onde p.total é NULL, usando IS NULL OR."
+            ]
+          },
+          {
+            "id": "sql_pl_6",
+            "title": "O LIKE Sem Curinga",
+            "description": "A query deveria buscar todos os clientes cujo nome contenha 'Silva', mas só retorna clientes cujo nome seja exatamente 'Silva'.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"*"},
+              {"id":"t3","value":"FROM"},
+              {"id":"t4","value":"clientes"},
+              {"id":"t5","value":"WHERE"},
+              {"id":"t6","value":"nome"},
+              {"id":"t7","value":"LIKE"},
+              {"id":"t8","value":"'Silva'"},
+              {"id":"t9","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"'%Silva%'"},
+              {"id":"ex2","value":"'%Silva'"},
+              {"id":"ex3","value":"'Silva%'"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","ex1","t9"],
+            "explanation": "LIKE sem curingas se comporta exatamente como o operador =, buscando correspondências exatas. Para buscar 'Silva' em qualquer posição do nome, é preciso usar o curinga % em ambos os lados: '%Silva%'.",
+            "hints": [
+              "O LIKE está sendo usado, mas sem nenhum caractere especial. Ele se comporta como uma igualdade exata.",
+              "O símbolo % no LIKE representa qualquer sequência de caracteres (incluindo nenhum).",
+              "Use '%Silva%' para encontrar 'Silva' em qualquer posição: início, meio ou fim do nome."
+            ]
+          },
+          {
+            "id": "sql_pl_7",
+            "title": "A Janela sem Partição",
+            "description": "A query tenta rankear os funcionários por salário dentro de cada departamento, mas o ranking está considerando todos os funcionários juntos, ignorando o departamento.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"nome"},
+              {"id":"t3","value":","},
+              {"id":"t4","value":"departamento"},
+              {"id":"t5","value":","},
+              {"id":"t6","value":"salario"},
+              {"id":"t7","value":","},
+              {"id":"t8","value":"RANK()"},
+              {"id":"t9","value":"OVER"},
+              {"id":"t10","value":"("},
+              {"id":"t11","value":"ORDER BY salario DESC"},
+              {"id":"t12","value":")"},
+              {"id":"t13","value":"AS"},
+              {"id":"t14","value":"ranking"},
+              {"id":"t15","value":"FROM"},
+              {"id":"t16","value":"funcionarios"},
+              {"id":"t17","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"PARTITION BY departamento"},
+              {"id":"ex2","value":"PARTITION BY salario"},
+              {"id":"ex3","value":"GROUP BY departamento"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","t8","t9","t10","ex1","t11","t12","t13","t14","t15","t16","t17"],
+            "explanation": "Sem PARTITION BY, a função de janela RANK() trata todos os registros como um único grupo, gerando um ranking global. Para rankear dentro de cada departamento, é preciso adicionar PARTITION BY departamento antes do ORDER BY dentro do OVER().",
+            "hints": [
+              "O RANK() está calculando o ranking, mas considerando todos os funcionários como um único grupo.",
+              "Funções de janela têm uma cláusula dentro do OVER() que divide os dados em partições.",
+              "Adicione PARTITION BY departamento antes do ORDER BY dentro do OVER() para rankear dentro de cada departamento."
+            ]
+          },
+          {
+            "id": "sql_pl_8",
+            "title": "O NOT IN com NULL",
+            "description": "A query deveria retornar todos os clientes que NÃO fizeram pedidos, mas não retorna nenhuma linha — mesmo havendo clientes sem pedidos.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"*"},
+              {"id":"t3","value":"FROM"},
+              {"id":"t4","value":"clientes"},
+              {"id":"t5","value":"WHERE"},
+              {"id":"t6","value":"id"},
+              {"id":"t7","value":"NOT IN"},
+              {"id":"t8","value":"(SELECT cliente_id FROM pedidos)"},
+              {"id":"t9","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"(SELECT cliente_id FROM pedidos WHERE cliente_id IS NOT NULL)"},
+              {"id":"ex2","value":"(SELECT DISTINCT cliente_id FROM pedidos)"},
+              {"id":"ex3","value":"NOT EXISTS (SELECT 1 FROM pedidos WHERE pedidos.cliente_id = clientes.id)"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","ex1","t9"],
+            "explanation": "Se a subquery de NOT IN retornar qualquer valor NULL, toda a comparação retorna NULL (desconhecido), e nenhuma linha passa pelo filtro. Isso acontece porque X NOT IN (..., NULL, ...) é sempre NULL/false. A solução é filtrar NULLs na subquery ou usar NOT EXISTS.",
+            "hints": [
+              "NOT IN funciona perfeitamente quando a subquery não retorna NULL. Mas a coluna cliente_id pode ter NULLs na tabela pedidos?",
+              "Em SQL, qualquer comparação com NULL resulta em NULL (desconhecido), nunca TRUE. Isso afeta o NOT IN inteiro.",
+              "Adicione WHERE cliente_id IS NOT NULL na subquery para excluir os valores nulos antes da comparação."
+            ]
+          },
+          {
+            "id": "sql_pl_9",
+            "title": "O UNION com Colunas Erradas",
+            "description": "A query tenta unir o resultado de duas tabelas com UNION, mas está retornando dados misturados nas colunas erradas.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"nome"},
+              {"id":"t3","value":","},
+              {"id":"t4","value":"email"},
+              {"id":"t5","value":"FROM"},
+              {"id":"t6","value":"clientes"},
+              {"id":"t7","value":"UNION"},
+              {"id":"t8","value":"SELECT"},
+              {"id":"t9","value":"email"},
+              {"id":"t10","value":","},
+              {"id":"t11","value":"nome"},
+              {"id":"t12","value":"FROM"},
+              {"id":"t13","value":"fornecedores"},
+              {"id":"t14","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"nome"},
+              {"id":"ex2","value":"email"},
+              {"id":"ex3","value":"razao_social"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","t8","ex1","t10","ex2","t12","t13","t14"],
+            "explanation": "No UNION, o banco usa os nomes de coluna do primeiro SELECT e mapeia as posições do segundo SELECT pelas suas posições (1ª coluna com 1ª, 2ª com 2ª). Se a ordem das colunas no segundo SELECT estiver invertida, os dados ficam em posições erradas.",
+            "hints": [
+              "O UNION combina resultados pela posição das colunas, não pelo nome. Observe a ordem no segundo SELECT.",
+              "O primeiro SELECT retorna (nome, email). O segundo SELECT retorna (email, nome) — a ordem está invertida.",
+              "Inverta a ordem no segundo SELECT para (nome, email), alinhando com a estrutura do primeiro."
+            ]
+          },
+          {
+            "id": "sql_pl_10",
+            "title": "O Índice Ignorado",
+            "description": "A query em uma tabela com milhões de registros está lenta. Existe um índice em 'data_criacao', mas ele não está sendo utilizado. O que força o banco a ignorá-lo?",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"*"},
+              {"id":"t3","value":"FROM"},
+              {"id":"t4","value":"pedidos"},
+              {"id":"t5","value":"WHERE"},
+              {"id":"t6","value":"YEAR(data_criacao)"},
+              {"id":"t7","value":"="},
+              {"id":"t8","value":"2024"},
+              {"id":"t9","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"data_criacao >= '2024-01-01' AND data_criacao < '2025-01-01'"},
+              {"id":"ex2","value":"data_criacao BETWEEN '2024-01-01' AND '2024-12-31'"},
+              {"id":"ex3","value":"DATE_FORMAT(data_criacao, '%Y') = '2024'"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","ex1","t9"],
+            "explanation": "Aplicar uma função (YEAR()) sobre a coluna indexada impede o uso do índice, pois o banco precisa calcular YEAR() para cada linha antes de comparar. A solução é reescrever o filtro sem funções na coluna, usando um range de datas diretamente.",
+            "hints": [
+              "Há um índice em 'data_criacao', mas algo na query impede que ele seja usado.",
+              "Aplicar uma função a uma coluna indexada force o banco a escanear todas as linhas.",
+              "Reescreva o filtro sem usar YEAR(): use data_criacao >= '2024-01-01' AND data_criacao < '2025-01-01'."
+            ]
+          }
+        ]
+      },
+      "senior": {
+        "label": "Desenvolvedor SQL Sênior",
+        "questions": [
+          {
+            "id": "sql_sr_1",
+            "title": "O Deadlock Silencioso",
+            "description": "Duas transações estão travando uma à outra (deadlock). A Transação A bloqueia 'conta_origem' e espera 'conta_destino'. A Transação B faz o inverso. Como reorganizar a Transação A para eliminar o deadlock?",
+            "code_tokens": [
+              {"id":"t1","value":"BEGIN;"},
+              {"id":"t2","value":"UPDATE contas SET saldo = saldo - 100 WHERE id = 5;"},
+              {"id":"t3","value":"-- pausa aqui, aguardando Transação B liberar id=3"},
+              {"id":"t4","value":"UPDATE contas SET saldo = saldo + 100 WHERE id = 3;"},
+              {"id":"t5","value":"COMMIT;"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"UPDATE contas SET saldo = saldo + 100 WHERE id = 3;"},
+              {"id":"ex2","value":"UPDATE contas SET saldo = saldo - 100 WHERE id = 5;"},
+              {"id":"ex3","value":"ROLLBACK;"}
+            ],
+            "correct_order": ["t1","ex1","t3","ex2","t5"],
+            "explanation": "Deadlocks ocorrem quando duas transações adquirem bloqueios em ordem inversa. A solução clássica é estabelecer uma ordem canônica de acesso aos recursos: sempre bloquear o id menor primeiro. Assim, ambas as transações tentam bloquear id=3 antes de id=5, e a segunda aguarda sem causar deadlock.",
+            "hints": [
+              "Pense na ordem em que cada transação tenta bloquear os registros. Transação A: 5 depois 3. Transação B: 3 depois 5.",
+              "Deadlocks acontecem quando a ordem de bloqueio é inversa entre transações concorrentes.",
+              "Inverta a ordem das operações na Transação A: primeiro atualize id=3, depois id=5. Assim ambas seguem a mesma ordem."
+            ]
+          },
+          {
+            "id": "sql_sr_2",
+            "title": "O Plano de Execução Enganoso",
+            "description": "A query usa um índice composto (departamento, cargo, salario) mas está lenta. A cláusula WHERE está quebrando a regra do 'leftmost prefix'. Identifique e corrija.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"nome"},
+              {"id":"t3","value":","},
+              {"id":"t4","value":"salario"},
+              {"id":"t5","value":"FROM"},
+              {"id":"t6","value":"funcionarios"},
+              {"id":"t7","value":"WHERE"},
+              {"id":"t8","value":"cargo"},
+              {"id":"t9","value":"="},
+              {"id":"t10","value":"'Engenheiro'"},
+              {"id":"t11","value":"AND"},
+              {"id":"t12","value":"salario"},
+              {"id":"t13","value":">"},
+              {"id":"t14","value":"8000"},
+              {"id":"t15","value":";"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"departamento = 'TI'"},
+              {"id":"ex2","value":"AND departamento IS NOT NULL"},
+              {"id":"ex3","value":"departamento LIKE '%'"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","ex1","t11","t8","t9","t10","t11","t12","t13","t14","t15"],
+            "explanation": "Índices compostos seguem a regra do 'leftmost prefix': o otimizador só usa o índice se a query filtrar pela primeira coluna do índice (departamento). Pular 'departamento' e filtrar diretamente por 'cargo' impede o uso eficiente do índice. Adicionar um filtro por 'departamento' permite ao banco usar o índice.",
+            "hints": [
+              "O índice é (departamento, cargo, salario). Qual é a primeira coluna? Ela está sendo usada no WHERE?",
+              "Índices compostos exigem que você comece pelo campo mais à esquerda. Pular colunas intermediárias ineficientiza a busca.",
+              "Adicione um filtro por 'departamento' no WHERE para que o banco possa usar o índice a partir de sua coluna mais à esquerda."
+            ]
+          },
+          {
+            "id": "sql_sr_3",
+            "title": "A CTE Recursiva Infinita",
+            "description": "A CTE recursiva para percorrer a hierarquia de categorias está causando loop infinito. O que está faltando para interromper a recursão?",
+            "code_tokens": [
+              {"id":"t1","value":"WITH RECURSIVE"},
+              {"id":"t2","value":"hierarquia AS ("},
+              {"id":"t3","value":"SELECT id, nome, pai_id, 1 AS nivel FROM categorias WHERE pai_id IS NULL"},
+              {"id":"t4","value":"UNION ALL"},
+              {"id":"t5","value":"SELECT c.id, c.nome, c.pai_id, h.nivel + 1"},
+              {"id":"t6","value":"FROM categorias c"},
+              {"id":"t7","value":"JOIN hierarquia h ON c.pai_id = h.id"},
+              {"id":"t8","value":")"},
+              {"id":"t9","value":"SELECT * FROM hierarquia;"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"WHERE h.nivel < 10"},
+              {"id":"ex2","value":"WHERE c.id != h.id"},
+              {"id":"ex3","value":"AND c.pai_id IS NOT NULL"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","ex1","t8","t9"],
+            "explanation": "CTEs recursivas podem entrar em loop infinito se houver ciclos nos dados (categoria A aponta para B, B aponta para A). Adicionar uma condição de profundidade máxima (WHERE h.nivel < 10) é uma salvaguarda comum. O ideal é também garantir que os dados não tenham ciclos com um campo de profundidade.",
+            "hints": [
+              "A recursão começa pelas categorias raiz e desce pelos filhos. O que poderia fazer ela não parar?",
+              "Se os dados tiverem ciclos (A -> B -> A) ou a profundidade não for limitada, a recursão nunca termina.",
+              "Adicione WHERE h.nivel < 10 (ou outro limite) no JOIN da parte recursiva para garantir que ela pare."
+            ]
+          },
+          {
+            "id": "sql_sr_4",
+            "title": "O Window Frame Errado",
+            "description": "A query calcula a média móvel de 3 dias para vendas, mas está retornando a média acumulada desde o início ao invés de apenas os últimos 3 dias. O frame da janela está errado.",
+            "code_tokens": [
+              {"id":"t1","value":"SELECT"},
+              {"id":"t2","value":"data_venda"},
+              {"id":"t3","value":","},
+              {"id":"t4","value":"valor"},
+              {"id":"t5","value":","},
+              {"id":"t6","value":"AVG(valor) OVER ("},
+              {"id":"t7","value":"ORDER BY data_venda"},
+              {"id":"t8","value":"ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW"},
+              {"id":"t9","value":") AS media_movel"},
+              {"id":"t10","value":"FROM vendas;"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"ROWS BETWEEN 2 PRECEDING AND CURRENT ROW"},
+              {"id":"ex2","value":"ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING"},
+              {"id":"ex3","value":"RANGE BETWEEN INTERVAL '3' DAY PRECEDING AND CURRENT ROW"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","t7","ex1","t9","t10"],
+            "explanation": "ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW define uma janela acumulada desde o início. Para média móvel de 3 dias, o frame correto é ROWS BETWEEN 2 PRECEDING AND CURRENT ROW — que inclui a linha atual e as 2 anteriores, totalizando 3 linhas.",
+            "hints": [
+              "O frame UNBOUNDED PRECEDING inclui todas as linhas desde o início do conjunto. Para 3 dias, quantas linhas anteriores você precisa?",
+              "Média móvel de 3 dias = linha atual + 2 linhas anteriores.",
+              "Substitua UNBOUNDED PRECEDING por 2 PRECEDING para limitar a janela às últimas 3 linhas."
+            ]
+          },
+          {
+            "id": "sql_sr_5",
+            "title": "O Isolation Level e a Leitura Fantasma",
+            "description": "Uma transação lê os pedidos pendentes duas vezes durante a mesma transação e obtém resultados diferentes (phantom read). Qual nível de isolamento resolve isso?",
+            "code_tokens": [
+              {"id":"t1","value":"SET TRANSACTION ISOLATION LEVEL"},
+              {"id":"t2","value":"READ COMMITTED"},
+              {"id":"t3","value":";"},
+              {"id":"t4","value":"BEGIN;"},
+              {"id":"t5","value":"SELECT COUNT(*) FROM pedidos WHERE status = 'pendente';"},
+              {"id":"t6","value":"-- outra transação insere um novo pedido pendente aqui"},
+              {"id":"t7","value":"SELECT COUNT(*) FROM pedidos WHERE status = 'pendente';"},
+              {"id":"t8","value":"-- retorna um número diferente: phantom read!"},
+              {"id":"t9","value":"COMMIT;"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"SERIALIZABLE"},
+              {"id":"ex2","value":"REPEATABLE READ"},
+              {"id":"ex3","value":"READ UNCOMMITTED"}
+            ],
+            "correct_order": ["t1","ex1","t3","t4","t5","t6","t7","t8","t9"],
+            "explanation": "READ COMMITTED evita leituras sujas, mas permite phantom reads (novas linhas inseridas por outras transações aparecem em consultas posteriores). SERIALIZABLE é o único nível que previne phantom reads, pois impede que outras transações insiram linhas que afetariam o resultado das queries da transação atual.",
+            "hints": [
+              "READ COMMITTED permite que dados inseridos por outras transações apareçam durante a mesma transação.",
+              "Phantom reads são causados por inserções de novas linhas. Qual nível de isolamento bloqueia isso?",
+              "SERIALIZABLE é o nível mais restritivo e o único que previne phantom reads. Substitua READ COMMITTED por SERIALIZABLE."
+            ]
+          },
+          {
+            "id": "sql_sr_6",
+            "title": "O Particionamento Mal Projetado",
+            "description": "Uma tabela de logs é particionada por hash no campo 'user_id', mas queries por range de datas fazem full scan em todas as partições. Como reprojetar o particionamento?",
+            "code_tokens": [
+              {"id":"t1","value":"CREATE TABLE logs ("},
+              {"id":"t2","value":"id BIGINT,"},
+              {"id":"t3","value":"user_id INT,"},
+              {"id":"t4","value":"evento VARCHAR(100),"},
+              {"id":"t5","value":"criado_em TIMESTAMP"},
+              {"id":"t6","value":") PARTITION BY"},
+              {"id":"t7","value":"HASH"},
+              {"id":"t8","value":"(user_id)"},
+              {"id":"t9","value":"PARTITIONS 16;"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"RANGE"},
+              {"id":"ex2","value":"(UNIX_TIMESTAMP(criado_em))"},
+              {"id":"ex3","value":"LIST"},
+              {"id":"ex4","value":"KEY"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","t6","ex1","ex2","t9"],
+            "explanation": "Particionamento por HASH em user_id distribui dados uniformemente entre partições, mas queries por range de datas precisam varrer todas elas. Particionamento por RANGE em criado_em permite que o otimizador faça 'partition pruning' e acesse apenas as partições relevantes para o intervalo de datas consultado.",
+            "hints": [
+              "O padrão de consulta mais frequente é por range de datas, não por user_id. O particionamento deve refletir isso.",
+              "Particionamento por HASH é ótimo para distribuição uniforme, mas ruim para range queries.",
+              "Use PARTITION BY RANGE (UNIX_TIMESTAMP(criado_em)) para que o banco pule partições de datas irrelevantes."
+            ]
+          },
+          {
+            "id": "sql_sr_7",
+            "title": "O Pivot Dinâmico com Vazamento",
+            "description": "A stored procedure gera um PIVOT dinâmico construindo SQL via concatenação, mas está vulnerável a SQL Injection. O que precisa ser adicionado para protegê-la?",
+            "code_tokens": [
+              {"id":"t1","value":"SET @cols = ("},
+              {"id":"t2","value":"SELECT GROUP_CONCAT(DISTINCT"},
+              {"id":"t3","value":"CONCAT('SUM(CASE WHEN mes = ''', mes, ''' THEN valor ELSE 0 END) AS `', mes, '`')"},
+              {"id":"t4","value":"FROM vendas);"},
+              {"id":"t5","value":"SET @sql = CONCAT('SELECT produto, ', @cols, ' FROM vendas GROUP BY produto');"},
+              {"id":"t6","value":"PREPARE stmt FROM @sql;"},
+              {"id":"t7","value":"EXECUTE stmt;"},
+              {"id":"t8","value":"DEALLOCATE PREPARE stmt;"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"SET @cols = (SELECT GROUP_CONCAT(DISTINCT CONCAT('SUM(CASE WHEN mes = ''', REPLACE(mes, '''', ''''''), ''' THEN valor ELSE 0 END) AS `', REPLACE(mes, '`', '``'), '`') FROM vendas);"},
+              {"id":"ex2","value":"WHERE mes REGEXP '^[A-Za-z]+$'"},
+              {"id":"ex3","value":"CALL validate_input(@cols)"}
+            ],
+            "correct_order": ["ex1","t5","t6","t7","t8"],
+            "explanation": "SQL dinâmico construído com concatenação de valores do banco é vulnerável a injection se os dados contiverem caracteres especiais como aspas simples. O escape adequado (REPLACE de aspas simples por duplas e backticks em identificadores) é a defesa. Alternativamente, validar que os valores são apenas letras com REGEXP elimina o risco.",
+            "hints": [
+              "O valor da coluna 'mes' vem do banco e é inserido diretamente no SQL dinâmico. O que acontece se 'mes' contiver uma aspa simples?",
+              "SQL Injection pode ocorrer mesmo com dados internos se o esquema foi comprometido ou se há UGC (user-generated content).",
+              "Use REPLACE() para escapar aspas simples nos valores antes de concatená-los no SQL dinâmico."
+            ]
+          },
+          {
+            "id": "sql_sr_8",
+            "title": "O Materialized View Desatualizado",
+            "description": "Uma Materialized View 'mv_relatorio_vendas' está sendo consultada para relatórios em tempo real, mas os dados sempre estão desatualizados. O refresh está mal configurado.",
+            "code_tokens": [
+              {"id":"t1","value":"CREATE MATERIALIZED VIEW mv_relatorio_vendas AS"},
+              {"id":"t2","value":"SELECT produto_id, SUM(valor) AS total, COUNT(*) AS qtd"},
+              {"id":"t3","value":"FROM vendas GROUP BY produto_id;"},
+              {"id":"t4","value":"-- Refresh configurado:"},
+              {"id":"t5","value":"REFRESH MATERIALIZED VIEW"},
+              {"id":"t6","value":"mv_relatorio_vendas"},
+              {"id":"t7","value":"WITH NO DATA;"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"CONCURRENTLY"},
+              {"id":"ex2","value":"WITH DATA"},
+              {"id":"ex3","value":"FORCE"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","ex1","t6","ex2","t7"],
+            "explanation": "REFRESH MATERIALIZED VIEW WITH NO DATA invalida a view sem reconstruir seus dados — ela fica inacessível até um novo refresh WITH DATA. Para atualizações em produção sem bloquear leituras, use REFRESH MATERIALIZED VIEW CONCURRENTLY WITH DATA, que recalcula os dados e permite consultas simultâneas durante o refresh.",
+            "hints": [
+              "WITH NO DATA não atualiza os dados — ele apenas invalida a view. Qual opção efetivamente recalcula os dados?",
+              "Para não bloquear consultas durante o refresh em produção, existe uma opção específica do comando REFRESH.",
+              "Use CONCURRENTLY para não bloquear leituras e WITH DATA para efetivamente atualizar os dados da view."
+            ]
+          },
+          {
+            "id": "sql_sr_9",
+            "title": "O Row-Level Security Bypassado",
+            "description": "A política de Row-Level Security (RLS) foi criada para isolar dados por tenant_id, mas um usuário ainda consegue ver dados de outros tenants. O que está faltando na criação da tabela?",
+            "code_tokens": [
+              {"id":"t1","value":"CREATE TABLE pedidos ("},
+              {"id":"t2","value":"id SERIAL PRIMARY KEY,"},
+              {"id":"t3","value":"tenant_id INT NOT NULL,"},
+              {"id":"t4","value":"descricao TEXT"},
+              {"id":"t5","value":")"},
+              {"id":"t6","value":"CREATE POLICY tenant_isolation ON pedidos"},
+              {"id":"t7","value":"USING (tenant_id = current_setting('app.tenant_id')::INT);"},
+              {"id":"t8","value":"GRANT SELECT ON pedidos TO app_user;"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"ALTER TABLE pedidos ENABLE ROW LEVEL SECURITY;"},
+              {"id":"ex2","value":"ALTER TABLE pedidos FORCE ROW LEVEL SECURITY;"},
+              {"id":"ex3","value":"SET row_security = on;"}
+            ],
+            "correct_order": ["t1","t2","t3","t4","t5","ex1","t6","t7","t8"],
+            "explanation": "Criar uma POLICY não ativa automaticamente o RLS na tabela. É obrigatório executar ALTER TABLE ... ENABLE ROW LEVEL SECURITY para que as políticas sejam aplicadas. Sem isso, as políticas existem mas são completamente ignoradas pelo banco.",
+            "hints": [
+              "A política (POLICY) foi criada corretamente, mas ela só funciona se o RLS estiver ativado na tabela.",
+              "Criar uma POLICY é diferente de ativar o Row Level Security. São dois comandos distintos.",
+              "Execute ALTER TABLE pedidos ENABLE ROW LEVEL SECURITY; após criar a tabela para ativar a aplicação das políticas."
+            ]
+          },
+          {
+            "id": "sql_sr_10",
+            "title": "O Anti-Pattern N+1 em SQL",
+            "description": "A aplicação executa 1 query para buscar os 100 pedidos e depois 100 queries individuais para buscar o cliente de cada pedido. Como reescrever para uma única query eficiente?",
+            "code_tokens": [
+              {"id":"t1","value":"-- Query 1 (1x):"},
+              {"id":"t2","value":"SELECT id, cliente_id, total FROM pedidos WHERE status = 'ativo';"},
+              {"id":"t3","value":"-- Query 2 (100x, uma por pedido):"},
+              {"id":"t4","value":"SELECT nome, email FROM clientes WHERE id = ?;"},
+              {"id":"t5","value":"-- Reescreva como uma única query:"},
+              {"id":"t6","value":"SELECT"},
+              {"id":"t7","value":"p.id, p.total,"},
+              {"id":"t8","value":"FROM pedidos p"},
+              {"id":"t9","value":"WHERE p.status = 'ativo';"}
+            ],
+            "extra_tokens": [
+              {"id":"ex1","value":"c.nome, c.email"},
+              {"id":"ex2","value":"JOIN clientes c ON c.id = p.cliente_id"},
+              {"id":"ex3","value":"LEFT JOIN clientes c ON c.id = p.cliente_id"},
+              {"id":"ex4","value":"p.cliente_id,"}
+            ],
+            "correct_order": ["t5","t6","t7","ex1","ex3","t9"],
+            "explanation": "O problema N+1 é um dos anti-patterns mais custosos: 1 query retorna N registros, e então N queries adicionais são executadas. A solução é usar JOIN para buscar todos os dados necessários em uma única query, deixando o banco otimizar o acesso com seus índices e evitando o overhead de múltiplas round-trips.",
+            "hints": [
+              "101 queries onde 1 seria suficiente é um claro sinal de problema N+1.",
+              "Em vez de buscar o cliente de cada pedido separadamente, como você pode trazer as informações de ambas as tabelas juntas?",
+              "Use LEFT JOIN clientes c ON c.id = p.cliente_id para trazer nome e email do cliente junto com cada pedido em uma única query."
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -3,6 +3,23 @@ import { db } from '@/lib/firebase';
 import { invalidateUserCaches } from './progress';
 import { updateUserProfile } from './community';
 
+/**
+ * Busca o catálogo completo do Ache o Erro no Firestore.
+ *
+ * O documento `ache_o_erro_catalog/main` contém todas as linguagens
+ * consolidadas pelo script upload-ache-o-erro-to-firestore.ts:
+ *   { version, updatedAt, languages: { javascript, java, python, csharp } }
+ */
+export async function fetchAcheOErroCatalog(): Promise<Record<string, unknown> | null> {
+  const docRef = doc(db, 'ache_o_erro_catalog', 'main');
+  const snap = await getDoc(docRef);
+  if (!snap.exists()) return null;
+  const data = snap.data() as Record<string, unknown>;
+  // Remove metadado de upload
+  const { updatedAt: _updatedAt, ...rest } = data;
+  return rest;
+}
+
 export type AcheOErroProgressEntry = {
   completed: boolean;
   bestTime: number;   // seconds

@@ -47,7 +47,7 @@ async function createFirestoreClient(): Promise<Firestore> {
 }
 
 async function loadExercises(): Promise<Exercise[]> {
-  const dataDir = resolve(process.cwd(), "app/(features)/coding-practice/data");
+  const dataDir = resolve(process.cwd(), "data/pratica-de-codigos");
   const files = await readdir(dataDir);
   const jsonFiles = files.filter((f) => f.endsWith(".json"));
 

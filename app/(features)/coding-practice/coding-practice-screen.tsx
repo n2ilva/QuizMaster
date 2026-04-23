@@ -250,7 +250,7 @@ export function CodingPracticeScreen() {
     return [...filtered].sort((a, b) => a.title.localeCompare(b.title));
   }, [exercisesForCategory, selectedDifficulty]);
 
-  const allLangTokens = LANGUAGE_TOKENS[selectedLang.id as Language];
+  const allLangTokens = LANGUAGE_TOKENS[selectedLang.id as Language] || [];
   const availableTokens = useMemo(() => {
     if (!activeExercise) return allLangTokens;
     return allLangTokens.filter((t) => activeExercise.availableTokenIds.includes(t.id));
@@ -864,7 +864,7 @@ export function CodingPracticeScreen() {
 
                     {availableDifficulties.map((diff) => {
                       const isSelected = selectedDifficulty === diff;
-                      const conf = DIFFICULTY_CONFIG[diff as keyof typeof DIFFICULTY_CONFIG];
+                      const conf = DIFFICULTY_CONFIG[diff as keyof typeof DIFFICULTY_CONFIG] || { color: '#9BA1A6', label: diff, bg: '#1A1D21' };
                       return (
                         <TouchableOpacity
                           key={diff}
@@ -880,7 +880,7 @@ export function CodingPracticeScreen() {
                           }}
                         >
                           <Text style={{ color: isSelected ? '#111316' : conf.color, fontSize: 12, fontWeight: '700', textTransform: 'capitalize' }}>
-                            {conf.label || diff}
+                            {conf.label}
                           </Text>
                         </TouchableOpacity>
                       );

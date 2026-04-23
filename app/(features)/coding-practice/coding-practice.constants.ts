@@ -419,13 +419,6 @@ export const TYPESCRIPT_TOKENS: SyntaxToken[] = [
   { id: 'v2', label: '"val2"', category: 'literal', editable: true },
 ];
 
-export const LANGUAGE_TOKENS: Record<Language, SyntaxToken[]> = {
-  javascript: JAVASCRIPT_TOKENS,
-  java: JAVA_TOKENS,
-  csharp: CSHARP_TOKENS,
-  python: PYTHON_TOKENS,
-  typescript: TYPESCRIPT_TOKENS,
-};
 
 // ─────────────────────────────────────────────
 // Token category colors
@@ -451,40 +444,815 @@ export type LanguageInfo = {
   icon: string; // MaterialCommunityIcons name
 };
 
+export const SQL_TOKENS: SyntaxToken[] = [
+  {
+    id: "kw_select",
+    label: "SELECT",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "sym_star",
+    label: "*",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "kw_from",
+    label: "FROM",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_table",
+    label: "clientes",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "id_column",
+    label: "nome",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_where",
+    label: "WHERE",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "sym_equal",
+    label: "=",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "val_string",
+    label: "'Eletrônicos'",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_order",
+    label: "ORDER BY",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_asc",
+    label: "ASC",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "fn_count",
+    label: "COUNT",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "sym_open_paren",
+    label: "(",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "sym_close_paren",
+    label: ")",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "kw_distinct",
+    label: "DISTINCT",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_limit",
+    label: "LIMIT",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "val_number",
+    label: "5",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "sym_gt",
+    label: ">",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "kw_insert",
+    label: "INSERT INTO",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_col1",
+    label: "nome",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "sym_comma",
+    label: ",",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "id_col2",
+    label: "cidade",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_values",
+    label: "VALUES",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "sym_open_paren2",
+    label: "(",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "val_name",
+    label: "'João Silva'",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "sym_comma2",
+    label: ",",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "val_city",
+    label: "'São Paulo'",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "sym_close_paren2",
+    label: ")",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "kw_delete",
+    label: "DELETE FROM",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_and",
+    label: "AND",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_group",
+    label: "GROUP BY",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_table1",
+    label: "clientes",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_join",
+    label: "INNER JOIN",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_table2",
+    label: "pedidos",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_on",
+    label: "ON",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_fk1",
+    label: "clientes.cliente_id",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "id_fk2",
+    label: "pedidos.cliente_id",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_having",
+    label: "HAVING",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "fn_count2",
+    label: "COUNT",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "sym_star2",
+    label: "*",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "kw_update",
+    label: "UPDATE",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_set",
+    label: "SET",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_pk",
+    label: "id",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "sym_equal2",
+    label: "=",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "val_id",
+    label: "10",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_like",
+    label: "LIKE",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "val_pattern",
+    label: "'A%'",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_between",
+    label: "BETWEEN",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "val_min",
+    label: "100",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "val_max",
+    label: "500",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_as",
+    label: "AS",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_alias",
+    label: "remuneracao",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "fn_sum",
+    label: "SUM",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "id_col3",
+    label: "departamento",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_select2",
+    label: "SELECT",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "fn_avg",
+    label: "AVG",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_from2",
+    label: "FROM",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_case",
+    label: "CASE",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_when1",
+    label: "WHEN",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "val_num1",
+    label: "8000",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_then1",
+    label: "THEN",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "val_alto",
+    label: "'Alto'",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_when2",
+    label: "WHEN",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_col4",
+    label: "salario",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_then2",
+    label: "THEN",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "val_medio",
+    label: "'Médio'",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_else",
+    label: "ELSE",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "val_baixo",
+    label: "'Baixo'",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_end",
+    label: "END",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "sym_comma1",
+    label: ",",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "fn_row",
+    label: "ROW_NUMBER",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_over",
+    label: "OVER",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_partition",
+    label: "PARTITION BY",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_desc",
+    label: "DESC",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_with",
+    label: "WITH",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_cte",
+    label: "top_clientes",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "id_cte2",
+    label: "top_clientes",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_as1",
+    label: "AS",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_alias1",
+    label: "funcionario",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_as2",
+    label: "AS",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_alias2",
+    label: "gerente",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "id_alias3",
+    label: "f",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "id_alias4",
+    label: "g",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_exists",
+    label: "EXISTS",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "val_one",
+    label: "1",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_where2",
+    label: "WHERE",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "fn_sum1",
+    label: "SUM",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "sym_open1",
+    label: "(",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "kw_case1",
+    label: "CASE",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_col_mes1",
+    label: "mes",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "sym_eq1",
+    label: "=",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "val_jan",
+    label: "'Janeiro'",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "id_col_val1",
+    label: "valor",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_else1",
+    label: "ELSE",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "val_zero1",
+    label: "0",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_end1",
+    label: "END",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "sym_close1",
+    label: ")",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "fn_sum2",
+    label: "SUM",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "sym_open2",
+    label: "(",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "kw_case2",
+    label: "CASE",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_col_mes2",
+    label: "mes",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "sym_eq2",
+    label: "=",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "val_fev",
+    label: "'Fevereiro'",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "id_col_val2",
+    label: "valor",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_else2",
+    label: "ELSE",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "val_zero2",
+    label: "0",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_end2",
+    label: "END",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "sym_close2",
+    label: ")",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "fn_sum3",
+    label: "SUM",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "sym_open3",
+    label: "(",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "kw_case3",
+    label: "CASE",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_when3",
+    label: "WHEN",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_col_mes3",
+    label: "mes",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "sym_eq3",
+    label: "=",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "val_mar",
+    label: "'Março'",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_then3",
+    label: "THEN",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_col_val3",
+    label: "valor",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_else3",
+    label: "ELSE",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "val_zero3",
+    label: "0",
+    category: "literal",
+    editable: true
+  },
+  {
+    id: "kw_end3",
+    label: "END",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "sym_close3",
+    label: ")",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "kw_as3",
+    label: "AS",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_select1",
+    label: "SELECT",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_from1",
+    label: "FROM",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "sym_eq",
+    label: "=",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "kw_union",
+    label: "UNION ALL",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "sym_comma3",
+    label: ",",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "id_col5",
+    label: "f.nome",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "sym_comma4",
+    label: ",",
+    category: "symbol",
+    editable: false
+  },
+  {
+    id: "id_col6",
+    label: "f.gerente_id",
+    category: "identifier",
+    editable: true
+  },
+  {
+    id: "kw_select3",
+    label: "SELECT",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "kw_from3",
+    label: "FROM",
+    category: "keyword",
+    editable: false
+  },
+  {
+    id: "id_cte3",
+    label: "hierarquia",
+    category: "identifier",
+    editable: true
+  }
+];
+
+export const LANGUAGE_TOKENS: Record<Language, SyntaxToken[]> = {
+  javascript: JAVASCRIPT_TOKENS,
+  java: JAVA_TOKENS,
+  csharp: CSHARP_TOKENS,
+  python: PYTHON_TOKENS,
+  typescript: TYPESCRIPT_TOKENS,
+  sql: SQL_TOKENS,
+};
+
 export const LANGUAGES: LanguageInfo[] = [
-  {
-    id: 'javascript',
-    label: 'JavaScript',
-    color: '#854d0e',
-    accent: '#FDE047',
-    icon: 'language-javascript',
-  },
-  {
-    id: 'python',
-    label: 'Python',
-    color: '#1e3a8a',
-    accent: '#60a5fa',
-    icon: 'language-python',
-  },
-  {
-    id: 'typescript',
-    label: 'TypeScript',
-    color: '#1e3a8a',
-    accent: '#3b82f6',
-    icon: 'language-typescript',
-  },
-  {
-    id: 'java',
-    label: 'Java',
-    color: '#7c2d12',
-    accent: '#FB923C',
-    icon: 'language-java',
-  },
-  {
-    id: 'csharp',
-    label: 'C#',
-    color: '#312e81',
-    accent: '#818CF8',
-    icon: 'language-csharp',
-  },
+  { id: 'javascript', label: 'JavaScript', color: '#854d0e', accent: '#FDE047', icon: 'language-javascript' },
+  { id: 'python', label: 'Python', color: '#1e3a8a', accent: '#60a5fa', icon: 'language-python' },
+  { id: 'typescript', label: 'TypeScript', color: '#1e3a8a', accent: '#3b82f6', icon: 'language-typescript' },
+  { id: 'java', label: 'Java', color: '#7c2d12', accent: '#FB923C', icon: 'language-java' },
+  { id: 'csharp', label: 'C#', color: '#312e81', accent: '#818CF8', icon: 'language-csharp' },
+  { id: 'sql', label: 'SQL', color: '#115e59', accent: '#2dd4bf', icon: 'database-search' },
 ];

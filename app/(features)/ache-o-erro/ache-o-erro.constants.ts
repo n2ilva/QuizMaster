@@ -25,6 +25,12 @@ export const DEBUG_LANGUAGES: LanguageInfo[] = [
     icon: 'language-java',
     color: '#E76F00',
   },
+  {
+    id: 'sql',
+    label: 'SQL',
+    icon: 'database-search',
+    color: '#115e59',
+  },
 ];
 
 export const LEVEL_CONFIG: Record<Level, { label: string; color: string; icon: string }> = {

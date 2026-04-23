@@ -25,6 +25,7 @@ import {
 
 import {
   QuickResponseCategory,
+  QuickResponseContext,
   QuickResponseData,
   QuickResponseExercise
 } from './quick-response.types';
@@ -37,6 +38,50 @@ const EMPTY_QUICK_RESPONSE_DATA: QuickResponseData = {
   version: '0',
   categories: [],
 } as unknown as QuickResponseData;
+
+// ── SLA helpers ────────────────────────────────────────────────────────────
+// Tempo em segundos (comprimido para o jogo), proporcional ao SLA real por
+// prioridade e área (Suporte < NOC/SOC para incidentes críticos).
+const SLA_DURATION_MAP: Record<string, Record<string, number>> = {
+  Baixa:   { suporte_tecnico: 60, noc: 55, soc: 55 },
+  Urgente: { suporte_tecnico: 45, noc: 40, soc: 40 },
+  Crítica: { suporte_tecnico: 35, noc: 25, soc: 25 },
+};
+
+const PRIORITY_COLORS: Record<'P1' | 'P2' | 'P3', string> = {
+  P1: '#EF4444',
+  P2: '#F59E0B',
+  P3: '#22C55E',
+};
+
+const PRIORITY_BG_DARK: Record<'P1' | 'P2' | 'P3', string> = {
+  P1: '#2D161B',
+  P2: '#2D1F0A',
+  P3: '#0F2318',
+};
+
+const PRIORITY_BG_LIGHT: Record<'P1' | 'P2' | 'P3', string> = {
+  P1: '#FFF1F2',
+  P2: '#FFFBEB',
+  P3: '#F0FDF4',
+};
+
+function getSLADuration(level: string, categoryId?: string): number {
+  return (SLA_DURATION_MAP[level] ?? SLA_DURATION_MAP.Baixa)[categoryId ?? 'suporte_tecnico'] ?? 45;
+}
+
+function getPriorityLabel(level: string): 'P1' | 'P2' | 'P3' {
+  if (level === 'Crítica') return 'P1';
+  if (level === 'Urgente') return 'P2';
+  return 'P3';
+}
+
+function getRealWorldSLA(level: string, categoryId?: string): string {
+  const isNocSoc = categoryId === 'noc' || categoryId === 'soc';
+  if (level === 'Crítica') return isNocSoc ? '15min' : '1h';
+  if (level === 'Urgente') return isNocSoc ? '1h' : '4h';
+  return isNocSoc ? '4h' : '8h';
+}
 
 export function QuickResponseScreen() {
   const isDark = useColorScheme() === 'dark';
@@ -61,6 +106,7 @@ export function QuickResponseScreen() {
   const [showSuccessTransition, setShowSuccessTransition] = useState(false);
   const [priorityFilter, setPriorityFilter] = useState<'TODOS' | 'BAIXA' | 'URGENTE' | 'CRÍTICA'>('TODOS');
   const [confirmExitOpen, setConfirmExitOpen] = useState(false);
+  const [showContextCard, setShowContextCard] = useState(false);
   const navigation = useNavigation();
   const [pendingAction, setPendingAction] = useState<any>(null);
   const isExitingRef = useRef(false);
@@ -122,7 +168,7 @@ export function QuickResponseScreen() {
     }
   }, [user]);
 
-  const getSLADuration = (_level: string) => 40;
+  // getSLADuration, getPriorityLabel e getRealWorldSLA definidos fora do componente
 
   useEffect(() => {
     let timer: any;
@@ -150,12 +196,13 @@ export function QuickResponseScreen() {
 
   const handleSelectExercise = (ex: QuickResponseExercise) => {
     // Reset numeric/boolean states FIRST to prevent timer race conditions
-    const duration = getSLADuration(ex.level);
-    setTimeLeft(duration); 
+    const duration = getSLADuration(ex.level, selectedCategory?.id);
+    setTimeLeft(duration);
     setMaxTime(duration);
     setIsValidated(false);
     setCurrentAttempts(0);
     setSelectedIds(new Set());
+    setShowContextCard(false); // fecha a ficha ao iniciar novo exercício
     
     // Set active exercise and clear feedback LAST
     setActiveExercise(ex);
@@ -239,7 +286,7 @@ export function QuickResponseScreen() {
     setIsValidated(false);
     setSelectedIds(new Set());
     if (activeExercise) {
-      const duration = getSLADuration(activeExercise.level);
+      const duration = getSLADuration(activeExercise.level, selectedCategory?.id);
       setTimeLeft(duration);
       setMaxTime(duration);
     }
@@ -433,37 +480,135 @@ export function QuickResponseScreen() {
               <TouchableOpacity onPress={() => setConfirmExitOpen(true)} style={{ padding: 8, marginLeft: -8 }}>
                 <MaterialIcons name="close" size={24} color={textPrimary} />
               </TouchableOpacity>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <MaterialCommunityIcons name="fire-extinguisher" size={18} color="#F43F5E" />
-                  <Text style={{ fontWeight: '800', color: textPrimary, fontSize: 14 }}>SLA: {timeLeft}s</Text>
-                </View>
-                <View style={{ width: 60, height: 6, backgroundColor: isDark ? '#2D3139' : '#E2E8F0', borderRadius: 3, overflow: 'hidden' }}>
-                  <View style={{ width: `${(timeLeft / maxTime) * 100}%`, height: '100%', backgroundColor: timeLeft < (maxTime * 0.25) ? '#F43F5E' : (timeLeft < (maxTime * 0.5) ? '#F59E0B' : '#22C55E') }} />
-                </View>
-              </View>
+              {/* SLA dinâmico: badge de prioridade + timer + referência real */}
+              {(() => {
+                const pLabel = getPriorityLabel(activeExercise.level);
+                const pColor = PRIORITY_COLORS[pLabel];
+                const timerColor = timeLeft < maxTime * 0.25 ? '#EF4444' : timeLeft < maxTime * 0.5 ? '#F59E0B' : '#9BA1A6';
+                return (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    {/* Badge P1/P2/P3 */}
+                    <View style={{ paddingHorizontal: 9, paddingVertical: 4, borderRadius: 8, backgroundColor: pColor + '20', borderWidth: 1, borderColor: pColor + '50' }}>
+                      <Text style={{ color: pColor, fontWeight: '900', fontSize: 12, letterSpacing: 0.5 }}>{pLabel}</Text>
+                    </View>
+                    {/* Timer */}
+                    <MaterialCommunityIcons name="timer-outline" size={16} color={timerColor} />
+                    <Text style={{ fontWeight: '800', color: textPrimary, fontSize: 13 }}>{timeLeft}s</Text>
+                    {/* Barra de progresso */}
+                    <View style={{ width: 52, height: 5, backgroundColor: isDark ? '#2D3139' : '#E2E8F0', borderRadius: 3, overflow: 'hidden' }}>
+                      <View style={{ width: `${(timeLeft / maxTime) * 100}%`, height: '100%', backgroundColor: timeLeft < maxTime * 0.25 ? '#EF4444' : timeLeft < maxTime * 0.5 ? '#F59E0B' : '#22C55E', borderRadius: 3 }} />
+                    </View>
+                    {/* Referência real */}
+                    <Text style={{ fontSize: 10, color: textMuted, fontWeight: '600' }}>real: {getRealWorldSLA(activeExercise.level, selectedCategory?.id)}</Text>
+                  </View>
+                );
+              })()}
             </View>
-            <View style={{ backgroundColor: isDark ? '#2D161B' : '#FFF1F2', borderRadius: 16, padding: 20, borderWidth: 1, borderColor: '#F43F5E30' }}>
-              <View style={{ flexDirection: 'row', gap: 12, marginBottom: 12 }}>
-                <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#F43F5E', alignItems: 'center', justifyContent: 'center' }}>
-                  <MaterialIcons name="notifications-active" size={22} color="#FFFFFF" />
+            {/* Card de alerta com cor dinâmica por prioridade */}
+            {(() => {
+              const pLabel = getPriorityLabel(activeExercise.level);
+              const pColor = PRIORITY_COLORS[pLabel];
+              const cardBg = isDark ? PRIORITY_BG_DARK[pLabel] : PRIORITY_BG_LIGHT[pLabel];
+              const pTitle = pLabel === 'P1' ? 'INCIDENTE P1 — CRÍTICO' : pLabel === 'P2' ? 'INCIDENTE P2 — URGENTE' : 'INCIDENTE P3 — BAIXA';
+              const pSubtitle = `SLA de atendimento: ${getRealWorldSLA(activeExercise.level, selectedCategory?.id)}`;
+              return (
+                <View style={{ backgroundColor: cardBg, borderRadius: 16, padding: 20, borderWidth: 1, borderColor: pColor + '30' }}>
+                  <View style={{ flexDirection: 'row', gap: 12, marginBottom: 12 }}>
+                    <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: pColor, alignItems: 'center', justifyContent: 'center' }}>
+                      <MaterialIcons name="notifications-active" size={22} color="#FFFFFF" />
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ color: pColor, fontSize: 11, fontWeight: '800', letterSpacing: 1, marginBottom: 2 }}>{pTitle}</Text>
+                      <Text style={{ color: pColor + 'CC', fontSize: 13, fontWeight: '700' }}>{pSubtitle}</Text>
+                    </View>
+                  </View>
+                  <GlossaryText
+                    text={`"${activeExercise.alert}"`}
+                    track="Incidentes"
+                    style={{ fontSize: 16, color: isDark ? '#ECEDEE' : '#11181C', lineHeight: 24, fontWeight: '600' }}
+                  />
                 </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ color: '#F43F5E', fontSize: 11, fontWeight: '800', letterSpacing: 1, marginBottom: 2 }}>ALERTA DE SISTEMA</Text>
-                  <Text style={{ color: isDark ? '#FFD1D9' : '#9F1239', fontSize: 14, fontWeight: '700' }}>Ação imediata requerida</Text>
-                </View>
-              </View>
-              <GlossaryText 
-                text={`"${activeExercise.alert}"`} 
-                track="Incidentes"
-                style={{ fontSize: 16, color: isDark ? '#ECEDEE' : '#11181C', lineHeight: 24, fontWeight: '600' }} 
-              />
-            </View>
+              );
+            })()}
           </View>
         </View>
 
         <ScrollView contentContainerStyle={{ paddingVertical: 20, paddingBottom: bottomPadding + 100 }} showsVerticalScrollIndicator={false}>
           <View style={[styles.maxContentWidth, { paddingHorizontal: 20 }]}>
+
+            {/* Ficha do Chamado — card expansível (só exibido se há context) */}
+            {activeExercise.context && (
+              <View style={{ marginBottom: 16, borderRadius: 14, overflow: 'hidden', borderWidth: 1, borderColor: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)' }}>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => setShowContextCard(v => !v)}
+                  style={{
+                    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+                    backgroundColor: isDark ? '#1A1D21' : '#F1F5F9',
+                    paddingHorizontal: 16, paddingVertical: 12,
+                  }}
+                >
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                    <MaterialCommunityIcons name="file-document-outline" size={16} color="#38BDF8" />
+                    <Text style={{ color: '#38BDF8', fontWeight: '800', fontSize: 12, letterSpacing: 0.5 }}>FICHA DO CHAMADO</Text>
+                    {activeExercise.context.ticket_id && (
+                      <Text style={{ color: textMuted, fontSize: 11, fontWeight: '600' }}>{activeExercise.context.ticket_id}</Text>
+                    )}
+                  </View>
+                  <MaterialIcons name={showContextCard ? 'expand-less' : 'expand-more'} size={20} color={textMuted} />
+                </TouchableOpacity>
+
+                {showContextCard && (
+                  <View style={{ backgroundColor: isDark ? '#141618' : '#FFFFFF', padding: 16, gap: 10 }}>
+                    {activeExercise.context.system && (
+                      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-start' }}>
+                        <MaterialCommunityIcons name="monitor" size={14} color={textMuted} style={{ marginTop: 2 }} />
+                        <View style={{ flex: 1 }}>
+                          <Text style={{ fontSize: 10, fontWeight: '700', color: textMuted, textTransform: 'uppercase', marginBottom: 2 }}>Sistema</Text>
+                          <Text style={{ fontSize: 13, color: textPrimary, fontWeight: '500' }}>{activeExercise.context.system}</Text>
+                        </View>
+                      </View>
+                    )}
+                    {activeExercise.context.affected_users && (
+                      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-start' }}>
+                        <MaterialCommunityIcons name="account-group" size={14} color={textMuted} style={{ marginTop: 2 }} />
+                        <View style={{ flex: 1 }}>
+                          <Text style={{ fontSize: 10, fontWeight: '700', color: textMuted, textTransform: 'uppercase', marginBottom: 2 }}>Usuários impactados</Text>
+                          <Text style={{ fontSize: 13, color: textPrimary, fontWeight: '500' }}>{activeExercise.context.affected_users}</Text>
+                        </View>
+                      </View>
+                    )}
+                    {activeExercise.context.opened_by && (
+                      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-start' }}>
+                        <MaterialCommunityIcons name="account" size={14} color={textMuted} style={{ marginTop: 2 }} />
+                        <View style={{ flex: 1 }}>
+                          <Text style={{ fontSize: 10, fontWeight: '700', color: textMuted, textTransform: 'uppercase', marginBottom: 2 }}>Aberto por</Text>
+                          <Text style={{ fontSize: 13, color: textPrimary, fontWeight: '500' }}>{activeExercise.context.opened_by}</Text>
+                        </View>
+                      </View>
+                    )}
+                    {activeExercise.context.topology_hint && (
+                      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-start' }}>
+                        <MaterialCommunityIcons name="lan" size={14} color={textMuted} style={{ marginTop: 2 }} />
+                        <View style={{ flex: 1 }}>
+                          <Text style={{ fontSize: 10, fontWeight: '700', color: textMuted, textTransform: 'uppercase', marginBottom: 2 }}>Ambiente / Topologia</Text>
+                          <Text style={{ fontSize: 13, color: textPrimary, fontWeight: '500', lineHeight: 19 }}>{activeExercise.context.topology_hint}</Text>
+                        </View>
+                      </View>
+                    )}
+                    {activeExercise.context.log_snippet && (
+                      <View style={{ marginTop: 4 }}>
+                        <Text style={{ fontSize: 10, fontWeight: '700', color: textMuted, textTransform: 'uppercase', marginBottom: 6 }}>Log / Trecho</Text>
+                        <View style={{ backgroundColor: isDark ? '#0D0F10' : '#F8FAFC', borderRadius: 8, padding: 12, borderWidth: 1, borderColor: isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.06)' }}>
+                          <Text style={{ fontFamily: 'monospace', fontSize: 11, color: '#22C55E', lineHeight: 17 }}>{activeExercise.context.log_snippet}</Text>
+                        </View>
+                      </View>
+                    )}
+                  </View>
+                )}
+              </View>
+            )}
+
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 16 }}>
               <View>
                 <Text style={{ fontSize: 12, fontWeight: '800', color: textMuted, letterSpacing: 1, textTransform: 'uppercase' }}>Como você deseja proceder?</Text>
@@ -523,59 +668,123 @@ export function QuickResponseScreen() {
       {!selectedCategory ? renderCategoryList() : (!activeExercise ? renderExerciseList() : renderActiveExercise())}
       
       <Modal visible={!!feedback} transparent animationType="fade" onRequestClose={() => setFeedback(null)}>
-        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.85)', justifyContent: 'center', alignItems: 'center', padding: 24 }}>
-          <PanelCard style={{ width: '100%', maxWidth: 500, alignSelf: 'center', backgroundColor: surfaceColor, borderRadius: 32, padding: 24, borderWidth: 1, borderColor: feedback?.isCorrect ? '#22C55E40' : '#EF444440', shadowColor: '#000', shadowOffset: { width: 0, height: 20 }, shadowOpacity: 0.5, shadowRadius: 30, elevation: 24 }}>
-            <View style={{ alignItems: 'center', marginBottom: 24 }}>
-              <View style={{ width: 80, height: 80, borderRadius: 40, backgroundColor: feedback?.isCorrect ? '#22C55E' : '#EF4444', alignItems: 'center', justifyContent: 'center', marginBottom: 16, shadowColor: feedback?.isCorrect ? '#22C55E' : '#EF4444', shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.4, shadowRadius: 15 }}>
-                <MaterialIcons name={feedback?.isCorrect ? "verified" : "report-problem"} size={44} color="#FFFFFF" />
-              </View>
-              <Text style={{ fontSize: 24, fontWeight: '800', color: textPrimary, textAlign: 'center' }}>{feedback?.isCorrect ? 'Incidente Resolvido!' : 'Falha na Resolução'}</Text>
-              <Text style={{ fontSize: 13, color: textMuted, marginTop: 4, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 1 }}>Relatório de Troubleshooting</Text>
-            </View>
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.88)', justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+          <ScrollView style={{ width: '100%', maxWidth: 520 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}>
+            <PanelCard style={{ backgroundColor: surfaceColor, borderRadius: 28, padding: 24, borderWidth: 1, borderColor: feedback?.isCorrect ? '#22C55E40' : '#EF444440', shadowColor: '#000', shadowOffset: { width: 0, height: 20 }, shadowOpacity: 0.5, shadowRadius: 30, elevation: 24 }}>
 
-            <View style={{ gap: 16, marginBottom: 32 }}>
-              <View style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#F8FAFC', padding: 16, borderRadius: 20, borderWidth: 1, borderColor: borderColor }}>
-                <Text style={{ fontSize: 12, fontWeight: '700', color: textMuted, marginBottom: 8, textTransform: 'uppercase' }}>Feedback Técnico</Text>
-                <Text style={{ fontSize: 15, lineHeight: 22, color: textPrimary, fontWeight: '500' }}>{feedback?.message}</Text>
+              {/* Header */}
+              <View style={{ alignItems: 'center', marginBottom: 20 }}>
+                <View style={{ width: 72, height: 72, borderRadius: 36, backgroundColor: feedback?.isCorrect ? '#22C55E' : '#EF4444', alignItems: 'center', justifyContent: 'center', marginBottom: 12, shadowColor: feedback?.isCorrect ? '#22C55E' : '#EF4444', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.4, shadowRadius: 12 }}>
+                  <MaterialIcons name={feedback?.isCorrect ? 'verified' : 'report-problem'} size={40} color="#FFFFFF" />
+                </View>
+                <Text style={{ fontSize: 22, fontWeight: '800', color: textPrimary, textAlign: 'center' }}>{feedback?.isCorrect ? 'Incidente Resolvido!' : 'Falha na Resolução'}</Text>
+                <Text style={{ fontSize: 11, color: textMuted, marginTop: 3, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 1 }}>Relatório Pós-Incidente</Text>
               </View>
-              {feedback?.isCorrect && feedback.stats && (
-                <View style={{ flexDirection: 'row', gap: 12 }}>
-                  <View style={{ flex: 1, backgroundColor: isDark ? 'rgba(34,197,94,0.1)' : '#F0FDF4', padding: 12, borderRadius: 16, alignItems: 'center', borderWidth: 1, borderColor: '#22C55E30' }}>
-                    <MaterialIcons name="timer" size={18} color={feedback.stats.withinSLA ? '#22C55E' : '#EF4444'} />
-                    <Text style={{ fontSize: 10, fontWeight: '700', color: textMuted, marginTop: 4 }}>SLA</Text>
-                    <Text style={{ fontSize: 13, fontWeight: '800', color: feedback.stats.withinSLA ? '#22C55E' : '#EF4444' }}>{feedback.stats.withinSLA ? 'OK' : 'OUT'}</Text>
-                  </View>
-                  <View style={{ flex: 1, backgroundColor: isDark ? 'rgba(56,189,248,0.1)' : '#F0F9FF', padding: 12, borderRadius: 16, alignItems: 'center', borderWidth: 1, borderColor: '#38BDF830' }}>
-                    <MaterialIcons name="refresh" size={18} color="#38BDF8" />
-                    <Text style={{ fontSize: 10, fontWeight: '700', color: textMuted, marginTop: 4 }}>TENTATIVAS</Text>
-                    <Text style={{ fontSize: 13, fontWeight: '800', color: '#38BDF8' }}>{feedback.stats.attempts}</Text>
-                  </View>
-                  <View style={{ flex: 1, backgroundColor: isDark ? 'rgba(168,85,247,0.1)' : '#FAF5FF', padding: 12, borderRadius: 16, alignItems: 'center', borderWidth: 1, borderColor: '#A855F730' }}>
-                    <MaterialIcons name="check-circle-outline" size={18} color="#A855F7" />
-                    <Text style={{ fontSize: 10, fontWeight: '700', color: textMuted, marginTop: 4 }}>AÇÕES</Text>
-                    <Text style={{ fontSize: 13, fontWeight: '800', color: '#A855F7' }}>{activeExercise?.actions.filter(a => a.is_correct).length}</Text>
-                  </View>
-                </View>
-              )}
-            </View>
 
-            <View style={{ gap: 12 }}>
-              {feedback?.isCorrect ? (
-                <TouchableOpacity onPress={handleNext} style={{ backgroundColor: '#22C55E', paddingVertical: 18, borderRadius: 18, alignItems: 'center', shadowColor: '#22C55E', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8 }}>
-                  <Text style={{ color: '#FFFFFF', fontWeight: '800', fontSize: 16 }}>PRÓXIMO INCIDENTE</Text>
-                </TouchableOpacity>
-              ) : (
-                <View style={{ flexDirection: 'row', gap: 12 }}>
-                  <TouchableOpacity onPress={handleRetry} style={{ flex: 1, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', paddingVertical: 16, borderRadius: 16, alignItems: 'center', borderWidth: 1, borderColor: borderColor }}>
-                    <Text style={{ color: textPrimary, fontWeight: '800', fontSize: 15 }}>REVISAR</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={handleNext} style={{ flex: 1, backgroundColor: '#EF4444', paddingVertical: 16, borderRadius: 16, alignItems: 'center' }}>
-                    <Text style={{ color: '#FFFFFF', fontWeight: '800', fontSize: 15 }}>PULAR</Text>
-                  </TouchableOpacity>
+              <View style={{ gap: 12, marginBottom: 20 }}>
+
+                {/* Stats */}
+                {feedback?.stats && (
+                  <View style={{ flexDirection: 'row', gap: 10 }}>
+                    <View style={{ flex: 1, backgroundColor: isDark ? 'rgba(34,197,94,0.08)' : '#F0FDF4', padding: 10, borderRadius: 14, alignItems: 'center', borderWidth: 1, borderColor: '#22C55E25' }}>
+                      <MaterialIcons name="timer" size={16} color={feedback.stats.withinSLA ? '#22C55E' : '#EF4444'} />
+                      <Text style={{ fontSize: 9, fontWeight: '700', color: textMuted, marginTop: 3 }}>SLA</Text>
+                      <Text style={{ fontSize: 13, fontWeight: '900', color: feedback.stats.withinSLA ? '#22C55E' : '#EF4444' }}>{feedback.stats.withinSLA ? 'OK' : 'OUT'}</Text>
+                    </View>
+                    <View style={{ flex: 1, backgroundColor: isDark ? 'rgba(56,189,248,0.08)' : '#F0F9FF', padding: 10, borderRadius: 14, alignItems: 'center', borderWidth: 1, borderColor: '#38BDF825' }}>
+                      <MaterialIcons name="refresh" size={16} color="#38BDF8" />
+                      <Text style={{ fontSize: 9, fontWeight: '700', color: textMuted, marginTop: 3 }}>TENTATIVAS</Text>
+                      <Text style={{ fontSize: 13, fontWeight: '900', color: '#38BDF8' }}>{feedback.stats.attempts}</Text>
+                    </View>
+                    <View style={{ flex: 1, backgroundColor: isDark ? 'rgba(168,85,247,0.08)' : '#FAF5FF', padding: 10, borderRadius: 14, alignItems: 'center', borderWidth: 1, borderColor: '#A855F725' }}>
+                      <MaterialIcons name="check-circle-outline" size={16} color="#A855F7" />
+                      <Text style={{ fontSize: 9, fontWeight: '700', color: textMuted, marginTop: 3 }}>AÇÕES</Text>
+                      <Text style={{ fontSize: 13, fontWeight: '900', color: '#A855F7' }}>{activeExercise?.actions.filter(a => a.is_correct).length}</Text>
+                    </View>
+                  </View>
+                )}
+
+                {/* Feedback técnico */}
+                <View style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.03)' : '#F8FAFC', padding: 14, borderRadius: 16, borderWidth: 1, borderColor: borderColor }}>
+                  <Text style={{ fontSize: 11, fontWeight: '700', color: textMuted, marginBottom: 6, textTransform: 'uppercase' }}>Feedback Técnico</Text>
+                  <Text style={{ fontSize: 14, lineHeight: 21, color: textPrimary, fontWeight: '500' }}>{feedback?.message}</Text>
                 </View>
-              )}
-            </View>
-          </PanelCard>
+
+                {/* Gabarito — todas as ações com ✅/❌ */}
+                {activeExercise && (
+                  <View style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.02)' : '#F8FAFC', padding: 14, borderRadius: 16, borderWidth: 1, borderColor: borderColor }}>
+                    <Text style={{ fontSize: 11, fontWeight: '700', color: textMuted, marginBottom: 10, textTransform: 'uppercase' }}>Gabarito das Ações</Text>
+                    <View style={{ gap: 8 }}>
+                      {activeExercise.actions.map((action) => (
+                        <View key={action.id} style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 10 }}>
+                          <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: action.is_correct ? '#22C55E20' : '#EF444420', alignItems: 'center', justifyContent: 'center', marginTop: 1, flexShrink: 0 }}>
+                            <MaterialIcons name={action.is_correct ? 'check' : 'close'} size={12} color={action.is_correct ? '#22C55E' : '#EF4444'} />
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <Text style={{ fontSize: 13, color: action.is_correct ? textPrimary : textMuted, fontWeight: action.is_correct ? '600' : '400', lineHeight: 18 }}>{action.text}</Text>
+                            {!action.is_correct && action.feedback && (
+                              <Text style={{ fontSize: 11, color: '#EF4444', marginTop: 2, lineHeight: 16 }}>{action.feedback}</Text>
+                            )}
+                          </View>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                )}
+
+                {/* Explicação técnica aprofundada */}
+                {activeExercise?.explanation && (
+                  <View style={{ backgroundColor: isDark ? 'rgba(56,189,248,0.05)' : '#F0F9FF', padding: 14, borderRadius: 16, borderWidth: 1, borderColor: '#38BDF820' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                      <MaterialCommunityIcons name="lightbulb-outline" size={14} color="#38BDF8" />
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: '#38BDF8', textTransform: 'uppercase' }}>Contexto Técnico</Text>
+                    </View>
+                    <Text style={{ fontSize: 13, lineHeight: 20, color: textPrimary, fontWeight: '400' }}>{activeExercise.explanation}</Text>
+                  </View>
+                )}
+
+                {/* Runbook passo a passo */}
+                {activeExercise?.runbook_steps && activeExercise.runbook_steps.length > 0 && (
+                  <View style={{ backgroundColor: isDark ? 'rgba(168,85,247,0.05)' : '#FAF5FF', padding: 14, borderRadius: 16, borderWidth: 1, borderColor: '#A855F720' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+                      <MaterialCommunityIcons name="format-list-numbered" size={14} color="#A855F7" />
+                      <Text style={{ fontSize: 11, fontWeight: '700', color: '#A855F7', textTransform: 'uppercase' }}>Runbook de Resolução</Text>
+                    </View>
+                    <View style={{ gap: 8 }}>
+                      {activeExercise.runbook_steps.map((step, idx) => (
+                        <View key={idx} style={{ flexDirection: 'row', gap: 10, alignItems: 'flex-start' }}>
+                          <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: '#A855F720', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
+                            <Text style={{ fontSize: 10, fontWeight: '900', color: '#A855F7' }}>{idx + 1}</Text>
+                          </View>
+                          <Text style={{ flex: 1, fontSize: 13, color: textPrimary, lineHeight: 19, fontWeight: '400' }}>{step}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+                )}
+
+              </View>
+
+              {/* Botões */}
+              <View style={{ gap: 10 }}>
+                {feedback?.isCorrect ? (
+                  <TouchableOpacity onPress={handleNext} style={{ backgroundColor: '#22C55E', paddingVertical: 16, borderRadius: 16, alignItems: 'center', shadowColor: '#22C55E', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8 }}>
+                    <Text style={{ color: '#FFFFFF', fontWeight: '800', fontSize: 15 }}>PRÓXIMO INCIDENTE →</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <View style={{ flexDirection: 'row', gap: 10 }}>
+                    <TouchableOpacity onPress={handleRetry} style={{ flex: 1, backgroundColor: isDark ? '#2D3139' : '#F1F5F9', paddingVertical: 14, borderRadius: 14, alignItems: 'center', borderWidth: 1, borderColor: borderColor }}>
+                      <Text style={{ color: textPrimary, fontWeight: '800', fontSize: 14 }}>TENTAR NOVAMENTE</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleNext} style={{ flex: 1, backgroundColor: '#EF4444', paddingVertical: 14, borderRadius: 14, alignItems: 'center' }}>
+                      <Text style={{ color: '#FFFFFF', fontWeight: '800', fontSize: 14 }}>PULAR →</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+
+            </PanelCard>
+          </ScrollView>
         </View>
       </Modal>
 

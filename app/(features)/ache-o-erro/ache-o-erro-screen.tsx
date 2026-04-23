@@ -9,12 +9,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTabContentPadding, useTopContentPadding } from '@/hooks/use-tab-content-padding';
 import { useAuth } from '@/providers/auth-provider';
+import { useData } from '@/providers/data-provider';
 import { QuizStatCard } from '@/components/quiz/stat-card';
 import { ConfirmExitModal } from '@/components/ui/confirm-exit-modal';
 import { ValidationFab } from '@/components/ui/validation-fab';
 
 import { DEBUG_COLORS, DEBUG_LANGUAGES, LEVEL_CONFIG } from './ache-o-erro.constants';
-import { DebugPracticeStore, GlobalProgress } from './ache-o-erro.store';
+import { DebugPracticeStore, GlobalProgress, parseCatalogToExercises } from './ache-o-erro.store';
 import { DebugExercise, LanguageInfo, Level, PlacedToken } from './ache-o-erro.types';
 import { ExerciseCard, LanguageSelector, LevelCard, DebugToken, ExerciseHeader, HintsModal } from './components/ache-o-erro-components';
 import { StudyCompletionOverlay } from '../study-session/components/study-completion-overlay';
@@ -28,6 +29,7 @@ export function AcheOErroScreen() {
   const topPadding = useTopContentPadding();
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
+  const { acheOErroCatalog, isPreloading } = useData();
   const { width } = useWindowDimensions();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -38,6 +40,7 @@ export function AcheOErroScreen() {
     python: 'bug-fix.py',
     csharp: 'bug-fix.cs',
     java: 'BugFix.java',
+    sql: 'bug-fix.sql',
   };
 
   // Navigation State
@@ -54,8 +57,9 @@ export function AcheOErroScreen() {
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const [moveCount, setMoveCount] = useState(0);
   const [userProgress, setUserProgress] = useState<GlobalProgress>({});
-  const [allExercises, setAllExercises] = useState<DebugExercise[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // allExercises is derived from the Firestore catalog (no local JSON imports)
+  const allExercises = useMemo(() => parseCatalogToExercises(acheOErroCatalog), [acheOErroCatalog]);
+  const isLoading = isPreloading || (acheOErroCatalog === null);
   const [showCompletionEffect, setShowCompletionEffect] = useState(false);
   const [confirmExitOpen, setConfirmExitOpen] = useState(false);
   const [showHintsModal, setShowHintsModal] = useState(false);
@@ -103,12 +107,8 @@ export function AcheOErroScreen() {
     return () => subscription.remove();
   }, [activeExercise, finished]);
 
-  // Load Data
+  // Load progress whenever user changes
   useEffect(() => {
-    DebugPracticeStore.getAllExercises().then((data) => {
-      setAllExercises(data);
-      setIsLoading(false);
-    });
     DebugPracticeStore.getProgress(user?.id).then(setUserProgress);
   }, [user?.id]);
 
@@ -307,6 +307,16 @@ export function AcheOErroScreen() {
     return rows;
   }, [placed]);
 
+  const correctFlags = useMemo(() => {
+    if (!activeExercise || !activeExercise.correct_order) return [];
+    let allCorrect = true;
+    return placed.map((p, i) => {
+      if (!allCorrect) return false;
+      allCorrect = p.tokenId === activeExercise.correct_order[i];
+      return allCorrect;
+    });
+  }, [placed, activeExercise]);
+
   // Rendering Helpers
   const renderSelection = () => {
     const langExercises = allExercises.filter(e => e.language === selectedLang.id);
@@ -489,6 +499,7 @@ export function AcheOErroScreen() {
                            variant="code" 
                            onPress={() => handleRemoveFromPlaced(p.instanceId)}
                            receptive
+                           isCorrectPosition={correctFlags[p.globalIndex] || false}
                            onReceiveDragDrop={(e) => {
                              const drag = parseDragPayload(e.dragged.payload as string);
                              if (!drag) return;
