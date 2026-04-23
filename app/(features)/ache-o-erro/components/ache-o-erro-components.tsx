@@ -79,49 +79,68 @@ export function LevelCard({ level, count, completedCount, onPress }: LevelCardPr
   const config = LEVEL_CONFIG[level];
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const { width } = useWindowDimensions();
+  const isDesktop = width >= 768;
+
+  const [hovered, setHovered] = React.useState(false);
+  const [pressed, setPressed] = React.useState(false);
+  const isHovered = hovered || pressed;
   
+  const colorTheme = config.color;
+  const iconName = level === 'junior' ? 'star-border' : level === 'pleno' ? 'star-half' : 'star';
+
+  const bg = isDark ? '#1C1F24' : '#FFFFFF';
+  const borderStatic = isDark ? `${colorTheme}20` : `${colorTheme}15`;
+  const borderHover = isDark ? `${colorTheme}60` : `${colorTheme}40`;
+  const textPrimary = isDark ? '#ECEDEE' : '#11181C';
+
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={0.8}
+      onPressIn={() => setPressed(true)}
+      onPressOut={() => setPressed(false)}
+      activeOpacity={0.9}
       style={{
-        flexBasis: '47%',
+        flexBasis: isDesktop ? '31%' : '47%',
         flexGrow: 1,
-        backgroundColor: isDark ? '#1C1F24' : '#FFFFFF',
-        borderRadius: 16,
+        backgroundColor: bg,
+        borderRadius: 20,
         borderWidth: 1.5,
-        borderColor: `${config.color}20`,
+        borderColor: isHovered ? borderHover : borderStatic,
         paddingVertical: 16,
         paddingHorizontal: 12,
         alignItems: 'center',
+        justifyContent: 'center',
         gap: 8,
-        shadowColor: config.color,
+        position: 'relative',
+        shadowColor: colorTheme,
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.05,
-        shadowRadius: 10,
-        elevation: 2,
+        shadowOpacity: isHovered ? 0.15 : 0.05,
+        shadowRadius: 12,
+        elevation: isHovered ? 4 : 2,
       }}
     >
-      <View style={{ 
-        width: 48, 
-        height: 48, 
-        borderRadius: 16, 
-        backgroundColor: `${config.color}15`, 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        borderWidth: 1,
-        borderColor: `${config.color}30`
-      }}>
-        <MaterialIcons name={config.icon as any} size={28} color={config.color} />
+      <View
+        style={{
+          position: 'absolute',
+          top: 12,
+          right: 12,
+          backgroundColor: isDark ? `${colorTheme}15` : `${colorTheme}10`,
+          paddingHorizontal: 8,
+          paddingVertical: 4,
+          borderRadius: 8,
+          borderWidth: 1,
+          borderColor: isDark ? `${colorTheme}30` : `${colorTheme}20`,
+        }}
+      >
+        <Text style={{ color: colorTheme, fontSize: 11, fontWeight: '800' }}>{completedCount}/{count}</Text>
       </View>
-      
-      <View style={{ alignItems: 'center' }}>
-        <Text style={{ color: isDark ? '#ECEDEE' : '#11181C', fontSize: 15, fontWeight: '800', textAlign: 'center' }}>
-          {config.label}
-        </Text>
-        <Text style={{ color: DEBUG_COLORS.textMuted, fontSize: 12, marginTop: 4 }}>
-          {completedCount} / {count} concluídos
-        </Text>
+
+      <View style={{ width: 44, height: 44, borderRadius: 14, backgroundColor: isDark ? `${colorTheme}15` : `${colorTheme}10`, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: isDark ? `${colorTheme}30` : `${colorTheme}20` }}>
+        <MaterialIcons name={iconName as any} size={24} color={colorTheme} />
+      </View>
+      <View style={{ alignItems: 'center', paddingHorizontal: 4 }}>
+        <Text style={{ color: textPrimary, fontSize: 13, fontWeight: '800', letterSpacing: -0.3, textAlign: 'center' }}>{config.label}</Text>
       </View>
     </TouchableOpacity>
   );
