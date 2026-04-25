@@ -28,11 +28,6 @@ import { useData } from "@/providers/data-provider";
 import { DcModal } from "./components/dc-modal";
 import { LevelCard } from "./components/level-card";
 import { WorkbenchCanvas } from "./components/workbench-canvas";
-import {
-  FAB_SIZE,
-  FAB_STACK_GAP,
-  WorkbenchFab,
-} from "./components/workbench-fab";
 import { WorkbenchToolbar } from "./components/workbench-toolbar";
 import {
   DC_BREAKPOINTS,
@@ -118,8 +113,8 @@ export function DataCenterBuilderScreen() {
   // usamos um fallback vazio para não quebrar renderização.
   const data = useMemo(() => normalizeCatalog(datacenterCatalog), [datacenterCatalog]);
 
-  const isCompactChrome = true;
-  const isStackedCanvas = true;
+  const isCompactChrome = windowWidth < DC_BREAKPOINTS.compactChrome;
+  const isStackedCanvas = windowWidth < DC_BREAKPOINTS.stackCanvas;
 
   // ----------------------------------------------------------------- state
   const [activeLevel, setActiveLevel] = useState<DataCenterLevel | null>(null);
@@ -845,16 +840,22 @@ export function DataCenterBuilderScreen() {
         </View>
       </ScrollView>
 
-      {/* Floating Action Buttons - Unified FAB experience */}
-      <ValidationFab
-        onPress={handleValidate}
-        icon="fact-check"
-        bottomInset={bottomPadding}
-      />
-      <WorkbenchFab
-        actions={helpActions}
-        bottomInset={bottomPadding + FAB_SIZE + FAB_STACK_GAP}
-      />
+      {/* Unified Toolbar for Web & Mobile */}
+      <View style={[styles.toolbarDock, { bottom: 16 + bottomPadding }]}>
+        <WorkbenchToolbar
+          actions={[
+            ...helpActions,
+            {
+              id: "validate",
+              icon: "check",
+              label: "Validar",
+              variant: "success",
+              onPress: handleValidate,
+            },
+          ]}
+          compact={windowWidth < DC_BREAKPOINTS.compactChrome}
+        />
+      </View>
     </View>
     );
   };
@@ -930,38 +931,39 @@ export function DataCenterBuilderScreen() {
                 key={`${d.id}-${i}`}
                 disabled={alreadyInstalled}
                 onPress={() => !alreadyInstalled && handleInstallItem(d)}
-                style={({ hovered }: { hovered?: boolean }) => [
-                  styles.invItem,
-                  {
-                    backgroundColor:
-                      hovered && !alreadyInstalled
-                        ? DC_COLORS.bgSurfaceHover
-                        : DC_COLORS.bgSurface,
-                    opacity: alreadyInstalled ? 0.35 : 1,
-                  },
+                style={({ pressed }) => [
+                  { transform: [{ scale: pressed && !alreadyInstalled ? 0.98 : 1 }] }
                 ]}
                 accessibilityRole="button"
                 accessibilityState={{ disabled: alreadyInstalled }}
                 accessibilityLabel={`Instalar ${d.label ?? d.id}`}
               >
-                <View style={styles.invIconWrap}>
-                  <MaterialCommunityIcons
-                    name={iconName as any}
-                    size={26}
-                    color={DC_COLORS.accentSoft}
-                  />
-                </View>
-                <Text style={styles.invName} numberOfLines={2}>
-                  {d.label ?? d.id}
-                </Text>
-                <Text style={styles.invType} numberOfLines={1}>
-                  {d.type}
-                </Text>
-                {alreadyInstalled && (
-                  <View style={styles.invBadge}>
-                    <MaterialIcons name="check" size={12} color={DC_COLORS.success} />
+                <View style={[
+                  styles.invItem,
+                  {
+                    backgroundColor: DC_COLORS.bgSurface,
+                    opacity: alreadyInstalled ? 0.35 : 1,
+                  },
+                ]}>
+                  <View style={styles.invIconWrap}>
+                    <MaterialCommunityIcons
+                      name={iconName as any}
+                      size={26}
+                      color={DC_COLORS.accentSoft}
+                    />
                   </View>
-                )}
+                  <Text style={styles.invName} numberOfLines={2}>
+                    {d.label ?? d.id}
+                  </Text>
+                  <Text style={styles.invType} numberOfLines={1}>
+                    {d.type}
+                  </Text>
+                  {alreadyInstalled && (
+                    <View style={styles.invBadge}>
+                      <MaterialIcons name="check" size={12} color={DC_COLORS.success} />
+                    </View>
+                  )}
+                </View>
               </Pressable>
             );
           })}
@@ -1423,5 +1425,10 @@ const styles = StyleSheet.create({
     maxWidth: 800,
     width: "100%",
     alignSelf: "center",
+  },
+  toolbarDock: {
+    position: "absolute",
+    alignSelf: "center",
+    zIndex: 50,
   },
 });

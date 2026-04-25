@@ -23,52 +23,57 @@ export function LevelCard({ level, completed, onPress }: LevelCardProps) {
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={`Selecionar nível ${level.name}`}
-      style={({ pressed, hovered }) => [
-        styles.card,
+      style={({ pressed }) => [
         {
-          borderColor: completed ? `${DC_COLORS.success}66` : DC_COLORS.borderMuted,
-          backgroundColor: hovered ? DC_COLORS.bgPanelRaised : DC_COLORS.bgPanel,
           transform: [{ scale: pressed ? 0.98 : 1 }],
         },
       ]}
     >
-      <View style={styles.header}>
-        <View style={[styles.badge, { backgroundColor: diff.soft }]}>
-          <Text style={[styles.badgeText, { color: diff.color }]}>{diff.label}</Text>
-        </View>
-        {completed && (
-          <View style={styles.doneWrap}>
-            <MaterialIcons name="check-circle" size={18} color={DC_COLORS.success} />
+      <View style={[
+        styles.card,
+        {
+          borderColor: completed ? `${DC_COLORS.success}66` : DC_COLORS.borderMuted,
+          backgroundColor: DC_COLORS.bgPanel,
+        }
+      ]}>
+        <View style={styles.header}>
+          <View style={[styles.badge, { backgroundColor: diff.soft }]}>
+            <Text style={[styles.badgeText, { color: diff.color }]}>{diff.label}</Text>
           </View>
+          {completed && (
+            <View style={styles.doneWrap}>
+              <MaterialIcons name="check-circle" size={18} color={DC_COLORS.success} />
+            </View>
+          )}
+        </View>
+
+        {level.tier && (
+          <Text style={styles.tier} numberOfLines={1}>
+            {level.tier}
+          </Text>
         )}
-      </View>
-
-      {level.tier && (
-        <Text style={styles.tier} numberOfLines={1}>
-          {level.tier}
+        <Text style={styles.name} numberOfLines={2}>
+          {level.name}
         </Text>
-      )}
-      <Text style={styles.name} numberOfLines={2}>
-        {level.name}
-      </Text>
 
-      {level.description ? (
-        <Text style={styles.description} numberOfLines={2}>
-          {level.description}
-        </Text>
-      ) : null}
+        {level.description ? (
+          <Text style={styles.description} numberOfLines={2}>
+            {level.description}
+          </Text>
+        ) : null}
 
-      <View style={styles.footer}>
-        <View style={styles.metaItem}>
-          <MaterialIcons name="memory" size={14} color={DC_COLORS.textMuted} />
-          <Text style={styles.metaText}>{level.inventory?.length ?? 0} equip.</Text>
-        </View>
-        <View style={styles.metaItem}>
-          <MaterialIcons name="cable" size={14} color={DC_COLORS.textMuted} />
-          <Text style={styles.metaText}>{level.connections_required?.length ?? 0} conex.</Text>
-        </View>
-        <View style={[styles.metaItem, { marginLeft: "auto" }]}>
-          <Text style={[styles.glyph, { color: diff.color }]}>{diff.glyph}</Text>
+        <View style={styles.footer}>
+          <View style={styles.metaItem}>
+            <MaterialIcons name="memory" size={14} color={DC_COLORS.textMuted} />
+            <Text style={styles.metaText}>{level.inventory?.length ?? 0} equip.</Text>
+          </View>
+          <View style={styles.metaItem}>
+            <MaterialIcons name="cable" size={14} color={DC_COLORS.textMuted} />
+            <Text style={styles.metaText}>{level.connections_required?.length ?? 0} conex.</Text>
+          </View>
+          <View style={[styles.metaItem, { marginLeft: "auto" }]}>
+            <Text style={[styles.glyph, { color: diff.color }]}>{diff.glyph}</Text>
+          </View>
         </View>
       </View>
     </Pressable>

@@ -8,7 +8,7 @@ import type { Cable } from "./datacenter-builder.types";
 export function getDeviceIcon(deviceId: string, type: string): string {
   const id = deviceId.toLowerCase();
 
-  if (id.includes("modem") || id.includes("isp")) return "modem";
+  if (id.includes("modem") || id.includes("isp")) return "router-wireless";
   if (id.includes("router") || id.includes("mikrotik"))
     return "router-wireless";
   if (
@@ -36,8 +36,8 @@ export function getDeviceIcon(deviceId: string, type: string): string {
   if (id.includes("ap_")) return "wifi";
 
   switch (type) {
-    case "telecom":
-      return "modem";
+    case "modem":
+      return "router-wireless";
     case "network":
       return "router";
     case "security":

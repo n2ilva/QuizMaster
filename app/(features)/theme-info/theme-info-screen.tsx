@@ -159,7 +159,7 @@ export function ThemeInfoScreen() {
   }
 
   return (
-    <ScrollView className="flex-1 bg-white dark:bg-[#0A0C0E]" showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingTop: 56, paddingBottom: 100 }}>
+    <ScrollView style={{ flex: 1, backgroundColor: '#0A0C0E' }} showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 20, paddingTop: 56, paddingBottom: 100 }}>
       {backButton}
       {content}
     </ScrollView>

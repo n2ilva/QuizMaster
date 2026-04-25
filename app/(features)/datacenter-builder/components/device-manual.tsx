@@ -137,28 +137,30 @@ export function DeviceManual({
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={onToggleCollapsed} style={styles.header}>
-        <MaterialCommunityIcons name="book-open-variant" size={18} color={DC_COLORS.textPrimary} />
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={styles.title} numberOfLines={1}>
-            Manual · {device.label ?? device.id}
-          </Text>
-          <Text style={styles.subtitle} numberOfLines={2}>
-            {dialectHint(device)}
-          </Text>
-        </View>
-        {sections.length > 0 ? (
-          <View style={styles.progressPill}>
-            <Text style={styles.progressPillText}>
-              {doneCount}/{sections.length}
+      <Pressable onPress={onToggleCollapsed}>
+        <View style={styles.header}>
+          <MaterialCommunityIcons name="book-open-variant" size={18} color={DC_COLORS.textPrimary} />
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={styles.title} numberOfLines={1}>
+              Manual · {device.label ?? device.id}
+            </Text>
+            <Text style={styles.subtitle} numberOfLines={2}>
+              {dialectHint(device)}
             </Text>
           </View>
-        ) : null}
-        <MaterialIcons
-          name={collapsed ? "expand-more" : "expand-less"}
-          size={22}
-          color={DC_COLORS.textSecondary}
-        />
+          {sections.length > 0 ? (
+            <View style={styles.progressPill}>
+              <Text style={styles.progressPillText}>
+                {doneCount}/{sections.length}
+              </Text>
+            </View>
+          ) : null}
+          <MaterialIcons
+            name={collapsed ? "expand-more" : "expand-less"}
+            size={22}
+            color={DC_COLORS.textSecondary}
+          />
+        </View>
       </Pressable>
 
       {!collapsed ? (

@@ -659,8 +659,8 @@ export function QuickResponseScreen() {
           <ValidationFab
             onPress={handleValidate}
             disabled={selectedIds.size === 0 || isSyncing}
-            icon="fact-check"
-            bottomInset={bottomPadding + 16}
+            icon="check"
+            bottomInset={16}
           />
         )}
       </View>

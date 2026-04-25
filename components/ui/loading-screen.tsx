@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Animated, Text, View } from 'react-native';
+import { Animated, StyleSheet, Text, View } from 'react-native';
 
 type LoadingScreenProps = {
   progress: number;
@@ -23,18 +23,54 @@ export function LoadingScreen({ progress }: LoadingScreenProps) {
   });
 
   return (
-    <View className="flex-1 items-center justify-center bg-[#151718]">
-      <Text className="mb-2 text-3xl font-bold text-white">QMaster</Text>
-      <Text className="mb-8 text-base text-gray-400">Preparando tudo para você...</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>QMaster</Text>
+      <Text style={styles.subtitle}>Preparando tudo para você...</Text>
 
-      <View className="h-2 w-64 overflow-hidden rounded-full bg-gray-700">
+      <View style={styles.trackBar}>
         <Animated.View
-          style={{ width: widthInterpolated }}
-          className="h-full rounded-full bg-indigo-500"
+          style={[styles.progressBar, { width: widthInterpolated }]}
         />
       </View>
 
-      <Text className="mt-3 text-sm text-gray-500">{Math.round(progress)}%</Text>
+      <Text style={styles.percent}>{Math.round(progress)}%</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#151718',
+  },
+  title: {
+    marginBottom: 8,
+    fontSize: 30,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  subtitle: {
+    marginBottom: 32,
+    fontSize: 16,
+    color: '#9CA3AF',
+  },
+  trackBar: {
+    height: 8,
+    width: 256,
+    overflow: 'hidden',
+    borderRadius: 999,
+    backgroundColor: '#374151',
+  },
+  progressBar: {
+    height: '100%',
+    borderRadius: 999,
+    backgroundColor: '#6366F1',
+  },
+  percent: {
+    marginTop: 12,
+    fontSize: 14,
+    color: '#6B7280',
+  },
+});

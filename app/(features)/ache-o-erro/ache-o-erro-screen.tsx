@@ -577,7 +577,7 @@ export function AcheOErroScreen() {
           </View>
         </DraxProvider>
 
-        <ValidationFab onPress={handleValidate} disabled={placed.length === 0} bottomInset={Math.max(insets.bottom, 16) + 70} />
+        <ValidationFab onPress={handleValidate} disabled={placed.length === 0} icon="check" bottomInset={Math.max(insets.bottom, 16) + 48} />
 
         <HintsModal
           visible={showHintsModal}

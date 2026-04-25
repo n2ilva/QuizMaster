@@ -373,19 +373,19 @@ export function StudySessionScreen() {
 
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white dark:bg-[#151718]">
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#151718' }}>
         <ActivityIndicator size="large" color="#3F51B5" />
-        <Text className="mt-3 text-[#687076] dark:text-[#9BA1A6]">Carregando quizzes...</Text>
+        <Text style={{ marginTop: 12, color: '#9BA1A6' }}>Carregando quizzes...</Text>
       </View>
     );
   }
 
   if (totalCards === 0) {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-5 dark:bg-[#151718]">
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#151718', paddingHorizontal: 20 }}>
         <View>
-          <Text className="text-lg font-bold text-[#11181C] dark:text-[#ECEDEE]">Nenhum quiz disponível</Text>
-          <Text className="mt-2 text-center text-[#687076] dark:text-[#9BA1A6]">Esta categoria ainda não possui quizzes cadastrados.</Text>
+          <Text style={{ fontSize: 18, fontWeight: '700', color: '#ECEDEE' }}>Nenhum quiz disponível</Text>
+          <Text style={{ marginTop: 8, textAlign: 'center', color: '#9BA1A6' }}>Esta categoria ainda não possui quizzes cadastrados.</Text>
           <QuizActionButton label="Voltar" icon="arrow-back" onPress={() => router.back()} variant="primary-solid" style={{ marginTop: 24 }} />
         </View>
       </View>
@@ -474,7 +474,7 @@ export function StudySessionScreen() {
   }
 
   return (
-    <View className="flex-1 bg-white px-5 dark:bg-[#151718]" style={[isDesktopLayout ? { alignItems: 'center', paddingTop: 32 } : { paddingTop: topPadding }]}>
+    <View style={[{ flex: 1, backgroundColor: '#151718', paddingHorizontal: 20 }, isDesktopLayout ? { alignItems: 'center', paddingTop: 32 } : { paddingTop: topPadding }]}>
       <View style={[{ flex: 1 }, isDesktopLayout ? { width: '60%', alignSelf: 'center' } : undefined]}>
         {/* Custom header */}
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 12 }}>
@@ -505,83 +505,81 @@ export function StudySessionScreen() {
           </View>
         </View>
 
-        <View className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[#E6E8EB] dark:bg-[#2A2F36]">
-          <View className="h-full rounded-full bg-[#3F51B5]" style={{ width: `${progressPercent}%` }} />
+        <View style={{ marginTop: 12, height: 8, width: '100%', overflow: 'hidden', borderRadius: 999, backgroundColor: '#2A2F36' }}>
+          <View style={{ height: '100%', borderRadius: 999, backgroundColor: '#3F51B5', width: `${progressPercent}%` }} />
         </View>
 
-        <View className="mt-2 flex-row items-center justify-between">
-          <View className="flex-row items-center gap-2">
-            <View className="rounded-full bg-[#F59E0B]/10 px-2.5 py-0.5">
-              <Text className="text-xs font-semibold text-[#F59E0B]">
+        <View style={{ marginTop: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={{ borderRadius: 999, backgroundColor: 'rgba(245,158,11,0.1)', paddingHorizontal: 10, paddingVertical: 2 }}>
+              <Text style={{ fontSize: 12, fontWeight: '600', color: '#F59E0B' }}>
                 {Math.floor(questionElapsedSeconds / 60)}:{(questionElapsedSeconds % 60).toString().padStart(2, '0')}
               </Text>
             </View>
           </View>
-          <Text className="text-xs font-semibold text-[#687076] dark:text-[#9BA1A6]">{currentIndex + 1} / {totalCards}</Text>
+          <Text style={{ fontSize: 12, fontWeight: '600', color: '#9BA1A6' }}>{currentIndex + 1} / {totalCards}</Text>
         </View>
 
-        <ScrollView ref={scrollViewRef} className="mt-4 flex-1" showsVerticalScrollIndicator={false}>
+        <ScrollView ref={scrollViewRef} style={{ marginTop: 16, flex: 1 }} showsVerticalScrollIndicator={false}>
           {currentCard && (
             <>
-              <View className="mb-2 flex-row flex-wrap items-center gap-2">
+              <View style={{ marginBottom: 8, flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8 }}>
                 <View
-                  className="rounded-full px-2.5 py-1"
-                  style={{
+                  style={[{ borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 }, {
                     backgroundColor:
                       currentCard.difficulty === 'Fácil'
                         ? 'rgba(34,197,94,0.12)'
                         : currentCard.difficulty === 'Médio'
                           ? 'rgba(245,158,11,0.12)'
                           : 'rgba(239,68,68,0.12)',
-                  }}>
+                  }]}>
                   <Text
-                    className="text-[10px] font-bold"
-                    style={{
+                    style={[{ fontSize: 10, fontWeight: '700' }, {
                       color:
                         currentCard.difficulty === 'Fácil'
                           ? '#22C55E'
                           : currentCard.difficulty === 'Médio'
                             ? '#F59E0B'
                             : '#EF4444',
-                    }}>
+                    }]}>
                     {currentCard.difficulty.toUpperCase()}
                   </Text>
                 </View>
-                <View className="rounded-full bg-[#3F51B5]/10 px-2.5 py-1">
-                  <Text className="text-[10px] font-bold text-[#3F51B5]">{currentCard.category}</Text>
+                <View style={{ borderRadius: 999, backgroundColor: 'rgba(63,81,181,0.1)', paddingHorizontal: 10, paddingVertical: 4 }}>
+                  <Text style={{ fontSize: 10, fontWeight: '700', color: '#3F51B5' }}>{currentCard.category}</Text>
                 </View>
               </View>
 
-              <View className="min-h-[180px] items-center justify-center rounded-2xl border border-[#E6E8EB] bg-[#F8FAFC] px-5 py-6 dark:border-[#30363D] dark:bg-[#1E2228]">
-                <GlossaryText text={currentCard.question} track={decodedTrack} className="text-center text-lg font-bold leading-7 text-[#11181C] dark:text-[#ECEDEE]" />
+              <View style={{ minHeight: 180, alignItems: 'center', justifyContent: 'center', borderRadius: 16, borderWidth: 1, borderColor: '#30363D', backgroundColor: '#1E2228', paddingHorizontal: 20, paddingVertical: 24 }}>
+                <GlossaryText text={currentCard.question} track={decodedTrack} style={{ textAlign: 'center', fontSize: 18, fontWeight: '700', lineHeight: 28, color: '#ECEDEE' }} />
               </View>
 
-              <View className="mt-5 gap-3">
+              <View style={{ marginTop: 20, gap: 12 }}>
                 {currentCard.options.map((option, index) => (
                   <AnswerOption key={index} letter={OPTION_LETTERS[index]} label={option} status={getOptionStatus(index)} onPress={() => handleSelect(index)} disabled={answer.revealed} isDark={isDark} />
                 ))}
               </View>
 
               {answer.revealed && (
-                <View className="mt-5 pb-8">
-                  <Text className={`text-center text-sm font-semibold ${answer.selectedIndex === currentCard.correctIndex ? 'text-[#22C55E]' : 'text-[#EF4444]'}`}>
+                <View style={{ marginTop: 20, paddingBottom: 32 }}>
+                  <Text style={{ textAlign: 'center', fontSize: 14, fontWeight: '600', color: answer.selectedIndex === currentCard.correctIndex ? '#22C55E' : '#EF4444' }}>
                     {answer.selectedIndex === currentCard.correctIndex ? 'Resposta correta!' : 'Resposta incorreta'}
                   </Text>
 
                   {(currentCard.explanation || currentCard.example) && (
-                    <View className="mt-4 rounded-2xl border border-[#D1D9E0] bg-[#F0F4F8] px-5 py-4 dark:border-[#30363D] dark:bg-[#1E2228]">
+                    <View style={{ marginTop: 16, borderRadius: 16, borderWidth: 1, borderColor: '#30363D', backgroundColor: '#1E2228', paddingHorizontal: 20, paddingVertical: 16 }}>
                       {currentCard.explanation ? (
                         <>
-                          <Text className="text-xs font-bold uppercase tracking-wide text-[#3F51B5]">Explicação</Text>
+                          <Text style={{ fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, color: '#3F51B5' }}>Explicação</Text>
                           <Text style={{ marginTop: 6, fontSize: 14, lineHeight: 20, color: isDark ? '#ECEDEE' : '#11181C' }}>{currentCard.explanation}</Text>
                         </>
                       ) : null}
 
                       {currentCard.example ? (
-                        <View className={currentCard.explanation ? 'mt-4' : ''}>
-                          <Text className="text-xs font-bold uppercase tracking-wide text-[#F59E0B]">Exemplo</Text>
-                          <View className="mt-1.5 rounded-lg bg-[#E6E8EB] px-3 py-2.5 dark:bg-[#2A2F36]">
-                            <Text className="text-sm leading-5 text-[#11181C] dark:text-[#ECEDEE]">{currentCard.example}</Text>
+                        <View style={currentCard.explanation ? { marginTop: 16 } : undefined}>
+                          <Text style={{ fontSize: 12, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5, color: '#F59E0B' }}>Exemplo</Text>
+                          <View style={{ marginTop: 6, borderRadius: 8, backgroundColor: '#2A2F36', paddingHorizontal: 12, paddingVertical: 10 }}>
+                            <Text style={{ fontSize: 14, lineHeight: 20, color: '#ECEDEE' }}>{currentCard.example}</Text>
                           </View>
                         </View>
                       ) : null}
@@ -612,7 +610,8 @@ export function StudySessionScreen() {
       {isSmallScreen && answer.revealed && !finished && (
         <ValidationFab
           onPress={handleNext}
-          icon={currentIndex + 1 < totalCards ? 'arrow-forward' : 'emoji-events'}
+          icon="check"
+          bottomInset={16}
         />
       )}
 

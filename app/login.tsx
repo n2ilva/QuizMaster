@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { useAuth } from '@/providers/auth-provider';
 
@@ -101,25 +101,25 @@ export default function LoginScreen() {
 
   const subtitle =
     mode === 'login'
-      ? 'Entre para sincronizar progresso, recompensas e quizzes personalizados.'
+      ? 'Entre para sincronizar seu progresso e acessar todos os simuladores e desafios.'
       : mode === 'register'
         ? 'Crie sua conta para começar a estudar.'
         : 'Informe seu email cadastrado para receber o link de redefinição.';
 
   return (
-    <View className="flex-1 items-center bg-white px-5 pt-14 dark:bg-[#151718]">
-      <View className="w-full md:w-[30%]">
-      <Text className="text-2xl font-bold text-[#11181C] dark:text-[#ECEDEE]">{title}</Text>
-      <Text className="mt-2 text-[#687076] dark:text-[#9BA1A6]">{subtitle}</Text>
+    <View style={styles.container}>
+      <View style={styles.formWrap}>
+      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.subtitle}>{subtitle}</Text>
 
-      <View className="mt-6 gap-3">
+      <View style={styles.fieldsWrap}>
         {mode === 'register' && (
           <TextInput
             value={name}
             onChangeText={setName}
             placeholder="Seu nome"
             placeholderTextColor="#8D98A5"
-            className="rounded-xl border border-[#E6E8EB] px-4 py-3 text-[#11181C] dark:border-[#30363D] dark:text-[#ECEDEE]"
+            style={styles.input}
           />
         )}
 
@@ -130,23 +130,23 @@ export default function LoginScreen() {
           keyboardType="email-address"
           placeholder="seu@email.com"
           placeholderTextColor="#8D98A5"
-          className="rounded-xl border border-[#E6E8EB] px-4 py-3 text-[#11181C] dark:border-[#30363D] dark:text-[#ECEDEE]"
+          style={styles.input}
         />
 
         {mode !== 'forgot' && (
-          <View className="relative">
+          <View>
             <TextInput
               value={password}
               onChangeText={setPassword}
               placeholder="Senha"
               placeholderTextColor="#8D98A5"
               secureTextEntry={!showPassword}
-              className="rounded-xl border border-[#E6E8EB] px-4 py-3 pr-16 text-[#11181C] dark:border-[#30363D] dark:text-[#ECEDEE]"
+              style={[styles.input, { paddingRight: 64 }]}
             />
             <Pressable
               onPress={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-0 bottom-0 justify-center">
-              <Text className="text-sm font-semibold text-[#3F51B5]">
+              style={styles.showPasswordBtn}>
+              <Text style={styles.showPasswordText}>
                 {showPassword ? 'Ocultar' : 'Ver'}
               </Text>
             </Pressable>
@@ -157,8 +157,8 @@ export default function LoginScreen() {
       </View>
 
       {mode === 'login' && (
-        <Pressable onPress={() => switchMode('forgot')} className="mt-3 self-end">
-          <Text className="text-sm text-[#3F51B5]">Esqueceu a senha?</Text>
+        <Pressable onPress={() => switchMode('forgot')} style={styles.forgotBtn}>
+          <Text style={styles.forgotText}>Esqueceu a senha?</Text>
         </Pressable>
       )}
 
@@ -169,8 +169,8 @@ export default function LoginScreen() {
           else if (mode === 'register') void onRegister();
           else void onResetPassword();
         }}
-        className="mt-5 rounded-xl bg-[#3F51B5] px-4 py-3">
-        <Text className="text-center font-semibold text-white">
+        style={styles.primaryBtn}>
+        <Text style={styles.primaryBtnText}>
           {submitting
             ? 'Processando...'
             : mode === 'login'
@@ -186,21 +186,22 @@ export default function LoginScreen() {
           if (mode === 'login') switchMode('register');
           else switchMode('login');
         }}
-        className="mt-3 rounded-xl border border-[#3F51B5] px-4 py-3">
-        <Text className="text-center font-semibold text-[#3F51B5]">
+        style={styles.secondaryBtn}>
+        <Text style={styles.secondaryBtnText}>
           {mode === 'login' ? 'Criar conta' : 'Já tenho conta'}
         </Text>
       </Pressable>
 
       {message ? (
         <Text
-          className={`mt-3 text-center text-sm ${
+          style={[
+            styles.messageText,
             messageType === 'success'
-              ? 'text-[#22C55E]'
+              ? { color: '#22C55E' }
               : messageType === 'error'
-                ? 'text-[#DC2626]'
-                : 'text-[#687076] dark:text-[#9BA1A6]'
-          }`}>
+                ? { color: '#DC2626' }
+                : { color: '#9BA1A6' },
+          ]}>
           {message}
         </Text>
       ) : null}
@@ -208,3 +209,93 @@ export default function LoginScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#151718',
+    paddingHorizontal: 20,
+    paddingTop: 56,
+  },
+  formWrap: {
+    width: '100%',
+    maxWidth: 420,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#ECEDEE',
+  },
+  subtitle: {
+    marginTop: 8,
+    color: '#9BA1A6',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  fieldsWrap: {
+    marginTop: 24,
+    gap: 12,
+  },
+  input: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#30363D',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    color: '#ECEDEE',
+    fontSize: 15,
+  },
+  showPasswordBtn: {
+    position: 'absolute',
+    right: 12,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+  },
+  showPasswordText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#3F51B5',
+  },
+  forgotBtn: {
+    marginTop: 12,
+    alignSelf: 'flex-end',
+  },
+  forgotText: {
+    fontSize: 14,
+    color: '#3F51B5',
+  },
+  primaryBtn: {
+    marginTop: 20,
+    borderRadius: 12,
+    backgroundColor: '#3F51B5',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  primaryBtnText: {
+    textAlign: 'center',
+    fontWeight: '600',
+    color: '#FFFFFF',
+    fontSize: 15,
+  },
+  secondaryBtn: {
+    marginTop: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#3F51B5',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  secondaryBtnText: {
+    textAlign: 'center',
+    fontWeight: '600',
+    color: '#3F51B5',
+    fontSize: 15,
+  },
+  messageText: {
+    marginTop: 12,
+    textAlign: 'center',
+    fontSize: 14,
+  },
+});

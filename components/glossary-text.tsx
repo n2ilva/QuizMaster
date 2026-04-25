@@ -200,8 +200,7 @@ function GlossaryModal({
       onRequestClose={onClose}>
       <Pressable
         onPress={onClose}
-        className="flex-1 items-center justify-center"
-        style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}>
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.4)' }}>
         <Animated.View
           style={{
             opacity: fadeAnim,
@@ -209,27 +208,27 @@ function GlossaryModal({
             width: cardWidth,
           }}>
           <Pressable onPress={(e) => e.stopPropagation()}>
-            <View className="rounded-2xl border border-[#D1D9E0] bg-white px-5 py-5 shadow-lg dark:border-[#30363D] dark:bg-[#1E2228]">
-              <View className="mb-2 flex-row items-center justify-between">
-                <View className="rounded-full bg-[#3F51B5]/10 px-3 py-1">
-                  <Text className="text-xs font-bold text-[#3F51B5]">
+            <View style={{ borderRadius: 16, borderWidth: 1, borderColor: '#30363D', backgroundColor: '#1E2228', paddingHorizontal: 20, paddingVertical: 20 }}>
+              <View style={{ marginBottom: 8, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                <View style={{ borderRadius: 999, backgroundColor: 'rgba(63,81,181,0.1)', paddingHorizontal: 12, paddingVertical: 4 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: '#3F51B5' }}>
                     GLOSSÁRIO
                   </Text>
                 </View>
                 <Pressable
                   onPress={onClose}
                   hitSlop={12}
-                  className="h-7 w-7 items-center justify-center rounded-full bg-[#E6E8EB] dark:bg-[#2A2F36]">
-                  <Text className="text-xs font-bold text-[#687076] dark:text-[#9BA1A6]">
+                  style={{ height: 28, width: 28, alignItems: 'center', justifyContent: 'center', borderRadius: 14, backgroundColor: '#2A2F36' }}>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: '#9BA1A6' }}>
                     ✕
                   </Text>
                 </Pressable>
               </View>
 
-              <Text className="mb-2 text-lg font-bold text-[#11181C] dark:text-[#ECEDEE]">
+              <Text style={{ marginBottom: 8, fontSize: 18, fontWeight: '700', color: '#ECEDEE' }}>
                 {entry.term}
               </Text>
-              <Text className="text-sm leading-5 text-[#4B5563] dark:text-[#9BA1A6]">
+              <Text style={{ fontSize: 14, lineHeight: 20, color: '#9BA1A6' }}>
                 {entry.definition}
               </Text>
             </View>
@@ -252,12 +251,10 @@ function GlossaryModal({
 export function GlossaryText({
   text,
   track,
-  className: textClassName,
   style,
 }: {
   text: string;
   track?: string;
-  className?: string;
   style?: object;
 }) {
   const useTrack = track && hasTrackGlossary(track);
@@ -310,7 +307,7 @@ export function GlossaryText({
 
   if (!parts) {
     return (
-      <Text className={textClassName} style={style}>
+      <Text style={style}>
         {text}
       </Text>
     );
@@ -318,13 +315,13 @@ export function GlossaryText({
 
   return (
     <>
-      <Text className={textClassName} style={style}>
+      <Text style={style}>
         {parts.map((part, i) =>
           part.entry ? (
             <Text
               key={i}
               onPress={() => setActiveEntry(part.entry!)}
-              className="font-bold text-[#3F51B5] underline dark:text-[#A5B4FC]">
+              style={{ fontWeight: '700', color: '#A5B4FC', textDecorationLine: 'underline' }}>
               {part.text}
             </Text>
           ) : (

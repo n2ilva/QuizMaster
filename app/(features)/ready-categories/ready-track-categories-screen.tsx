@@ -166,7 +166,7 @@ export function ReadyTrackCategoriesScreen() {
 
   return (
     <ScrollView 
-      className="flex-1 bg-white px-5 dark:bg-[#151718]" 
+      style={{ flex: 1, backgroundColor: '#151718', paddingHorizontal: 20 }} 
       contentContainerStyle={{ paddingTop: topPadding, paddingBottom: 100 }} 
       showsVerticalScrollIndicator={false}
     >
@@ -185,8 +185,8 @@ export function ReadyTrackCategoriesScreen() {
           <MaterialIcons name="arrow-back" size={20} color="#ECEDEE" />
         </Pressable>
         <View style={{ flex: 1 }}>
-          <Text className="text-2xl font-bold tracking-tight text-[#11181C] dark:text-[#ECEDEE]">{label}</Text>
-          <Text className="mt-1 text-sm text-[#687076] dark:text-[#9BA1A6]">{categories.length} categorias de estudo.</Text>
+          <Text style={{ fontSize: 24, fontWeight: 'bold', letterSpacing: -0.5, color: '#ECEDEE' }}>{label}</Text>
+          <Text style={{ marginTop: 4, fontSize: 14, color: '#9BA1A6' }}>{categories.length} categorias de estudo.</Text>
         </View>
       </View>
 
@@ -205,13 +205,13 @@ export function ReadyTrackCategoriesScreen() {
       />
 
       {loadingCategories || loadingStats ? (
-        <View className="mt-10 items-center">
+        <View style={{ marginTop: 40, alignItems: 'center' }}>
           <ActivityIndicator size="large" color="#3F51B5" />
         </View>
       ) : (
-        <View className="mt-5 gap-3 md:flex-row md:flex-wrap">
+        <View style={{ marginTop: 20, gap: 12, flexDirection: 'column' }}>
           {filtered.length === 0 ? (
-            <Text className="text-[#687076] dark:text-[#9BA1A6]">Nenhuma categoria encontrada.</Text>
+            <Text style={{ color: '#9BA1A6' }}>Nenhuma categoria encontrada.</Text>
           ) : (
             filtered.map((category) => <ReadyCategoryCard key={category} category={category} track={track ?? ''} stats={statsMap[category]} />)
           )}

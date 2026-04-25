@@ -44,23 +44,28 @@ function ToolbarButton({ action, compact }: { action: ToolbarAction; compact: bo
       disabled={action.disabled}
       accessibilityRole="button"
       accessibilityLabel={action.label}
-      style={({ pressed, hovered }) => [
-        styles.button,
+      style={({ pressed }) => [
         {
-          backgroundColor: hovered ? tone.bgHover : tone.bg,
-          borderColor: tone.border,
-          opacity: action.disabled ? 0.4 : 1,
           transform: [{ scale: pressed ? 0.96 : 1 }],
-        },
-        compact && styles.buttonCompact,
+          opacity: action.disabled ? 0.4 : 1,
+        }
       ]}
     >
-      <MaterialIcons name={action.icon} size={compact ? 20 : 18} color={tone.fg} />
-      {!compact && (
-        <Text style={[styles.label, { color: tone.fg }]} numberOfLines={1}>
-          {action.label}
-        </Text>
-      )}
+      <View style={[
+        styles.button,
+        compact && styles.buttonCompact,
+        {
+          backgroundColor: tone.bg,
+          borderColor: tone.border,
+        }
+      ]}>
+        <MaterialIcons name={action.icon} size={compact ? 20 : 18} color={tone.fg} />
+        {!compact && (
+          <Text style={[styles.label, { color: tone.fg }]} numberOfLines={1}>
+            {action.label}
+          </Text>
+        )}
+      </View>
     </Pressable>
   );
 }
