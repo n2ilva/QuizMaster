@@ -28,7 +28,7 @@ import { useData } from "@/providers/data-provider";
 import { DcModal } from "./components/dc-modal";
 import { LevelCard } from "./components/level-card";
 import { WorkbenchCanvas } from "./components/workbench-canvas";
-import { WorkbenchToolbar } from "./components/workbench-toolbar";
+import { WorkbenchFab } from "./components/workbench-fab";
 import {
   DC_BREAKPOINTS,
   DC_CABLE_VISUALS,
@@ -101,7 +101,7 @@ function normalizeCatalog(raw: unknown): DataCenterData {
 export function DataCenterBuilderScreen() {
   const { width: windowWidth } = useWindowDimensions();
   const topPadding = useTopContentPadding();
-  const bottomPadding = useTabContentPadding();
+  const bottomPadding = useTabContentPadding(-14);
   const { user } = useAuth();
   const { datacenterCatalog, loadDatacenterCatalog, isPreloading } = useData();
 
@@ -658,65 +658,85 @@ export function DataCenterBuilderScreen() {
   ]);
 
   // ----------------------------------------------------------------- render
-  const renderLevelList = () => (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={{
-        paddingTop: 20,
-        paddingBottom: bottomPadding + 20,
-      }}
-    >
-      {/* Header - Full Width */}
-      <View style={{ paddingHorizontal: 20, marginBottom: 32 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 16, marginBottom: 8 }}>
-          <Pressable
-            onPress={() => router.back()}
-            style={({ hovered }: { hovered?: boolean }) => [
-              styles.iconButton,
-              { backgroundColor: hovered ? DC_COLORS.bgSurfaceHover : DC_COLORS.bgSurface },
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel="Voltar"
-          >
-            <MaterialIcons name="arrow-back" size={20} color={DC_COLORS.textSecondary} />
-          </Pressable>
-          <Text style={styles.title} numberOfLines={1}>
-            {data.game.name}
+  const renderLevelList = () => {
+    // Group levels by tier
+    const tiers = data.levels.reduce((acc, lvl) => {
+      const t = lvl.tier || "Geral";
+      if (!acc[t]) acc[t] = [];
+      acc[t].push(lvl);
+      return acc;
+    }, {} as Record<string, DataCenterLevel[]>);
+
+    return (
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingTop: 20,
+          paddingBottom: bottomPadding + 20,
+        }}
+      >
+        {/* Header - Full Width */}
+        <View style={{ paddingHorizontal: 20, marginBottom: 32 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 16, marginBottom: 8 }}>
+            <Pressable
+              onPress={() => router.back()}
+              style={({ hovered }: { hovered?: boolean }) => [
+                styles.iconButton,
+                { backgroundColor: hovered ? DC_COLORS.bgSurfaceHover : DC_COLORS.bgSurface },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Voltar"
+            >
+              <MaterialIcons name="arrow-back" size={20} color={DC_COLORS.textSecondary} />
+            </Pressable>
+            <Text style={styles.title} numberOfLines={1}>
+              {data.game.name}
+            </Text>
+          </View>
+          <Text style={styles.subtitle}>
+            Simulador profissional de infraestrutura física. Selecione um cenário para começar.
           </Text>
         </View>
-        <Text style={styles.subtitle}>
-          Simulador profissional de infraestrutura física. Selecione um cenário para começar.
-        </Text>
-      </View>
 
-      {/* Content - Constrained Width */}
-      <View style={[styles.maxContentWidth, { paddingHorizontal: 20, gap: 16 }]}>
-        <View style={styles.statsRow}>
-          <StatBlock value={String(data.levels.length)} label="Cenários" />
-          <StatBlock value={String(completedLevels.size)} label="Concluídos" />
-          <StatBlock
-            value={
-              data.levels.length === 0
-                ? "0%"
-                : `${Math.round((completedLevels.size / data.levels.length) * 100)}%`
-            }
-            label="Progresso"
-          />
-        </View>
-
-        <View style={styles.levelGrid}>
-          {data.levels.map((lvl) => (
-            <LevelCard
-              key={lvl.id}
-              level={lvl}
-              completed={completedLevels.has(lvl.id)}
-              onPress={() => handleLevelSelect(lvl)}
+        {/* Content - Constrained Width */}
+        <View style={[styles.maxContentWidth, { paddingHorizontal: 20, gap: 24 }]}>
+          <View style={styles.statsRow}>
+            <StatBlock value={String(data.levels.length)} label="Cenários" />
+            <StatBlock value={String(completedLevels.size)} label="Concluídos" />
+            <StatBlock
+              value={
+                data.levels.length === 0
+                  ? "0%"
+                  : `${Math.round((completedLevels.size / data.levels.length) * 100)}%`
+              }
+              label="Progresso"
             />
+          </View>
+
+          {Object.entries(tiers).map(([tierName, levels]) => (
+            <View key={tierName} style={styles.tierSection}>
+              <View style={styles.tierHeader}>
+                <View style={styles.tierLine} />
+                <Text style={styles.tierHeaderText}>{tierName}</Text>
+                <View style={styles.tierLine} />
+              </View>
+              <View style={styles.levelGrid}>
+                {levels.map((lvl) => (
+                  <View key={lvl.id} style={styles.cardWrapper}>
+                    <LevelCard
+                      level={lvl}
+                      completed={completedLevels.has(lvl.id)}
+                      onPress={() => handleLevelSelect(lvl)}
+                    />
+                  </View>
+                ))}
+              </View>
+            </View>
           ))}
         </View>
-      </View>
-    </ScrollView>
-  );
+      </ScrollView>
+    );
+  };
 
   const renderWorkbench = () => {
     if (!activeLevel) return null;
@@ -840,22 +860,13 @@ export function DataCenterBuilderScreen() {
         </View>
       </ScrollView>
 
-      {/* Unified Toolbar for Web & Mobile */}
-      <View style={[styles.toolbarDock, { bottom: 16 + bottomPadding }]}>
-        <WorkbenchToolbar
-          actions={[
-            ...helpActions,
-            {
-              id: "validate",
-              icon: "check",
-              label: "Validar",
-              variant: "success",
-              onPress: handleValidate,
-            },
-          ]}
-          compact={windowWidth < DC_BREAKPOINTS.compactChrome}
-        />
-      </View>
+      {/* Standard FABs (Same as Ache o Erro) */}
+      <WorkbenchFab actions={helpActions} bottomInset={62} />
+      <ValidationFab
+        onPress={handleValidate}
+        icon="check"
+        bottomInset={-8}
+      />
     </View>
     );
   };
@@ -1207,10 +1218,38 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     marginTop: 2,
   },
+  tierSection: {
+    gap: 16,
+    marginBottom: 12,
+  },
+  tierHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginBottom: 4,
+  },
+  tierHeaderText: {
+    color: DC_COLORS.accentSoft,
+    fontSize: 12,
+    fontWeight: "900",
+    textTransform: "uppercase",
+    letterSpacing: 1.2,
+  },
+  tierLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: DC_COLORS.borderSubtle,
+    opacity: 0.5,
+  },
   levelGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 12,
+    justifyContent: "space-between",
+  },
+  cardWrapper: {
+    width: Platform.OS === 'web' ? '49%' : '48%',
+    marginBottom: 4,
   },
   wbHeader: {
     flexDirection: "row",

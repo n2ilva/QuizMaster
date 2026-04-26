@@ -732,7 +732,7 @@ export function CodingPracticeScreen() {
                 onPress={handleValidate}
                 disabled={placed.filter(p => p.tokenId !== 'sym_newline').length < activeExercise.solution.length}
                 icon="check"
-                bottomInset={Math.max(insets.bottom, 16) + 48}
+                bottomInset={-8}
               />
             </View>
           </DraxProvider>

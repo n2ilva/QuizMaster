@@ -15,8 +15,8 @@
  */
 
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import React, { useMemo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useMemo, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { DC_CABLE_VISUALS, DC_COLORS, DC_RADII } from "../datacenter-builder.constants";
 import { getDeviceIcon } from "../datacenter-builder.helpers";
@@ -119,20 +119,166 @@ export function RackInstallManual({ level, installedDevices }: Props) {
   const cabling = useCablingTable(level);
   const installedCount = Object.keys(installedDevices).length;
 
+  const [activePage, setActivePage] = useState(0);
+  const totalPages = 3;
+
+  const renderContent = () => {
+    switch (activePage) {
+      case 0:
+        return (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>1. Procedimento geral</Text>
+            {[
+              "Clique em um slot vazio (U) do rack para abrir a lista de equipamentos.",
+              "Instale os equipamentos na ordem sugerida na próxima página.",
+              "Com tudo racked, clique em uma porta de origem para iniciar um cabo.",
+              "Escolha o tipo de cabo correto e clique na porta de destino.",
+              "Use o cabo de console para abrir o terminal e configurar cada equipamento.",
+              "Ao concluir todas as conexões, toque em Validar.",
+            ].map((step, i) => (
+              <View key={`step-${i}`} style={styles.stepRow}>
+                <View style={styles.stepBadge}>
+                  <Text style={styles.stepBadgeText}>{i + 1}</Text>
+                </View>
+                <Text style={styles.stepText}>{step}</Text>
+              </View>
+            ))}
+          </View>
+        );
+      case 1:
+        return (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>2. Sequência de instalação</Text>
+            <Text style={styles.sectionHint}>
+              Posicione os equipamentos nos slots (U) indicados abaixo.
+            </Text>
+            {sequence.map(({ device, slotIndex, slotLabel }, i) => {
+              const installed = !!installedDevices[slotIndex];
+              const iconName = getDeviceIcon(device.id, device.type);
+              return (
+                <View
+                  key={`seq-${device.id}-${i}`}
+                  style={[styles.deviceCard, installed && styles.deviceCardDone]}
+                >
+                  <View style={styles.deviceCardHeader}>
+                    <View style={[styles.slotBadge, installed && styles.slotBadgeDone]}>
+                      {installed ? (
+                        <MaterialIcons name="check" size={14} color="#0b2b14" />
+                      ) : (
+                        <Text style={styles.slotBadgeText}>{slotLabel}</Text>
+                      )}
+                    </View>
+                    <MaterialCommunityIcons
+                      name={iconName as any}
+                      size={18}
+                      color={DC_COLORS.accentSoft}
+                    />
+                    <View style={{ flex: 1, minWidth: 0 }}>
+                      <Text style={styles.deviceName} numberOfLines={2}>
+                        {device.label ?? device.id}
+                      </Text>
+                      <Text style={styles.deviceType} numberOfLines={1}>
+                        {device.type} · {installed ? "Instalado" : `Slot ${slotLabel}`}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        );
+      case 2:
+        return (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>3. Cabeamento ponto a ponto</Text>
+            <Text style={styles.sectionHint}>
+              Conecte as portas conforme especificado neste diagrama.
+            </Text>
+            {cabling.length === 0 ? (
+              <Text style={styles.emptyText}>
+                Este cenário não exige cabeamento adicional.
+              </Text>
+            ) : (
+              cabling.map((row, i) => {
+                const from = deviceLabel(level.inventory, row.fromDevId);
+                const to = deviceLabel(level.inventory, row.toDevId);
+                return (
+                  <View key={`cab-${i}`} style={styles.cableCard}>
+                    <View style={styles.cableHeader}>
+                      <View
+                        style={[
+                          styles.cableBadge,
+                          { backgroundColor: `${row.cable.color}22`, borderColor: row.cable.color },
+                        ]}
+                      >
+                        <View
+                          style={[styles.cableBadgeDot, { backgroundColor: row.cable.color }]}
+                        />
+                        <Text style={[styles.cableBadgeText, { color: row.cable.color }]}>
+                          {row.cable.label}
+                        </Text>
+                      </View>
+                      {row.note ? (
+                        <View style={styles.noteRow}>
+                          <MaterialIcons name="info-outline" size={12} color={DC_COLORS.info} />
+                          <Text style={styles.noteText}>{row.note}</Text>
+                        </View>
+                      ) : null}
+                    </View>
+
+                    <View style={styles.cableFlow}>
+                      <View style={styles.endpointCol}>
+                        <Text style={styles.endpointLabel}>De:</Text>
+                        <View style={styles.endpointRow}>
+                          <MaterialCommunityIcons name={from.iconName as any} size={14} color={DC_COLORS.textMuted} />
+                          <Text style={styles.endpointDevice} numberOfLines={1}>{from.label}</Text>
+                        </View>
+                        <Text style={styles.endpointPort}>Porta <Text style={styles.endpointPortId}>{row.fromPortId}</Text></Text>
+                      </View>
+
+                      <MaterialIcons name="arrow-forward" size={16} color={DC_COLORS.textFaint} style={{ marginTop: 12 }} />
+
+                      <View style={styles.endpointCol}>
+                        <Text style={styles.endpointLabel}>Para:</Text>
+                        <View style={styles.endpointRow}>
+                          <MaterialCommunityIcons name={to.iconName as any} size={14} color={DC_COLORS.textMuted} />
+                          <Text style={styles.endpointDevice} numberOfLines={1}>{to.label}</Text>
+                        </View>
+                        <Text style={styles.endpointPort}>Porta <Text style={styles.endpointPortId}>{row.toPortId}</Text></Text>
+                      </View>
+                    </View>
+                  </View>
+                );
+              })
+            )}
+          </View>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <View style={styles.container}>
-      {/* Header */}
+      {/* Header with Step Indicator */}
       <View style={styles.header}>
-        <MaterialCommunityIcons
-          name="clipboard-text-outline"
-          size={18}
-          color={DC_COLORS.textPrimary}
-        />
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={styles.title}>Manual de Instalação</Text>
-          <Text style={styles.subtitle} numberOfLines={2}>
-            Siga o passo a passo para racking e cabeamento deste cenário.
-          </Text>
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <MaterialCommunityIcons name="book-open-variant" size={16} color={DC_COLORS.accentSoft} />
+            <Text style={styles.title}>Manual de Instalação</Text>
+          </View>
+          <View style={styles.stepIndicator}>
+            {[0, 1, 2].map((i) => (
+              <View
+                key={`dot-${i}`}
+                style={[
+                  styles.stepDot,
+                  i === activePage && styles.stepDotActive,
+                  i < activePage && styles.stepDotDone,
+                ]}
+              />
+            ))}
+          </View>
         </View>
         <View style={styles.progressPill}>
           <Text style={styles.progressPillText}>
@@ -141,184 +287,40 @@ export function RackInstallManual({ level, installedDevices }: Props) {
         </View>
       </View>
 
-      {/* Passo a passo geral */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Procedimento geral</Text>
-        {[
-          "Clique em um slot vazio (U) do rack para abrir a lista de equipamentos.",
-          "Instale os equipamentos na ordem sugerida abaixo.",
-          "Com tudo racked, clique em uma porta de origem para iniciar um cabo.",
-          "Escolha o tipo de cabo correto e clique na porta de destino.",
-          "Use o cabo de console para abrir o terminal e configurar cada equipamento.",
-          "Ao concluir todas as conexões, toque em Validar.",
-        ].map((step, i) => (
-          <View key={`step-${i}`} style={styles.stepRow}>
-            <View style={styles.stepBadge}>
-              <Text style={styles.stepBadgeText}>{i + 1}</Text>
-            </View>
-            <Text style={styles.stepText}>{step}</Text>
-          </View>
-        ))}
+      {/* Paged Content */}
+      <View style={styles.contentArea}>
+        {renderContent()}
       </View>
 
-      {/* Sequência de instalação */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Sequência de instalação</Text>
-        <Text style={styles.sectionHint}>
-          Slots numerados de baixo para cima (1U = base do rack).
-        </Text>
-        {sequence.map(({ device, slotIndex, slotLabel }, i) => {
-          const installed = !!installedDevices[slotIndex];
-          const iconName = getDeviceIcon(device.id, device.type);
-          return (
-            <View
-              key={`seq-${device.id}-${i}`}
-              style={[styles.deviceCard, installed && styles.deviceCardDone]}
-            >
-              <View style={styles.deviceCardHeader}>
-                <View
-                  style={[
-                    styles.slotBadge,
-                    installed && styles.slotBadgeDone,
-                  ]}
-                >
-                  {installed ? (
-                    <MaterialIcons name="check" size={14} color="#0b2b14" />
-                  ) : (
-                    <Text style={styles.slotBadgeText}>{slotLabel}</Text>
-                  )}
-                </View>
-                <MaterialCommunityIcons
-                  name={iconName as any}
-                  size={18}
-                  color={DC_COLORS.accentSoft}
-                />
-                <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={styles.deviceName} numberOfLines={2}>
-                    {device.label ?? device.id}
-                  </Text>
-                  <Text style={styles.deviceType} numberOfLines={1}>
-                    {device.type} · {installed ? "Instalado" : `Slot ${slotLabel}`}
-                  </Text>
-                </View>
-              </View>
+      {/* Navigation Footer */}
+      <View style={styles.footer}>
+        <Pressable
+          disabled={activePage === 0}
+          onPress={() => setActivePage(p => p - 1)}
+          style={({ pressed }) => [
+            styles.navButton,
+            activePage === 0 && styles.navButtonDisabled,
+            pressed && styles.navButtonPressed,
+          ]}
+        >
+          <MaterialIcons name="chevron-left" size={20} color={activePage === 0 ? DC_COLORS.textFaint : DC_COLORS.textPrimary} />
+          <Text style={[styles.navButtonText, activePage === 0 && { color: DC_COLORS.textFaint }]}>Anterior</Text>
+        </Pressable>
 
-              {device.ports.length > 0 ? (
-                <View style={styles.portsList}>
-                  <Text style={styles.portsLabel}>Portas</Text>
-                  {device.ports.map((p) => (
-                    <View key={p.id} style={styles.portRow}>
-                      <View style={styles.portDot} />
-                      <Text style={styles.portName} numberOfLines={2}>
-                        <Text style={styles.portId}>{p.id}</Text>
-                        {p.label ? ` — ${p.label}` : ""}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              ) : null}
-            </View>
-          );
-        })}
-      </View>
-
-      {/* Tabela de cabeamento */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Cabeamento ponto a ponto</Text>
-        <Text style={styles.sectionHint}>
-          Cada linha descreve uma conexão exigida pelo cenário.
-        </Text>
-        {cabling.length === 0 ? (
-          <Text style={styles.emptyText}>
-            Este cenário não exige cabeamento adicional.
+        <Pressable
+          onPress={() => activePage < totalPages - 1 ? setActivePage(p => p + 1) : null}
+          style={({ pressed }) => [
+            styles.navButton,
+            styles.navButtonPrimary,
+            activePage === totalPages - 1 && styles.navButtonDisabled,
+            pressed && styles.navButtonPressed,
+          ]}
+        >
+          <Text style={styles.navButtonTextPrimary}>
+            {activePage === totalPages - 1 ? "Fim" : "Próximo"}
           </Text>
-        ) : (
-          cabling.map((row, i) => {
-            const from = deviceLabel(level.inventory, row.fromDevId);
-            const to = deviceLabel(level.inventory, row.toDevId);
-            return (
-              <View key={`cab-${i}`} style={styles.cableCard}>
-                <View style={styles.cableHeader}>
-                  <View
-                    style={[
-                      styles.cableBadge,
-                      { backgroundColor: `${row.cable.color}22`, borderColor: row.cable.color },
-                    ]}
-                  >
-                    <View
-                      style={[styles.cableBadgeDot, { backgroundColor: row.cable.color }]}
-                    />
-                    <Text style={[styles.cableBadgeText, { color: row.cable.color }]}>
-                      {row.cable.label}
-                    </Text>
-                  </View>
-                  {row.cable.description ? (
-                    <Text style={styles.cableDesc} numberOfLines={2}>
-                      {row.cable.description}
-                    </Text>
-                  ) : null}
-                </View>
-
-                <View style={styles.endpointRow}>
-                  <MaterialCommunityIcons
-                    name={from.iconName as any}
-                    size={16}
-                    color={DC_COLORS.textSecondary}
-                  />
-                  <View style={{ flex: 1, minWidth: 0 }}>
-                    <Text style={styles.endpointDevice} numberOfLines={1}>
-                      {from.label}
-                    </Text>
-                    <Text style={styles.endpointPort} numberOfLines={2}>
-                      Porta: <Text style={styles.endpointPortId}>{row.fromPortId}</Text>
-                      {row.fromPortLabel && row.fromPortLabel !== row.fromPortId
-                        ? ` — ${row.fromPortLabel}`
-                        : ""}
-                    </Text>
-                  </View>
-                </View>
-
-                <View style={styles.arrowRow}>
-                  <MaterialIcons
-                    name="south"
-                    size={16}
-                    color={DC_COLORS.textFaint}
-                  />
-                </View>
-
-                <View style={styles.endpointRow}>
-                  <MaterialCommunityIcons
-                    name={to.iconName as any}
-                    size={16}
-                    color={DC_COLORS.textSecondary}
-                  />
-                  <View style={{ flex: 1, minWidth: 0 }}>
-                    <Text style={styles.endpointDevice} numberOfLines={1}>
-                      {to.label}
-                    </Text>
-                    <Text style={styles.endpointPort} numberOfLines={2}>
-                      Porta: <Text style={styles.endpointPortId}>{row.toPortId}</Text>
-                      {row.toPortLabel && row.toPortLabel !== row.toPortId
-                        ? ` — ${row.toPortLabel}`
-                        : ""}
-                    </Text>
-                  </View>
-                </View>
-
-                {row.note ? (
-                  <View style={styles.noteRow}>
-                    <MaterialIcons
-                      name="info-outline"
-                      size={13}
-                      color={DC_COLORS.info}
-                    />
-                    <Text style={styles.noteText}>{row.note}</Text>
-                  </View>
-                ) : null}
-              </View>
-            );
-          })
-        )}
+          <MaterialIcons name="chevron-right" size={20} color="#FFFFFF" />
+        </Pressable>
       </View>
     </View>
   );
@@ -326,218 +328,127 @@ export function RackInstallManual({ level, installedDevices }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: DC_COLORS.bgPanel,
-    borderRadius: DC_RADII.lg,
-    borderWidth: 1,
-    borderColor: DC_COLORS.borderMuted,
-    padding: 12,
-    gap: 14,
+    padding: 16,
+    gap: 16,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-    paddingHorizontal: 2,
-    paddingBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: DC_COLORS.borderSubtle,
+    justifyContent: "space-between",
+    marginBottom: 4,
   },
   title: {
-    fontSize: 14,
-    fontWeight: "700",
+    fontSize: 15,
+    fontWeight: "900",
     color: DC_COLORS.textPrimary,
-  },
-  subtitle: {
-    fontSize: 12,
-    lineHeight: 16,
-    color: DC_COLORS.textSecondary,
-    marginTop: 2,
+    letterSpacing: -0.2,
   },
   progressPill: {
-    backgroundColor: DC_COLORS.bgSurfaceHover,
-    borderRadius: 999,
+    backgroundColor: `${DC_COLORS.accent}15`,
     paddingHorizontal: 10,
-    paddingVertical: 3,
+    paddingVertical: 4,
+    borderRadius: DC_RADII.pill,
     borderWidth: 1,
-    borderColor: DC_COLORS.borderMuted,
+    borderColor: `${DC_COLORS.accent}33`,
   },
   progressPillText: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: DC_COLORS.textPrimary,
+    fontSize: 11,
+    fontWeight: "800",
+    color: DC_COLORS.accentSoft,
   },
-
   section: {
-    gap: 8,
+    gap: 12,
   },
   sectionTitle: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "800",
     color: DC_COLORS.textPrimary,
-    letterSpacing: 0.3,
-    textTransform: "uppercase",
+    letterSpacing: 0.5,
   },
   sectionHint: {
     fontSize: 11,
     lineHeight: 15,
     color: DC_COLORS.textMuted,
     marginTop: -4,
-    marginBottom: 2,
   },
-
-  stepRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 10,
-    paddingVertical: 4,
+  contentArea: {
+    minHeight: 240,
   },
-  stepBadge: {
-    width: 22,
-    height: 22,
-    borderRadius: 999,
+  stepIndicator: {
+    flexDirection: 'row',
+    gap: 6,
+    marginTop: 6,
+  },
+  stepDot: {
+    width: 24,
+    height: 4,
+    borderRadius: 2,
     backgroundColor: DC_COLORS.bgSurfaceHover,
-    borderWidth: 1,
-    borderColor: DC_COLORS.borderMuted,
+  },
+  stepDotActive: {
+    backgroundColor: DC_COLORS.accent,
+    width: 32,
+  },
+  stepDotDone: {
+    backgroundColor: DC_COLORS.accentDeep,
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
-    justifyContent: "center",
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: DC_COLORS.borderSubtle,
+    marginTop: 8,
   },
-  stepBadgeText: {
-    fontSize: 12,
-    fontWeight: "800",
-    color: DC_COLORS.textPrimary,
-  },
-  stepText: {
-    flex: 1,
-    fontSize: 12,
-    lineHeight: 17,
-    color: DC_COLORS.textSecondary,
-  },
-
-  deviceCard: {
-    backgroundColor: DC_COLORS.bgSurface,
+  navButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: DC_RADII.md,
-    borderWidth: 1,
-    borderColor: DC_COLORS.borderMuted,
-    padding: 10,
-    gap: 8,
+    gap: 4,
   },
-  deviceCardDone: {
-    borderColor: "#2f9e5c",
-    backgroundColor: "rgba(47, 158, 92, 0.08)",
+  navButtonPrimary: {
+    backgroundColor: DC_COLORS.accent,
   },
-  deviceCardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
+  navButtonDisabled: {
+    opacity: 0.4,
   },
-  slotBadge: {
-    minWidth: 36,
-    height: 22,
-    paddingHorizontal: 8,
-    borderRadius: 999,
-    backgroundColor: DC_COLORS.bgSurfaceHover,
-    borderWidth: 1,
-    borderColor: DC_COLORS.borderMuted,
-    alignItems: "center",
-    justifyContent: "center",
+  navButtonPressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.97 }],
   },
-  slotBadgeDone: {
-    backgroundColor: "#4ade80",
-    borderColor: "#4ade80",
-  },
-  slotBadgeText: {
-    fontSize: 11,
-    fontWeight: "800",
-    color: DC_COLORS.textPrimary,
-    letterSpacing: 0.3,
-  },
-  deviceName: {
+  navButtonText: {
     fontSize: 13,
     fontWeight: "700",
     color: DC_COLORS.textPrimary,
-    lineHeight: 17,
   },
-  deviceType: {
-    fontSize: 11,
-    color: DC_COLORS.textMuted,
-    marginTop: 1,
+  navButtonTextPrimary: {
+    fontSize: 13,
+    fontWeight: "800",
+    color: "#FFFFFF",
   },
-  portsList: {
-    gap: 4,
-    paddingLeft: 2,
-  },
-  portsLabel: {
-    fontSize: 11,
-    fontWeight: "700",
-    color: DC_COLORS.textMuted,
-    letterSpacing: 0.3,
-    textTransform: "uppercase",
-  },
-  portRow: {
+  cableFlow: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 8,
-    paddingVertical: 2,
+    gap: 12,
+    marginTop: 4,
   },
-  portDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: DC_COLORS.accentSoft,
-    marginTop: 6,
-  },
-  portName: {
+  endpointCol: {
     flex: 1,
-    fontSize: 12,
-    lineHeight: 16,
-    color: DC_COLORS.textSecondary,
-  },
-  portId: {
-    fontFamily: "Menlo",
-    fontWeight: "700",
-    color: DC_COLORS.textPrimary,
-  },
-
-  cableCard: {
-    backgroundColor: DC_COLORS.bgSurface,
-    borderRadius: DC_RADII.md,
-    borderWidth: 1,
-    borderColor: DC_COLORS.borderMuted,
-    padding: 10,
-    gap: 8,
-  },
-  cableHeader: {
     gap: 4,
   },
-  cableBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    alignSelf: "flex-start",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 999,
-    borderWidth: 1,
-  },
-  cableBadgeDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  cableBadgeText: {
-    fontSize: 11,
+  endpointLabel: {
+    fontSize: 10,
     fontWeight: "800",
-    letterSpacing: 0.3,
-  },
-  cableDesc: {
-    fontSize: 11,
-    lineHeight: 15,
     color: DC_COLORS.textMuted,
+    textTransform: "uppercase",
   },
   endpointRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 6,
   },
   endpointDevice: {
     fontSize: 12,
@@ -546,37 +457,145 @@ const styles = StyleSheet.create({
   },
   endpointPort: {
     fontSize: 11,
-    lineHeight: 15,
     color: DC_COLORS.textSecondary,
-    marginTop: 1,
   },
   endpointPortId: {
     fontFamily: "Menlo",
     fontWeight: "700",
+    color: DC_COLORS.accentSoft,
+  },
+
+  stepRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+    paddingVertical: 6,
+    backgroundColor: DC_COLORS.bgSurface,
+    paddingHorizontal: 10,
+    borderRadius: DC_RADII.md,
+    borderWidth: 1,
+    borderColor: DC_COLORS.borderSubtle,
+  },
+  stepBadge: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: DC_COLORS.bgPanelRaised,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: DC_COLORS.borderMuted,
+  },
+  stepBadgeText: {
+    fontSize: 11,
+    fontWeight: "800",
+    color: DC_COLORS.accentSoft,
+  },
+  stepText: {
+    flex: 1,
+    fontSize: 12,
+    lineHeight: 18,
+    color: DC_COLORS.textSecondary,
+  },
+
+  deviceCard: {
+    backgroundColor: DC_COLORS.bgSurface,
+    borderRadius: DC_RADII.md,
+    borderWidth: 1,
+    borderColor: DC_COLORS.borderMuted,
+    padding: 12,
+  },
+  deviceCardDone: {
+    borderColor: DC_COLORS.success,
+    backgroundColor: "rgba(34, 197, 94, 0.05)",
+  },
+  deviceCardHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  slotBadge: {
+    minWidth: 32,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: DC_COLORS.bgPanelRaised,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: DC_COLORS.borderMuted,
+  },
+  slotBadgeDone: {
+    backgroundColor: DC_COLORS.success,
+    borderColor: DC_COLORS.success,
+  },
+  slotBadgeText: {
+    fontSize: 10,
+    fontWeight: "800",
     color: DC_COLORS.textPrimary,
   },
-  arrowRow: {
+  deviceName: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: DC_COLORS.textPrimary,
+  },
+  deviceType: {
+    fontSize: 11,
+    color: DC_COLORS.textMuted,
+    marginTop: 1,
+  },
+
+  cableCard: {
+    backgroundColor: DC_COLORS.bgSurface,
+    borderRadius: DC_RADII.md,
+    borderWidth: 1,
+    borderColor: DC_COLORS.borderMuted,
+    padding: 12,
+    gap: 10,
+  },
+  cableHeader: {
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
+    borderBottomWidth: 1,
+    borderBottomColor: DC_COLORS.borderSubtle,
+    paddingBottom: 8,
+  },
+  cableBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 8,
     paddingVertical: 2,
+    borderRadius: 6,
+    borderWidth: 1,
+  },
+  cableBadgeDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  cableBadgeText: {
+    fontSize: 10,
+    fontWeight: "800",
+    textTransform: "uppercase",
   },
   noteRow: {
     flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 6,
-    paddingTop: 4,
-    borderTopWidth: 1,
-    borderTopColor: DC_COLORS.borderSubtle,
+    alignItems: "center",
+    gap: 4,
+    flex: 1,
+    justifyContent: "flex-end",
   },
   noteText: {
-    flex: 1,
-    fontSize: 11,
-    lineHeight: 15,
-    color: DC_COLORS.textSecondary,
+    fontSize: 10,
+    color: DC_COLORS.info,
     fontStyle: "italic",
   },
   emptyText: {
     fontSize: 12,
     color: DC_COLORS.textMuted,
     fontStyle: "italic",
+    textAlign: "center",
+    padding: 20,
   },
 });

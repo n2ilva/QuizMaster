@@ -25,7 +25,7 @@ function uid() {
 }
 
 export function AcheOErroScreen() {
-  const bottomPadding = useTabContentPadding();
+  const bottomPadding = useTabContentPadding(-14);
   const topPadding = useTopContentPadding();
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
@@ -57,6 +57,8 @@ export function AcheOErroScreen() {
   const [elapsedTime, setElapsedTime] = useState<number>(0);
   const [moveCount, setMoveCount] = useState(0);
   const [userProgress, setUserProgress] = useState<GlobalProgress>({});
+  const [lastMovedId, setLastMovedId] = useState<string | null>(null);
+  const lastActionRef = useRef<{ id: string, time: number } | null>(null);
   
   useEffect(() => {
     loadAcheOErroCatalog();
@@ -143,6 +145,7 @@ export function AcheOErroScreen() {
     setFinished(false);
     setMoveCount(0);
     setStartTime(Date.now());
+    setLastMovedId(null);
   }, []);
 
   const handleSelectExercise = useCallback((ex: DebugExercise) => {
@@ -233,25 +236,47 @@ export function AcheOErroScreen() {
   const handleRemoveFromPlaced = (instanceId: string) => {
     const item = placed.find(p => p.instanceId === instanceId);
     if (!item) return;
+    
     setPlaced(prev => prev.filter(p => p.instanceId !== instanceId));
-    setPool(prev => [...prev, item]);
+    
+    // Add back to pool only if a token with the same ID doesn't exist there yet
+    // This keeps the inventory clean but functional
+    setPool(prev => {
+      const exists = prev.some(p => p.tokenId === item.tokenId);
+      if (exists) return prev;
+      return [...prev, item];
+    });
+    
+    setLastMovedId(null); // When removing, we don't highlight anything as "last moved"
     setMoveCount(m => m + 1);
     setIsCorrect(null);
   };
 
   const handleAddToPlaced = (instanceId: string, index?: number) => {
+    // Prevent double-firing (drag-drop and press event conflict)
+    const now = Date.now();
+    if (lastActionRef.current && lastActionRef.current.id === instanceId && (now - lastActionRef.current.time < 400)) {
+      return;
+    }
+    lastActionRef.current = { id: instanceId, time: now };
+
     const item = pool.find(p => p.instanceId === instanceId);
     if (!item) return;
-    setPool(prev => prev.filter(p => p.instanceId !== instanceId));
+
+    // Do NOT remove from pool (Infinite Palette)
+    // Instead, we just create a NEW instance for the placed area
+    const newId = uid();
     setPlaced(prev => {
       const copy = [...prev];
+      const newItem = { ...item, instanceId: newId }; // Fresh instance ID
       if (index !== undefined) {
-        copy.splice(index, 0, item);
+        copy.splice(index, 0, newItem);
       } else {
-        copy.push(item);
+        copy.push(newItem);
       }
       return copy;
     });
+    setLastMovedId(newId);
     setMoveCount(m => m + 1);
     setIsCorrect(null);
   };
@@ -266,6 +291,7 @@ export function AcheOErroScreen() {
       without.splice(Math.min(insertAt, without.length), 0, item);
       return without;
     });
+    setLastMovedId(instanceId);
     setMoveCount(m => m + 1);
     setIsCorrect(null);
   };
@@ -504,6 +530,7 @@ export function AcheOErroScreen() {
                            onPress={() => handleRemoveFromPlaced(p.instanceId)}
                            receptive
                            isCorrectPosition={correctFlags[p.globalIndex] || false}
+                           isLastMoved={lastMovedId === p.instanceId}
                            onReceiveDragDrop={(e) => {
                              const drag = parseDragPayload(e.dragged.payload as string);
                              if (!drag) return;
@@ -577,7 +604,7 @@ export function AcheOErroScreen() {
           </View>
         </DraxProvider>
 
-        <ValidationFab onPress={handleValidate} disabled={placed.length === 0} icon="check" bottomInset={Math.max(insets.bottom, 16) + 48} />
+        <ValidationFab onPress={handleValidate} disabled={placed.length === 0} icon="check" bottomInset={-8} />
 
         <HintsModal
           visible={showHintsModal}

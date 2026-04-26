@@ -269,7 +269,7 @@ function EmptySlot({ y, expectedLabel, boardWidth, railWidth }: EmptySlotProps) 
         fontWeight="700"
         textAnchor="middle"
       >
-        {expectedLabel.toUpperCase()} — VAZIO
+        VAZIO
       </SvgText>
     </G>
   );

@@ -47,11 +47,6 @@ export function LevelCard({ level, completed, onPress }: LevelCardProps) {
           )}
         </View>
 
-        {level.tier && (
-          <Text style={styles.tier} numberOfLines={1}>
-            {level.tier}
-          </Text>
-        )}
         <Text style={styles.name} numberOfLines={2}>
           {level.name}
         </Text>
@@ -82,75 +77,93 @@ export function LevelCard({ level, completed, onPress }: LevelCardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    flexGrow: 1,
-    flexBasis: 220,
-    padding: 16,
+    flex: 1, // Allow card to grow
+    minWidth: 150, // Minimum safety for small screens
+    padding: 20,
     borderRadius: DC_RADII.xl,
     borderWidth: 1,
-    gap: 8,
-    minHeight: 160,
+    gap: 12,
+    minHeight: 180,
+    backgroundColor: DC_COLORS.bgPanel,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 4,
   },
   badge: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: DC_RADII.pill,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.05)',
   },
   badgeText: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: "900",
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
     textTransform: "uppercase",
   },
   doneWrap: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    backgroundColor: "rgba(34,197,94,0.12)",
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "rgba(34,197,94,0.1)",
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(34,197,94,0.2)",
   },
   tier: {
     color: DC_COLORS.accentSoft,
-    fontSize: 11,
-    fontWeight: "800",
-    letterSpacing: 0.4,
+    fontSize: 10,
+    fontWeight: "900",
+    letterSpacing: 1,
     textTransform: "uppercase",
+    opacity: 0.8,
   },
   name: {
     color: DC_COLORS.textPrimary,
-    fontSize: 17,
-    fontWeight: "800",
-    letterSpacing: -0.2,
+    fontSize: 18,
+    fontWeight: "900",
+    letterSpacing: -0.4,
+    lineHeight: 22,
   },
   description: {
     color: DC_COLORS.textMuted,
     fontSize: 12,
-    lineHeight: 17,
+    lineHeight: 18,
+    marginTop: 2,
   },
   footer: {
     marginTop: "auto",
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 14,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: DC_COLORS.borderSubtle,
   },
   metaItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4,
+    gap: 5,
   },
   metaText: {
     color: DC_COLORS.textMuted,
     fontSize: 11,
-    fontWeight: "700",
+    fontWeight: "800",
   },
   glyph: {
-    fontSize: 10,
-    letterSpacing: 2,
+    fontSize: 9,
+    letterSpacing: 1.5,
     fontWeight: "900",
+    opacity: 0.7,
   },
 });

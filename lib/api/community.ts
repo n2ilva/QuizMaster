@@ -225,13 +225,15 @@ export async function updateUserProfile(
     totalCodingCompleted,
     overallAccuracy: accuracy,
     avgTimePerQuestion,
-    topCodingCategory,
-    topCodingAccuracy,
-    topCodingAvgTimeMs,
+    ...(topCodingCategory !== undefined && {
+      topCodingCategory,
+      topCodingAccuracy: topCodingAccuracy ?? 0,
+      topCodingAvgTimeMs: topCodingAvgTimeMs ?? 0,
+    }),
     totalDebugCompleted,
     avgDebugTimeMs,
     updatedAt: serverTimestamp(),
-  } as UserProgressData);
+  });
 
   const profileData: any = {
     userId: uid,
@@ -243,9 +245,11 @@ export async function updateUserProfile(
     overallAccuracy: accuracy,
     avgTimePerQuestion,
     streak,
-    topCodingCategory,
-    topCodingAccuracy,
-    topCodingAvgTimeMs,
+    ...(topCodingCategory !== undefined && {
+      topCodingCategory,
+      topCodingAccuracy: topCodingAccuracy ?? 0,
+      topCodingAvgTimeMs: topCodingAvgTimeMs ?? 0,
+    }),
     ...(topCategory !== undefined && {
       topCategory,
       topCategoryTrack: topCategoryTrack ?? "",

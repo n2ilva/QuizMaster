@@ -216,6 +216,7 @@ type DebugTokenProps = {
   receptive?: boolean;
   onReceiveDragDrop?: (event: any) => void;
   isCorrectPosition?: boolean;
+  isLastMoved?: boolean;
 };
 
 export function DebugToken({ 
@@ -225,7 +226,8 @@ export function DebugToken({
   variant, 
   receptive, 
   onReceiveDragDrop,
-  isCorrectPosition = false
+  isCorrectPosition = false,
+  isLastMoved = false
 }: DebugTokenProps) {
   const isPool = variant === 'pool';
   const isTouchDevice =
@@ -238,7 +240,8 @@ export function DebugToken({
   const glowAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
-    if (isCorrectPosition && !isPool) {
+    // Only flash if it's the piece that just moved AND it's correct
+    if (isCorrectPosition && isLastMoved && !isPool) {
       Animated.sequence([
         Animated.timing(glowAnim, {
           toValue: 1,
@@ -247,15 +250,15 @@ export function DebugToken({
         }),
         Animated.timing(glowAnim, {
           toValue: 0,
-          duration: 1000,
-          delay: 500,
+          duration: 1200,
+          delay: 400,
           useNativeDriver: true,
         }),
       ]).start();
     } else if (!isCorrectPosition) {
       glowAnim.setValue(0);
     }
-  }, [isCorrectPosition, isPool, glowAnim]);
+  }, [isCorrectPosition, isLastMoved, isPool, glowAnim]);
   
   return (
     <DraggableTokenWrapper
@@ -300,7 +303,7 @@ export function DebugToken({
             borderRadius: 8,
             backgroundColor: isPool ? '#1F2937' : '#111316',
             borderWidth: 1.5,
-            borderColor: isPool ? '#374151' : '#1E2328',
+            borderColor: isPool ? '#374151' : (isCorrectPosition ? '#10B98133' : '#1E2328'),
             borderBottomWidth: 3,
             minWidth: 32,
             alignItems: 'center',
@@ -313,7 +316,7 @@ export function DebugToken({
           }}
         >
           <Text style={{ 
-            color: isPool ? '#E5E7EB' : '#10B981', 
+            color: isPool ? '#E5E7EB' : (isCorrectPosition ? '#10B981' : '#ECEDEE'), 
             fontSize: 14, 
             fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', 
             fontWeight: '800' 

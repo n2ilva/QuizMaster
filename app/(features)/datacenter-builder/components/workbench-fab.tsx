@@ -159,9 +159,9 @@ const styles = StyleSheet.create({
     borderColor: `${DC_COLORS.accent}55`,
   },
   fab: {
-    width: FAB_SIZE,
-    height: FAB_SIZE,
-    borderRadius: FAB_SIZE / 2,
+    width: 58,
+    height: 58,
+    borderRadius: 29,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: DC_COLORS.accent,
@@ -169,7 +169,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.45,
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 6 },
-    elevation: 8,
+    elevation: 9,
+    zIndex: 50,
   },
 });
 
