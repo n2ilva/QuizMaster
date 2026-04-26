@@ -16,6 +16,7 @@
  */
 
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import React, { useState, useEffect } from "react";
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { DC_COLORS, DC_RADII } from "../datacenter-builder.constants";
@@ -131,9 +132,18 @@ export function DeviceManual({
   onToggleCollapsed,
 }: Props) {
   const sections = device.cli_config ?? [];
+  const [activePage, setActivePage] = useState(0);
+
   const doneCount = sections.filter(
     (s) => s.validation_token && completedTokens.has(s.validation_token),
   ).length;
+
+  // Reset page when device changes
+  useEffect(() => {
+    setActivePage(0);
+  }, [device.id]);
+
+  const totalPages = sections.length;
 
   return (
     <View style={styles.container}>
@@ -149,10 +159,25 @@ export function DeviceManual({
             </Text>
           </View>
           {sections.length > 0 ? (
-            <View style={styles.progressPill}>
-              <Text style={styles.progressPillText}>
-                {doneCount}/{sections.length}
-              </Text>
+            <View style={styles.headerInfo}>
+              <View style={styles.progressPill}>
+                <Text style={styles.progressPillText}>
+                  {doneCount}/{sections.length}
+                </Text>
+              </View>
+              <View style={styles.stepIndicator}>
+                {sections.map((_, i) => (
+                  <View
+                    key={`dot-${i}`}
+                    style={[
+                      styles.stepDot,
+                      i === activePage && styles.stepDotActive,
+                      i < activePage && styles.stepDotDone,
+                      !!sections[i].validation_token && completedTokens.has(sections[i].validation_token!) && styles.stepDotDone,
+                    ]}
+                  />
+                ))}
+              </View>
             </View>
           ) : null}
           <MaterialIcons
@@ -169,27 +194,57 @@ export function DeviceManual({
             Este equipamento não exige configuração via CLI neste cenário.
           </Text>
         ) : (
-          <ScrollView
-            style={[styles.sectionsScroll, webHideScrollbar as any]}
-            contentContainerStyle={styles.sectionsWrap}
-            showsVerticalScrollIndicator={false}
-            showsHorizontalScrollIndicator={false}
-            nestedScrollEnabled
-            {...(Platform.OS === "web"
-              ? ({ dataSet: { "dc-manual-scroll": "true" } } as any)
-              : null)}
-          >
-            {sections.map((sec, i) => (
+          <View style={styles.pagedContent}>
+            <ScrollView
+              style={[styles.sectionsScroll, webHideScrollbar as any]}
+              contentContainerStyle={styles.sectionsWrap}
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              nestedScrollEnabled
+              {...(Platform.OS === "web"
+                ? ({ dataSet: { "dc-manual-scroll": "true" } } as any)
+                : null)}
+            >
               <SectionCard
-                key={`${sec.section}-${i}`}
-                section={sec}
-                index={i}
+                section={sections[activePage]}
+                index={activePage}
                 completed={
-                  !!sec.validation_token && completedTokens.has(sec.validation_token)
+                  !!sections[activePage].validation_token && 
+                  completedTokens.has(sections[activePage].validation_token!)
                 }
               />
-            ))}
-          </ScrollView>
+            </ScrollView>
+
+            {/* Navigation Footer */}
+            <View style={styles.footer}>
+              <Pressable
+                disabled={activePage === 0}
+                onPress={() => setActivePage(p => p - 1)}
+                style={({ pressed }) => [
+                  styles.navButton,
+                  activePage === 0 && styles.navButtonDisabled,
+                  pressed && styles.navButtonPressed,
+                ]}
+              >
+                <MaterialIcons name="chevron-left" size={20} color={activePage === 0 ? DC_COLORS.textFaint : DC_COLORS.textPrimary} />
+                <Text style={[styles.navButtonText, activePage === 0 && { color: DC_COLORS.textFaint }]}>Anterior</Text>
+              </Pressable>
+
+              <Pressable
+                disabled={activePage === totalPages - 1}
+                onPress={() => setActivePage(p => p + 1)}
+                style={({ pressed }) => [
+                  styles.navButton,
+                  styles.navButtonPrimary,
+                  activePage === totalPages - 1 && styles.navButtonDisabled,
+                  pressed && styles.navButtonPressed,
+                ]}
+              >
+                <Text style={styles.navButtonTextPrimary}>Próximo</Text>
+                <MaterialIcons name="chevron-right" size={20} color="#FFFFFF" />
+              </Pressable>
+            </View>
+          </View>
         )
       ) : null}
     </View>
@@ -219,10 +274,31 @@ const styles = StyleSheet.create({
     color: DC_COLORS.textPrimary,
   },
   subtitle: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: 11,
+    lineHeight: 14,
     color: DC_COLORS.textSecondary,
-    marginTop: 2,
+    marginTop: 1,
+  },
+  headerInfo: {
+    alignItems: 'flex-end',
+    gap: 6,
+  },
+  stepIndicator: {
+    flexDirection: 'row',
+    gap: 3,
+  },
+  stepDot: {
+    width: 12,
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: DC_COLORS.borderMuted,
+  },
+  stepDotActive: {
+    backgroundColor: DC_COLORS.accent,
+    width: 18,
+  },
+  stepDotDone: {
+    backgroundColor: DC_COLORS.success,
   },
   progressPill: {
     backgroundColor: DC_COLORS.bgSurfaceHover,
@@ -243,14 +319,55 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingBottom: 14,
   },
+  pagedContent: {
+    flex: 1,
+  },
   sectionsScroll: {
     flex: 1,
   },
   sectionsWrap: {
     flexDirection: "column",
-    gap: 10,
     paddingHorizontal: 12,
-    paddingBottom: 12,
+    paddingTop: 4,
+    paddingBottom: 8,
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: DC_COLORS.borderSubtle,
+    backgroundColor: DC_COLORS.bgSurface,
+  },
+  navButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: DC_RADII.md,
+    gap: 2,
+  },
+  navButtonPrimary: {
+    backgroundColor: DC_COLORS.accent,
+  },
+  navButtonDisabled: {
+    opacity: 0.3,
+  },
+  navButtonPressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.96 }],
+  },
+  navButtonText: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: DC_COLORS.textPrimary,
+  },
+  navButtonTextPrimary: {
+    fontSize: 12,
+    fontWeight: "800",
+    color: "#FFFFFF",
   },
   sectionCard: {
     width: "100%",
@@ -259,8 +376,9 @@ const styles = StyleSheet.create({
     borderRadius: DC_RADII.md,
     borderWidth: 1,
     borderColor: DC_COLORS.borderMuted,
-    padding: 10,
+    padding: 12,
     gap: 8,
+    minHeight: 140,
   },
   sectionCardDone: {
     borderColor: "#2f9e5c",

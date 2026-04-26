@@ -161,6 +161,8 @@ export function DataCenterBuilderScreen() {
     { title: string; message: string; items?: string[] } | null
   >(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [finished, setFinished] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
   const [confirmExitOpen, setConfirmExitOpen] = useState(false);
   const navigation = useNavigation();
   const [pendingAction, setPendingAction] = useState<any>(null);
@@ -351,6 +353,8 @@ export function DataCenterBuilderScreen() {
     setConsoleDevice(null);
     setMovements(0);
     setStartTime(Date.now());
+    setElapsedTime(0);
+    setFinished(false);
     setValidationError(null);
   }, []);
 
@@ -511,6 +515,17 @@ export function DataCenterBuilderScreen() {
     [activeLevel, connections, installedDevices, selectedCable, sourceNode],
   );
 
+  const handleNextLevel = useCallback(() => {
+    if (!activeLevel) return;
+    const currIdx = data.levels.findIndex((l) => l.id === activeLevel.id);
+    const next = data.levels[currIdx + 1];
+    if (next) {
+      handleLevelSelect(next);
+    } else {
+      handleLeaveLevel();
+    }
+  }, [activeLevel, data.levels, handleLevelSelect, handleLeaveLevel]);
+
   const handleLaptopSerialPress = useCallback(() => {
     handlePortPress("laptop", "console");
   }, [handlePortPress]);
@@ -526,7 +541,11 @@ export function DataCenterBuilderScreen() {
    */
   const tryAutoConnectConsoleToLaptop = useCallback((): boolean => {
     if (!sourceNode) return false;
+    
+    // If we clicked the laptop first, we still need a target device. 
+    // The user's request focuses on Equipment -> Cable flow, but let's be robust.
     if (sourceNode.deviceId === "laptop") return false;
+
     const srcIsConsole =
       sourceNode.port === "console" || sourceNode.port === "serial";
     if (!srcIsConsole) return false;
@@ -549,6 +568,10 @@ export function DataCenterBuilderScreen() {
     setMovements((m) => m + 1);
     setSourceNode(null);
     setSelectedCable(null);
+    
+    // Explicitly switch to notebook view for mobile
+    setMobileView("notebook");
+    
     return true;
   }, [installedDevices, sourceNode]);
 
@@ -613,10 +636,12 @@ export function DataCenterBuilderScreen() {
       ]).start();
 
       setCompletedLevels((prev) => new Set(prev).add(activeLevel.id));
+      const elapsed = startTime
+        ? Math.max(1, Math.round((Date.now() - startTime) / 1000))
+        : 0;
+      setElapsedTime(elapsed);
+
       if (user?.id) {
-        const elapsed = startTime
-          ? Math.max(1, Math.round((Date.now() - startTime) / 1000))
-          : 0;
         saveDataCenterResult(user.id, activeLevel.id, elapsed, movements, 100).catch(() => {});
       }
 
@@ -627,6 +652,7 @@ export function DataCenterBuilderScreen() {
           useNativeDriver: true,
         }).start(() => {
           setShowSuccess(false);
+          setFinished(true);
         });
       }, 1800);
       return;
@@ -789,85 +815,139 @@ export function DataCenterBuilderScreen() {
           alignSelf: "center",
         }}
       >
-        <View style={styles.wbHeader}>
-          <Pressable
-            onPress={() => setConfirmExitOpen(true)}
-            style={({ hovered }: { hovered?: boolean }) => [
-              styles.iconButton,
-              { backgroundColor: hovered ? DC_COLORS.bgSurfaceHover : DC_COLORS.bgSurface },
-            ]}
-            accessibilityRole="button"
-            accessibilityLabel="Voltar para a lista de cenários"
-          >
-            <MaterialIcons name="arrow-back" size={20} color={DC_COLORS.textSecondary} />
-          </Pressable>
-          <View style={{ flex: 1, minWidth: 0 }}>
-            {activeLevel.tier ? (
-              <Text style={styles.wbTier} numberOfLines={1}>
-                {activeLevel.tier}
+        {!finished && (
+          <View style={styles.wbHeader}>
+            <Pressable
+              onPress={() => setConfirmExitOpen(true)}
+              style={({ hovered }: { hovered?: boolean }) => [
+                styles.iconButton,
+                { backgroundColor: hovered ? DC_COLORS.bgSurfaceHover : DC_COLORS.bgSurface },
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Voltar para a lista de cenários"
+            >
+              <MaterialIcons name="arrow-back" size={20} color={DC_COLORS.textSecondary} />
+            </Pressable>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              {activeLevel.tier ? (
+                <Text style={styles.wbTier} numberOfLines={1}>
+                  {activeLevel.tier}
+                </Text>
+              ) : null}
+              <Text style={styles.wbTitle} numberOfLines={1}>
+                {activeLevel.name}
               </Text>
-            ) : null}
-            <Text style={styles.wbTitle} numberOfLines={1}>
-              {activeLevel.name}
-            </Text>
+            </View>
+            <View style={styles.metricsWrap}>
+              <MetricChip icon="swap-horiz" label={`${movements}`} title="Movimentos" />
+              <MetricChip
+                icon="cable"
+                label={`${connections.length}/${activeLevel.connections_required.length}`}
+                title="Conexões"
+              />
+            </View>
           </View>
-          <View style={styles.metricsWrap}>
-            <MetricChip icon="swap-horiz" label={`${movements}`} title="Movimentos" />
-            <MetricChip
-              icon="cable"
-              label={`${connections.length}/${activeLevel.connections_required.length}`}
-              title="Conexões"
+        )}
+
+        {finished ? renderResults() : (
+          <View
+            style={[styles.canvasSurface, styles.maxContentWidth]}
+            onLayout={(e) => {
+              canvasSurfaceYRef.current = e.nativeEvent.layout.y;
+            }}
+          >
+            <WorkbenchCanvas
+              level={activeLevel}
+              inventory={activeLevel.inventory}
+              installedDevices={installedDevices}
+              connections={connections}
+              cableTypes={data.cable_types ?? []}
+              ledOn={ledOn}
+              portStatus={portStatus}
+              sourceNode={sourceNode}
+              consoleDevice={consoleDevice}
+              consoleManualCompletedTokens={
+                consoleDevice
+                  ? completedCliTokensByDevice[consoleDevice.id] ?? EMPTY_TOKEN_SET
+                  : EMPTY_TOKEN_SET
+              }
+              consoleManualCollapsed={manualCollapsed}
+              onConsoleManualToggle={() => setManualCollapsed((v) => !v)}
+              mobileView={mobileView}
+              onMobileViewChange={setMobileView}
+              onSlotPress={(slot) => setSelectedSlotForInstall(slot)}
+              onUninstall={handleUninstall}
+              onPortPress={handlePortPress}
+              onLaptopSerialPress={handleLaptopSerialPress}
+              onConsoleClose={() => {
+                setConsoleDevice(null);
+                setConnections((conns) => conns.filter((c) => c.cableId !== "console"));
+              }}
+              onConsoleInputFocusChange={handleConsoleInputFocusChange}
+              onConsoleSectionCompleted={handleConsoleSectionCompleted}
             />
           </View>
-        </View>
-
-        <View
-          style={[styles.canvasSurface, styles.maxContentWidth]}
-          onLayout={(e) => {
-            canvasSurfaceYRef.current = e.nativeEvent.layout.y;
-          }}
-        >
-          <WorkbenchCanvas
-            level={activeLevel}
-            inventory={activeLevel.inventory}
-            installedDevices={installedDevices}
-            connections={connections}
-            cableTypes={data.cable_types ?? []}
-            ledOn={ledOn}
-            portStatus={portStatus}
-            sourceNode={sourceNode}
-            consoleDevice={consoleDevice}
-            consoleManualCompletedTokens={
-              consoleDevice
-                ? completedCliTokensByDevice[consoleDevice.id] ?? EMPTY_TOKEN_SET
-                : EMPTY_TOKEN_SET
-            }
-            consoleManualCollapsed={manualCollapsed}
-            onConsoleManualToggle={() => setManualCollapsed((v) => !v)}
-            mobileView={mobileView}
-            onMobileViewChange={setMobileView}
-            onSlotPress={(slot) => setSelectedSlotForInstall(slot)}
-            onUninstall={handleUninstall}
-            onPortPress={handlePortPress}
-            onLaptopSerialPress={handleLaptopSerialPress}
-            onConsoleClose={() => {
-              setConsoleDevice(null);
-              setConnections((conns) => conns.filter((c) => c.cableId !== "console"));
-            }}
-            onConsoleInputFocusChange={handleConsoleInputFocusChange}
-            onConsoleSectionCompleted={handleConsoleSectionCompleted}
-          />
-        </View>
+        )}
       </ScrollView>
 
       {/* Standard FABs (Same as Ache o Erro) */}
-      <WorkbenchFab actions={helpActions} bottomInset={62} />
-      <ValidationFab
-        onPress={handleValidate}
-        icon="check"
-        bottomInset={-8}
-      />
+      {!finished && <WorkbenchFab actions={helpActions} bottomInset={62} />}
+      {!finished && (
+        <ValidationFab
+          onPress={handleValidate}
+          icon="check"
+          bottomInset={-8}
+        />
+      )}
     </View>
+    );
+  };
+
+  const renderResults = () => {
+    if (!activeLevel) return null;
+
+    return (
+      <View style={[styles.resultsContainer, styles.maxContentWidth]}>
+        <View style={{ alignItems: "center", marginBottom: 32 }}>
+          <View style={styles.successIconOuter}>
+            <View style={styles.successIconInner}>
+              <MaterialIcons name="emoji-events" size={56} color={DC_COLORS.success} />
+            </View>
+          </View>
+          <Text style={styles.resultTitle}>EXCELENTE!</Text>
+          <Text style={styles.resultSubtitle}>Infraestrutura homologada com sucesso.</Text>
+        </View>
+
+        <View style={styles.statsGrid}>
+          <StatBlock 
+            value={`${Math.floor(elapsedTime / 60)}:${(elapsedTime % 60).toString().padStart(2, '0')}`} 
+            label="Tempo total" 
+          />
+          <StatBlock 
+            value={movements.toString()} 
+            label="Movimentos" 
+          />
+        </View>
+
+
+
+        <View style={{ gap: 12, marginTop: 32, width: "100%" }}>
+          <Pressable 
+            onPress={handleNextLevel} 
+            style={({ pressed }) => [styles.primaryButton, pressed && { opacity: 0.8 }]}
+          >
+            <MaterialIcons name="arrow-forward" size={20} color="#000" />
+            <Text style={styles.primaryButtonText}>Próximo Projeto</Text>
+          </Pressable>
+          <Pressable 
+            onPress={handleLeaveLevel} 
+            style={({ pressed }) => [styles.secondaryButton, pressed && { opacity: 0.8 }]}
+          >
+            <MaterialIcons name="grid-view" size={20} color={DC_COLORS.textPrimary} />
+            <Text style={styles.secondaryButtonText}>Sair para Níveis</Text>
+          </Pressable>
+        </View>
+      </View>
     );
   };
 
@@ -933,7 +1013,7 @@ export function DataCenterBuilderScreen() {
           onPress: () => setSelectedSlotForInstall(null),
         }}
       >
-        <View style={styles.invGrid}>
+        <View style={styles.invList}>
           {activeLevel?.inventory.map((d, i) => {
             const alreadyInstalled = Object.values(installedDevices).some((x) => x.id === d.id);
             const iconName = getDeviceIcon(d.id, d.type);
@@ -943,7 +1023,8 @@ export function DataCenterBuilderScreen() {
                 disabled={alreadyInstalled}
                 onPress={() => !alreadyInstalled && handleInstallItem(d)}
                 style={({ pressed }) => [
-                  { transform: [{ scale: pressed && !alreadyInstalled ? 0.98 : 1 }] }
+                  styles.invItemWrap,
+                  { transform: [{ scale: pressed && !alreadyInstalled ? 0.985 : 1 }] }
                 ]}
                 accessibilityRole="button"
                 accessibilityState={{ disabled: alreadyInstalled }}
@@ -952,27 +1033,33 @@ export function DataCenterBuilderScreen() {
                 <View style={[
                   styles.invItem,
                   {
-                    backgroundColor: DC_COLORS.bgSurface,
-                    opacity: alreadyInstalled ? 0.35 : 1,
+                    backgroundColor: alreadyInstalled ? DC_COLORS.bgPanelInset : DC_COLORS.bgSurface,
+                    opacity: alreadyInstalled ? 0.5 : 1,
+                    borderColor: alreadyInstalled ? "transparent" : DC_COLORS.borderSubtle,
                   },
                 ]}>
                   <View style={styles.invIconWrap}>
                     <MaterialCommunityIcons
                       name={iconName as any}
-                      size={26}
-                      color={DC_COLORS.accentSoft}
+                      size={22}
+                      color={alreadyInstalled ? DC_COLORS.textFaint : DC_COLORS.accentSoft}
                     />
                   </View>
-                  <Text style={styles.invName} numberOfLines={2}>
-                    {d.label ?? d.id}
-                  </Text>
-                  <Text style={styles.invType} numberOfLines={1}>
-                    {d.type}
-                  </Text>
-                  {alreadyInstalled && (
+                  <View style={styles.invMeta}>
+                    <Text style={styles.invName} numberOfLines={1}>
+                      {d.label ?? d.id}
+                    </Text>
+                    <Text style={styles.invType} numberOfLines={1}>
+                      {d.type}
+                    </Text>
+                  </View>
+                  {alreadyInstalled ? (
                     <View style={styles.invBadge}>
-                      <MaterialIcons name="check" size={12} color={DC_COLORS.success} />
+                      <MaterialIcons name="check-circle" size={18} color={DC_COLORS.success} />
+                      <Text style={styles.invBadgeText}>INSTALADO</Text>
                     </View>
+                  ) : (
+                    <MaterialIcons name="add-circle-outline" size={20} color={DC_COLORS.textMuted} />
                   )}
                 </View>
               </Pressable>
@@ -1009,10 +1096,9 @@ export function DataCenterBuilderScreen() {
               onPress={() => {
                 setSelectedCable(c);
                 setShowCableMenu(false);
-                // Mobile/stacked shortcut: the laptop isn't visible on screen
-                // while the rack is active, so auto-wire the console cable to
-                // laptop.console as soon as the user picks it.
-                if (c.id === "console" && isStackedCanvas) {
+                // Auto-wire the console cable to laptop.console as soon as the user picks it.
+                // This improves UX by skipping the second click on the laptop.
+                if (c.id === "console") {
                   tryAutoConnectConsoleToLaptop();
                 }
               }}
@@ -1381,52 +1467,59 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 19,
   },
-  invGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
+  invList: {
+    gap: 8,
+  },
+  invItemWrap: {
+    width: "100%",
   },
   invItem: {
-    flexGrow: 1,
-    flexBasis: 140,
+    flexDirection: "row",
+    alignItems: "center",
     padding: 12,
     borderRadius: DC_RADII.md,
     borderWidth: 1,
-    borderColor: DC_COLORS.borderSubtle,
-    gap: 6,
-    minHeight: 110,
-    position: "relative",
+    gap: 12,
+    minHeight: 64,
   },
   invIconWrap: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: DC_RADII.sm,
-    backgroundColor: `${DC_COLORS.accent}18`,
+    backgroundColor: `${DC_COLORS.accent}14`,
     alignItems: "center",
     justifyContent: "center",
   },
+  invMeta: {
+    flex: 1,
+    gap: 2,
+  },
   invName: {
     color: DC_COLORS.textPrimary,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: "800",
   },
   invType: {
     color: DC_COLORS.textMuted,
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: "700",
     textTransform: "uppercase",
-    letterSpacing: 0.4,
+    letterSpacing: 0.6,
   },
   invBadge: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: "rgba(34,197,94,0.18)",
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    gap: 5,
+    backgroundColor: "rgba(34,197,94,0.12)",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: DC_RADII.pill,
+  },
+  invBadgeText: {
+    color: DC_COLORS.success,
+    fontSize: 10,
+    fontWeight: "900",
+    letterSpacing: 0.5,
   },
   cableItem: {
     flexDirection: "row",
@@ -1469,5 +1562,102 @@ const styles = StyleSheet.create({
     position: "absolute",
     alignSelf: "center",
     zIndex: 50,
+  },
+  resultsContainer: {
+    flexGrow: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 24,
+    backgroundColor: DC_COLORS.bgPanelInset,
+    borderRadius: DC_RADII.lg,
+    borderWidth: 1,
+    borderColor: DC_COLORS.borderSubtle,
+  },
+  successIconOuter: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    borderWidth: 3,
+    borderColor: "rgba(34,197,94,0.3)",
+    backgroundColor: "rgba(34,197,94,0.05)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  successIconInner: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: "rgba(34,197,94,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  resultTitle: {
+    fontSize: 32,
+    fontWeight: "900",
+    color: DC_COLORS.success,
+    letterSpacing: -1,
+  },
+  resultSubtitle: {
+    color: DC_COLORS.textMuted,
+    fontSize: 15,
+    marginTop: 8,
+  },
+  statsGrid: {
+    flexDirection: "row",
+    gap: 16,
+    marginBottom: 32,
+    width: "100%",
+  },
+  explanationCard: {
+    backgroundColor: DC_COLORS.bgSurface,
+    padding: 20,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: DC_COLORS.borderMuted,
+    width: "100%",
+  },
+  explanationTitle: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: DC_COLORS.textPrimary,
+    marginBottom: 8,
+  },
+  explanationText: {
+    fontSize: 13,
+    color: DC_COLORS.textSecondary,
+    lineHeight: 20,
+  },
+  primaryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    backgroundColor: DC_COLORS.success,
+    height: 52,
+    borderRadius: DC_RADII.md,
+    width: "100%",
+  },
+  primaryButtonText: {
+    fontSize: 16,
+    fontWeight: "900",
+    color: "#000",
+  },
+  secondaryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    backgroundColor: DC_COLORS.bgSurface,
+    height: 52,
+    borderRadius: DC_RADII.md,
+    borderWidth: 1,
+    borderColor: DC_COLORS.borderMuted,
+    width: "100%",
+  },
+  secondaryButtonText: {
+    fontSize: 16,
+    fontWeight: "800",
+    color: DC_COLORS.textPrimary,
   },
 });

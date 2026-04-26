@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef, useEffect } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View, type LayoutChangeEvent } from "react-native";
 import Svg, { G } from "react-native-svg";
 
@@ -118,6 +118,8 @@ export function WorkbenchCanvas({
   mobileView,
   onMobileViewChange,
 }: WorkbenchCanvasProps) {
+  const horizontalScrollRef = useRef<ScrollView>(null);
+
   // We measure the *container* width (not the window) so the canvas adapts
   // correctly when a sidebar or padding shrinks the available space.
   const [containerWidth, setContainerWidth] = useState(0);
@@ -247,6 +249,20 @@ export function WorkbenchCanvas({
       totalH,
     };
   }, [effectiveWidth, stacked, activeMobileView, inventory.length, manualReserved]);
+
+  // Auto-scroll to laptop when console is connected in desktop mode
+  useEffect(() => {
+    if (consoleDevice && !stacked && horizontalScrollRef.current) {
+      // Small timeout to ensure layout has settled
+      const timer = setTimeout(() => {
+        horizontalScrollRef.current?.scrollTo({
+          x: layout.laptopOffsetX - 40,
+          animated: true,
+        });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [consoleDevice, stacked, layout.laptopOffsetX]);
 
   const boardWidth = RACK_GEOMETRY.width - RACK_GEOMETRY.railWidth * 2;
 
@@ -656,6 +672,7 @@ export function WorkbenchCanvas({
       ) : null}
 
       <ScrollView
+        ref={horizontalScrollRef}
         horizontal={!layout.stacked}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
