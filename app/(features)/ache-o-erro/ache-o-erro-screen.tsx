@@ -396,6 +396,17 @@ export function AcheOErroScreen() {
   };
 
   const handleReorderPlaced = (instanceId: string, targetIndex: number) => {
+    // Prevent double-firing (drag-drop race on mobile)
+    const now = Date.now();
+    if (
+      lastActionRef.current &&
+      lastActionRef.current.id === instanceId &&
+      now - lastActionRef.current.time < 400
+    ) {
+      return;
+    }
+    lastActionRef.current = { id: instanceId, time: now };
+
     setPlaced((prev) => {
       const fromIdx = prev.findIndex((p) => p.instanceId === instanceId);
       if (fromIdx === -1 || fromIdx === targetIndex) return prev;
@@ -403,7 +414,13 @@ export function AcheOErroScreen() {
       const without = [...prev.slice(0, fromIdx), ...prev.slice(fromIdx + 1)];
       const insertAt = targetIndex > fromIdx ? targetIndex - 1 : targetIndex;
       without.splice(Math.min(insertAt, without.length), 0, item);
-      return without;
+      // Deduplicate: ensure each instanceId appears only once
+      const seen = new Set<string>();
+      return without.filter((p) => {
+        if (seen.has(p.instanceId)) return false;
+        seen.add(p.instanceId);
+        return true;
+      });
     });
     setLastMovedId(instanceId);
     setMoveCount((m) => m + 1);
@@ -1012,23 +1029,11 @@ export function AcheOErroScreen() {
           message="Seu progresso neste exercício será perdido."
         />
         {activeExercise && !finished && (
-          <View
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              alignItems: "flex-end",
-              zIndex: 9999,
-              pointerEvents: "box-none",
-            }}
-          >
-            <ValidationFab
-              onPress={handleValidate}
-              disabled={placed.length === 0}
-              icon="check"
-            />
-          </View>
+          <ValidationFab
+            onPress={handleValidate}
+            disabled={placed.length === 0}
+            icon="check"
+          />
         )}
       </View>
     </GestureHandlerRootView>

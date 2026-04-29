@@ -221,27 +221,32 @@ export function DeviceManual({
                 disabled={activePage === 0}
                 onPress={() => setActivePage(p => p - 1)}
                 style={({ pressed }) => [
-                  styles.navButton,
-                  activePage === 0 && styles.navButtonDisabled,
-                  pressed && styles.navButtonPressed,
+                  {
+                    opacity: pressed ? 0.7 : 1,
+                    transform: [{ scale: pressed ? 0.96 : 1 }],
+                  },
                 ]}
               >
-                <MaterialIcons name="chevron-left" size={20} color={activePage === 0 ? DC_COLORS.textFaint : DC_COLORS.textPrimary} />
-                <Text style={[styles.navButtonText, activePage === 0 && { color: DC_COLORS.textFaint }]}>Anterior</Text>
+                <View style={[styles.navButton, activePage === 0 && styles.navButtonDisabled]}>
+                  <MaterialIcons name="chevron-left" size={20} color={activePage === 0 ? DC_COLORS.textFaint : DC_COLORS.textPrimary} />
+                  <Text style={[styles.navButtonText, activePage === 0 && { color: DC_COLORS.textFaint }]}>Anterior</Text>
+                </View>
               </Pressable>
 
               <Pressable
                 disabled={activePage === totalPages - 1}
                 onPress={() => setActivePage(p => p + 1)}
                 style={({ pressed }) => [
-                  styles.navButton,
-                  styles.navButtonPrimary,
-                  activePage === totalPages - 1 && styles.navButtonDisabled,
-                  pressed && styles.navButtonPressed,
+                  {
+                    opacity: pressed ? 0.7 : 1,
+                    transform: [{ scale: pressed ? 0.96 : 1 }],
+                  },
                 ]}
               >
-                <Text style={styles.navButtonTextPrimary}>Próximo</Text>
-                <MaterialIcons name="chevron-right" size={20} color="#FFFFFF" />
+                <View style={[styles.navButton, styles.navButtonPrimary, activePage === totalPages - 1 && styles.navButtonDisabled]}>
+                  <Text style={styles.navButtonTextPrimary}>Próximo</Text>
+                  <MaterialIcons name="chevron-right" size={20} color="#FFFFFF" />
+                </View>
               </Pressable>
             </View>
           </View>

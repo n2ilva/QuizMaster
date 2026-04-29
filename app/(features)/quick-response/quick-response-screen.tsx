@@ -1518,24 +1518,11 @@ export function QuickResponseScreen() {
         </ScrollView>
 
         {!isValidated && (
-          <View
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              alignItems: "flex-end",
-              zIndex: 9999,
-              pointerEvents: "box-none",
-            }}
-          >
-            <ValidationFab
-              onPress={handleValidate}
-              disabled={selectedIds.size === 0 || isSyncing}
-              icon="check"
-              bottomInset={16}
-            />
-          </View>
+          <ValidationFab
+            onPress={handleValidate}
+            disabled={selectedIds.size === 0 || isSyncing}
+            icon="check"
+          />
         )}
       </View>
     );

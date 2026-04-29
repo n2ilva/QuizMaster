@@ -608,13 +608,10 @@ export function StudySessionScreen() {
       />
       <StudyFeedbackOverlay feedbackType={feedbackType} iconOpacity={iconOpacity} iconScale={iconScale} />
       {isSmallScreen && answer.revealed && !finished && (
-        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, alignItems: 'flex-end', zIndex: 9999, pointerEvents: 'box-none' }}>
-          <ValidationFab
-            onPress={handleNext}
-            icon="check"
-            bottomInset={16}
-          />
-        </View>
+        <ValidationFab
+          onPress={handleNext}
+          icon="check"
+        />
       )}
 
       {/* Confirm exit — intercepts the in-progress quiz back button. Progress

@@ -16,6 +16,7 @@ import {
 } from "react-native";
 
 import { ConfirmExitModal } from "@/components/ui/confirm-exit-modal";
+import { ValidationFab } from "@/components/ui/validation-fab";
 import { useTabContentPadding, useTopContentPadding } from "@/hooks/use-tab-content-padding";
 import {
   fetchDataCenterProgress,
@@ -27,7 +28,7 @@ import { useData } from "@/providers/data-provider";
 import { DcModal } from "./components/dc-modal";
 import { LevelCard } from "./components/level-card";
 import { WorkbenchCanvas } from "./components/workbench-canvas";
-import { WorkbenchFab, WorkbenchValidateFab } from "./components/workbench-fab";
+import { WorkbenchFab } from "./components/workbench-fab";
 import { WorkbenchToolbar } from "./components/workbench-toolbar";
 import {
   DC_BREAKPOINTS,
@@ -902,18 +903,12 @@ export function DataCenterBuilderScreen() {
         )}
       </ScrollView>
 
-      {/* Actions: Toolbar (Desktop) or Stacked FABs (Mobile) */}
+      {/* Actions: FABs (same on mobile & web) */}
       {!finished && (
-        isCompactChrome ? (
-          <>
-            <WorkbenchFab actions={fabActions} bottomInset={70} />
-            <WorkbenchValidateFab onPress={handleValidate} bottomInset={0} />
-          </>
-        ) : (
-          <View style={[styles.toolbarDock, { bottom: bottomPadding + 20 }]}>
-            <WorkbenchToolbar actions={toolbarActions} />
-          </View>
-        )
+        <>
+          <WorkbenchFab actions={fabActions} bottomInset={70} />
+          <ValidationFab onPress={handleValidate} icon="check" />
+        </>
       )}
     </View>
     );

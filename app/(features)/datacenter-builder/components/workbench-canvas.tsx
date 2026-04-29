@@ -154,7 +154,7 @@ export function WorkbenchCanvas({
   // without truncating the description.
   const MANUAL_COLLAPSED_H = 80;
   const MANUAL_OPEN_H =
-    effectiveWidth < 480 ? 180 : effectiveWidth < 720 ? 220 : 260;
+    effectiveWidth < 480 ? 320 : effectiveWidth < 720 ? 360 : 400;
   const manualHeight = consoleDevice
     ? consoleManualCollapsed
       ? MANUAL_COLLAPSED_H
@@ -185,12 +185,15 @@ export function WorkbenchCanvas({
       // CLI manual below it). We size the canvas to just the active shape.
       if (activeMobileView === "notebook") {
         // On mobile the serial/console port juts out to the right of the
-        // laptop base (see getLaptopSerialPortLocalPos). Reserve extra
-        // horizontal room so the port + cable attachment aren't clipped.
-        const rightGutter = 90;
+        // laptop base (see getLaptopSerialPortLocalPos). Reserve a small
+        // gutter so the port + cable attachment aren't clipped, but keep
+        // it minimal so the notebook fills the screen as much as possible.
+        const rightGutter = 40;
         const effectiveLapW = lapW + rightGutter;
         const scale = Math.min(1, availableWidth / effectiveLapW);
-        const laptopOffsetX = (availableWidth - effectiveLapW * scale) / 2;
+        // Align laptop to the left edge (no centering with gutter) so
+        // the screen content is as large as possible.
+        const laptopOffsetX = 0;
         // Push the laptop down to leave room for the floating manual panel.
         const laptopOffsetY = manualReserved;
         const totalW = availableWidth;
@@ -472,32 +475,37 @@ export function WorkbenchCanvas({
                   );
                 })}
               {installed ? (
-                <Pressable
-                  onPress={() => onUninstall(i)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Remover ${installed.label ?? installed.id}`}
-                  hitSlop={6}
-                  style={({ pressed }) => [
-                    {
-                      position: "absolute",
-                      left: removeX,
-                      top: removeY,
-                      width: removeSize,
-                      height: removeSize,
-                      opacity: pressed ? 0.7 : 1,
-                      transform: [{ scale: pressed ? 0.92 : 1 }],
-                      zIndex: 10,
-                    },
-                  ]}
+                <View
+                  style={{
+                    position: "absolute",
+                    left: removeX,
+                    top: removeY,
+                    width: removeSize,
+                    height: removeSize,
+                    zIndex: 10,
+                  }}
                 >
-                  <View style={[styles.removeBtn, { width: removeSize, height: removeSize, borderRadius: removeSize / 2 }]}>
-                    <MaterialIcons
-                      name="close"
-                      size={Math.max(12, removeSize * 0.6)}
-                      color="#FFFFFF"
-                    />
-                  </View>
-                </Pressable>
+                  <Pressable
+                    onPress={() => onUninstall(i)}
+                    accessibilityRole="button"
+                    accessibilityLabel={`Remover ${installed.label ?? installed.id}`}
+                    hitSlop={6}
+                    style={({ pressed }) => [
+                      {
+                        opacity: pressed ? 0.7 : 1,
+                        transform: [{ scale: pressed ? 0.92 : 1 }],
+                      },
+                    ]}
+                  >
+                    <View style={[styles.removeBtn, { width: removeSize, height: removeSize, borderRadius: removeSize / 2 }]}>
+                      <MaterialIcons
+                        name="close"
+                        size={Math.max(12, removeSize * 0.6)}
+                        color="#FFFFFF"
+                      />
+                    </View>
+                  </Pressable>
+                </View>
               ) : null}
             </View>
           );
@@ -690,7 +698,7 @@ export function WorkbenchCanvas({
       ) : null}
 
       {layout.stacked && activeMobileView === "notebook" && consoleDevice ? (
-        <View style={{ paddingHorizontal: 0, paddingTop: 12, height: manualHeight }}>
+        <View style={{ paddingHorizontal: 0, paddingTop: 12 }}>
           <DeviceManual
             device={consoleDevice}
             completedTokens={consoleManualCompletedTokens ?? new Set()}
@@ -749,13 +757,12 @@ function MobileViewToggle({
       {tabs.map((t) => {
         const active = t.id === activeView;
         return (
-          <View key={t.id} style={{ flex: 1 }}>
+          <View key={t.id} style={styles.toggleTabWrapper}>
             <Pressable
               disabled={t.disabled}
               onPress={() => onChange(t.id)}
               style={({ pressed }) => [
                 {
-                  width: "100%",
                   opacity: (t.disabled || pressed) ? 0.7 : 1,
                   transform: [{ scale: pressed ? 0.98 : 1 }],
                 },
@@ -824,23 +831,28 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: DC_COLORS.borderSubtle,
     padding: 4,
-    gap: 4,
     marginBottom: 16,
     marginHorizontal: 0,
+    overflow: "hidden",
+  },
+  toggleTabWrapper: {
+    flex: 1,
+    borderRadius: DC_RADII.pill,
+    overflow: "hidden",
   },
   toggleTab: {
-    width: "100%",
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
     paddingVertical: 10,
     borderRadius: DC_RADII.pill,
     backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "transparent",
   },
   toggleTabActive: {
     backgroundColor: DC_COLORS.bgSurface,
-    borderWidth: 1,
     borderColor: DC_COLORS.borderStrong,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
@@ -860,6 +872,7 @@ const styles = StyleSheet.create({
     color: DC_COLORS.textMuted,
     letterSpacing: 0.8,
     textTransform: "uppercase",
+    marginLeft: 8,
   },
   toggleTabLabelActive: {
     color: DC_COLORS.textPrimary,
