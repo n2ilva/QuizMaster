@@ -298,28 +298,33 @@ export function RackInstallManual({ level, installedDevices }: Props) {
           disabled={activePage === 0}
           onPress={() => setActivePage(p => p - 1)}
           style={({ pressed }) => [
-            styles.navButton,
-            activePage === 0 && styles.navButtonDisabled,
-            pressed && styles.navButtonPressed,
+            {
+              opacity: (activePage === 0 || pressed) ? 0.7 : 1,
+              transform: [{ scale: pressed ? 0.98 : 1 }],
+            },
           ]}
         >
-          <MaterialIcons name="chevron-left" size={20} color={activePage === 0 ? DC_COLORS.textFaint : DC_COLORS.textPrimary} />
-          <Text style={[styles.navButtonText, activePage === 0 && { color: DC_COLORS.textFaint }]}>Anterior</Text>
+          <View style={[styles.navButton, activePage === 0 && styles.navButtonDisabled]}>
+            <MaterialIcons name="chevron-left" size={20} color={activePage === 0 ? DC_COLORS.textFaint : DC_COLORS.textPrimary} />
+            <Text style={[styles.navButtonText, activePage === 0 && { color: DC_COLORS.textFaint }]}>Anterior</Text>
+          </View>
         </Pressable>
 
         <Pressable
           onPress={() => activePage < totalPages - 1 ? setActivePage(p => p + 1) : null}
           style={({ pressed }) => [
-            styles.navButton,
-            styles.navButtonPrimary,
-            activePage === totalPages - 1 && styles.navButtonDisabled,
-            pressed && styles.navButtonPressed,
+            {
+              opacity: (activePage === totalPages - 1 || pressed) ? 0.7 : 1,
+              transform: [{ scale: pressed ? 0.98 : 1 }],
+            },
           ]}
         >
-          <Text style={styles.navButtonTextPrimary}>
-            {activePage === totalPages - 1 ? "Fim" : "Próximo"}
-          </Text>
-          <MaterialIcons name="chevron-right" size={20} color="#FFFFFF" />
+          <View style={[styles.navButton, styles.navButtonPrimary, activePage === totalPages - 1 && styles.navButtonDisabled]}>
+            <Text style={styles.navButtonTextPrimary}>
+              {activePage === totalPages - 1 ? "Fim" : "Próximo"}
+            </Text>
+            <MaterialIcons name="chevron-right" size={20} color="#FFFFFF" />
+          </View>
         </Pressable>
       </View>
     </View>
@@ -408,16 +413,16 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: DC_RADII.md,
     gap: 4,
+    backgroundColor: DC_COLORS.bgSurface,
+    borderWidth: 1,
+    borderColor: DC_COLORS.borderMuted,
   },
   navButtonPrimary: {
     backgroundColor: DC_COLORS.accent,
+    borderColor: DC_COLORS.accent,
   },
   navButtonDisabled: {
     opacity: 0.4,
-  },
-  navButtonPressed: {
-    opacity: 0.7,
-    transform: [{ scale: 0.97 }],
   },
   navButtonText: {
     fontSize: 13,

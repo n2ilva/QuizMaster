@@ -1,6 +1,13 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  Platform,
+  ViewStyle,
+  View,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type ValidationFabProps = {
   onPress: () => void;
@@ -17,6 +24,8 @@ export function ValidationFab({
   icon = 'check',
   bottomInset = 0,
 }: ValidationFabProps) {
+  const insets = useSafeAreaInsets();
+
   return (
     <Pressable
       onPress={onPress}
@@ -24,34 +33,49 @@ export function ValidationFab({
       accessibilityRole="button"
       accessibilityLabel="Validar exercício"
       style={({ pressed }) => [
-        styles.fab,
         {
-          bottom: 12 + bottomInset,
-          opacity: disabled ? 0.45 : 1,
-          transform: [{ scale: pressed ? 0.94 : 1 }],
+          position: 'absolute',
+          right: 24,
+          bottom: 16 + bottomInset + insets.bottom,
+          zIndex: 999,
+          opacity: disabled ? 0.45 : pressed ? 0.8 : 1,
+          transform: [{ scale: (pressed && !disabled) ? 0.96 : 1 }],
         },
       ]}
     >
-      <MaterialIcons name={icon} size={28} color="#FFFFFF" />
+      <View style={[styles.fab, getShadowStyle()]}>
+        <MaterialIcons name={icon} size={26} color="#FFFFFF" />
+      </View>
     </Pressable>
   );
 }
 
+/**
+ * Sombra cross-platform
+ */
+function getShadowStyle(): ViewStyle {
+  if (Platform.OS === 'web') {
+    return {
+      boxShadow: '0px 6px 14px rgba(16, 185, 129, 0.4)',
+    } as ViewStyle;
+  }
+
+  return {
+    shadowColor: '#10B981',
+    shadowOpacity: 0.4,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 9,
+  };
+}
+
 const styles = StyleSheet.create({
   fab: {
-    position: 'absolute',
-    right: 16,
     width: FAB_SIZE,
     height: FAB_SIZE,
     borderRadius: FAB_SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#10B981',
-    shadowColor: '#10B981',
-    shadowOpacity: 0.4,
-    shadowRadius: 14,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 9,
-    zIndex: 50,
   },
 });

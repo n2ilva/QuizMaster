@@ -477,24 +477,26 @@ export function WorkbenchCanvas({
                   accessibilityRole="button"
                   accessibilityLabel={`Remover ${installed.label ?? installed.id}`}
                   hitSlop={6}
-                  style={({ pressed, hovered }: { pressed: boolean; hovered?: boolean }) => [
-                    styles.removeBtn,
+                  style={({ pressed }) => [
                     {
+                      position: "absolute",
                       left: removeX,
                       top: removeY,
                       width: removeSize,
                       height: removeSize,
-                      borderRadius: removeSize / 2,
+                      opacity: pressed ? 0.7 : 1,
+                      transform: [{ scale: pressed ? 0.92 : 1 }],
+                      zIndex: 10,
                     },
-                    hovered ? styles.removeBtnHover : null,
-                    pressed ? styles.removeBtnPressed : null,
                   ]}
                 >
-                  <MaterialIcons
-                    name="close"
-                    size={Math.max(12, removeSize * 0.6)}
-                    color={DC_COLORS.textPrimary}
-                  />
+                  <View style={[styles.removeBtn, { width: removeSize, height: removeSize, borderRadius: removeSize / 2 }]}>
+                    <MaterialIcons
+                      name="close"
+                      size={Math.max(12, removeSize * 0.6)}
+                      color="#FFFFFF"
+                    />
+                  </View>
                 </Pressable>
               ) : null}
             </View>
@@ -676,19 +678,19 @@ export function WorkbenchCanvas({
         horizontal={!layout.stacked}
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ alignItems: "flex-start", paddingHorizontal: 8 }}
+        contentContainerStyle={{ alignItems: "flex-start", paddingHorizontal: 0 }}
       >
         {content}
       </ScrollView>
 
       {layout.stacked && activeMobileView === "rack" ? (
-        <View style={{ paddingHorizontal: 8, paddingTop: 12 }}>
+        <View style={{ paddingHorizontal: 0, paddingTop: 12 }}>
           <RackInstallManual level={level} installedDevices={installedDevices} />
         </View>
       ) : null}
 
       {layout.stacked && activeMobileView === "notebook" && consoleDevice ? (
-        <View style={{ paddingHorizontal: 8, paddingTop: 12, height: manualHeight }}>
+        <View style={{ paddingHorizontal: 0, paddingTop: 12, height: manualHeight }}>
           <DeviceManual
             device={consoleDevice}
             completedTokens={consoleManualCompletedTokens ?? new Set()}
@@ -699,7 +701,7 @@ export function WorkbenchCanvas({
       ) : null}
 
       {layout.stacked && activeMobileView === "notebook" && !consoleDevice ? (
-        <View style={{ paddingHorizontal: 8, paddingTop: 12 }}>
+        <View style={{ paddingHorizontal: 0, paddingTop: 12 }}>
           <View style={styles.noConsoleHint}>
             <MaterialCommunityIcons
               name="console-network"
@@ -747,37 +749,47 @@ function MobileViewToggle({
       {tabs.map((t) => {
         const active = t.id === activeView;
         return (
-          <Pressable
-            key={t.id}
-            disabled={t.disabled}
-            onPress={() => onChange(t.id)}
-            style={({ hovered }: { hovered?: boolean }) => [
-              styles.toggleTab,
-              active && styles.toggleTabActive,
-              hovered && !active && !t.disabled ? styles.toggleTabHover : null,
-              t.disabled ? styles.toggleTabDisabled : null,
-            ]}
-            accessibilityRole="tab"
-            accessibilityState={{ selected: active, disabled: t.disabled }}
-            accessibilityLabel={`Visualização ${t.label}`}
-          >
-            <MaterialCommunityIcons
-              name={t.icon as any}
-              size={16}
-              color={active ? DC_COLORS.textPrimary : DC_COLORS.textMuted}
-            />
-            <Text
-              style={[
-                styles.toggleTabLabel,
-                active && styles.toggleTabLabelActive,
+          <View key={t.id} style={{ flex: 1 }}>
+            <Pressable
+              disabled={t.disabled}
+              onPress={() => onChange(t.id)}
+              style={({ pressed }) => [
+                {
+                  width: "100%",
+                  opacity: (t.disabled || pressed) ? 0.7 : 1,
+                  transform: [{ scale: pressed ? 0.98 : 1 }],
+                },
               ]}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: active, disabled: t.disabled }}
+              accessibilityLabel={`Visualização ${t.label}`}
             >
-              {t.label}
-            </Text>
-            {t.id === "notebook" && !consoleConnected ? (
-              <MaterialIcons name="lock-outline" size={13} color={DC_COLORS.textFaint} />
-            ) : null}
-          </Pressable>
+              <View
+                style={[
+                  styles.toggleTab,
+                  active && styles.toggleTabActive,
+                  t.disabled && styles.toggleTabDisabled,
+                ]}
+              >
+                <MaterialCommunityIcons
+                  name={t.icon as any}
+                  size={16}
+                  color={active ? DC_COLORS.textPrimary : DC_COLORS.textMuted}
+                />
+                <Text
+                  style={[
+                    styles.toggleTabLabel,
+                    active && styles.toggleTabLabelActive,
+                  ]}
+                >
+                  {t.label}
+                </Text>
+                {t.id === "notebook" && !consoleConnected ? (
+                  <MaterialIcons name="lock-outline" size={13} color={DC_COLORS.textFaint} />
+                ) : null}
+              </View>
+            </Pressable>
+          </View>
         );
       })}
     </View>
@@ -786,17 +798,16 @@ function MobileViewToggle({
 
 const styles = StyleSheet.create({
   removeBtn: {
-    position: "absolute",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "rgba(239,68,68,0.9)",
+    backgroundColor: DC_COLORS.danger,
     borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.5)",
+    borderColor: "rgba(0,0,0,0.2)",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.35,
-    shadowRadius: 2,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 4,
   },
   removeBtnHover: {
     backgroundColor: DC_COLORS.danger,
@@ -808,30 +819,34 @@ const styles = StyleSheet.create({
   toggleWrap: {
     flexDirection: "row",
     alignSelf: "stretch",
-    backgroundColor: DC_COLORS.bgPanel,
+    backgroundColor: DC_COLORS.bgPanelInset,
     borderRadius: DC_RADII.pill,
     borderWidth: 1,
-    borderColor: DC_COLORS.borderMuted,
+    borderColor: DC_COLORS.borderSubtle,
     padding: 4,
     gap: 4,
-    marginBottom: 10,
-    marginHorizontal: 8,
+    marginBottom: 16,
+    marginHorizontal: 0,
   },
   toggleTab: {
-    flex: 1,
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    gap: 8,
+    paddingVertical: 10,
     borderRadius: DC_RADII.pill,
     backgroundColor: "transparent",
   },
   toggleTabActive: {
-    backgroundColor: DC_COLORS.bgSurfaceHover,
+    backgroundColor: DC_COLORS.bgSurface,
     borderWidth: 1,
     borderColor: DC_COLORS.borderStrong,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
   },
   toggleTabHover: {
     backgroundColor: DC_COLORS.bgSurface,
@@ -840,10 +855,11 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   toggleTabLabel: {
-    fontSize: 12,
-    fontWeight: "700",
+    fontSize: 11,
+    fontWeight: "900",
     color: DC_COLORS.textMuted,
-    letterSpacing: 0.3,
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
   },
   toggleTabLabelActive: {
     color: DC_COLORS.textPrimary,

@@ -88,48 +88,62 @@ export function ConfirmExitModal({
 
           <View style={styles.actions}>
             <Pressable
-              onPress={onCancel}
-              accessibilityRole="button"
-              accessibilityLabel={cancelLabel}
-              style={({ pressed }) => [
-                styles.button,
-                {
-                  backgroundColor: cancelBg,
-                  borderColor,
-                  opacity: pressed ? 0.8 : 1,
-                },
-              ]}
-            >
-              <Text
-                style={[
-                  styles.buttonLabel,
-                  { color: textPrimary },
-                ]}
-                numberOfLines={1}
-              >
-                {cancelLabel}
-              </Text>
-            </Pressable>
-
-            <Pressable
               onPress={onConfirm}
               accessibilityRole="button"
               accessibilityLabel={confirmLabel}
               style={({ pressed }) => [
+                {
+                  width: '100%',
+                  opacity: pressed ? 0.7 : 1,
+                  transform: [{ scale: pressed ? 0.98 : 1 }],
+                },
+              ]}
+            >
+              <View style={[
                 styles.button,
                 {
                   backgroundColor: accent,
                   borderColor: accent,
-                  opacity: pressed ? 0.85 : 1,
+                },
+              ]}>
+                <Text
+                  style={[styles.buttonLabel, { color: "#FFFFFF" }]}
+                  numberOfLines={1}
+                >
+                  {confirmLabel}
+                </Text>
+              </View>
+            </Pressable>
+
+            <Pressable
+              onPress={onCancel}
+              accessibilityRole="button"
+              accessibilityLabel={cancelLabel}
+              style={({ pressed }) => [
+                {
+                  width: '100%',
+                  opacity: pressed ? 0.7 : 1,
+                  transform: [{ scale: pressed ? 0.98 : 1 }],
                 },
               ]}
             >
-              <Text
-                style={[styles.buttonLabel, { color: "#FFFFFF" }]}
-                numberOfLines={1}
-              >
-                {confirmLabel}
-              </Text>
+              <View style={[
+                styles.button,
+                {
+                  backgroundColor: cancelBg,
+                  borderColor,
+                },
+              ]}>
+                <Text
+                  style={[
+                    styles.buttonLabel,
+                    { color: textPrimary },
+                  ]}
+                  numberOfLines={1}
+                >
+                  {cancelLabel}
+                </Text>
+              </View>
             </Pressable>
           </View>
         </View>
@@ -178,16 +192,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     textAlign: "center",
-    marginBottom: 24,
+    marginBottom: 32,
   },
   actions: {
-    flexDirection: "row",
-    gap: 10,
+    flexDirection: "column",
+    gap: 12,
     width: "100%",
   },
   button: {
-    flex: 1,
-    paddingVertical: 14,
+    width: "100%",
+    paddingVertical: 16,
+    paddingHorizontal: 16,
     borderRadius: 14,
     borderWidth: 1,
     alignItems: "center",

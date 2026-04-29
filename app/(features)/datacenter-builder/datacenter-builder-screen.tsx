@@ -16,7 +16,6 @@ import {
 } from "react-native";
 
 import { ConfirmExitModal } from "@/components/ui/confirm-exit-modal";
-import { ValidationFab } from "@/components/ui/validation-fab";
 import { useTabContentPadding, useTopContentPadding } from "@/hooks/use-tab-content-padding";
 import {
   fetchDataCenterProgress,
@@ -28,7 +27,8 @@ import { useData } from "@/providers/data-provider";
 import { DcModal } from "./components/dc-modal";
 import { LevelCard } from "./components/level-card";
 import { WorkbenchCanvas } from "./components/workbench-canvas";
-import { WorkbenchFab } from "./components/workbench-fab";
+import { WorkbenchFab, WorkbenchValidateFab } from "./components/workbench-fab";
+import { WorkbenchToolbar } from "./components/workbench-toolbar";
 import {
   DC_BREAKPOINTS,
   DC_CABLE_VISUALS,
@@ -697,7 +697,7 @@ export function DataCenterBuilderScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingTop: 20,
+          paddingTop: topPadding,
           paddingBottom: bottomPadding + 20,
         }}
       >
@@ -747,8 +747,8 @@ export function DataCenterBuilderScreen() {
                 <View style={styles.tierLine} />
               </View>
               <View style={styles.levelGrid}>
-                {levels.map((lvl) => (
-                  <View key={lvl.id} style={styles.cardWrapper}>
+                 {levels.map((lvl) => (
+                  <View key={lvl.id} style={[styles.cardWrapper, isCompactChrome && { width: "100%" }]}>
                     <LevelCard
                       level={lvl}
                       completed={completedLevels.has(lvl.id)}
@@ -797,6 +797,18 @@ export function DataCenterBuilderScreen() {
         onPress: () => setShowLegend(true),
       },
     ];
+    const toolbarActions = [
+      ...helpActions.map((a) => ({ ...a, variant: "default" as const })),
+      {
+        id: "validate",
+        icon: "check" as const,
+        label: "Validar",
+        onPress: handleValidate,
+        variant: "success" as const,
+      },
+    ];
+
+    const fabActions = helpActions;
 
     return (
       <View style={{ flex: 1 }}>
@@ -890,14 +902,18 @@ export function DataCenterBuilderScreen() {
         )}
       </ScrollView>
 
-      {/* Standard FABs (Same as Ache o Erro) */}
-      {!finished && <WorkbenchFab actions={helpActions} bottomInset={62} />}
+      {/* Actions: Toolbar (Desktop) or Stacked FABs (Mobile) */}
       {!finished && (
-        <ValidationFab
-          onPress={handleValidate}
-          icon="check"
-          bottomInset={-8}
-        />
+        isCompactChrome ? (
+          <>
+            <WorkbenchFab actions={fabActions} bottomInset={70} />
+            <WorkbenchValidateFab onPress={handleValidate} bottomInset={0} />
+          </>
+        ) : (
+          <View style={[styles.toolbarDock, { bottom: bottomPadding + 20 }]}>
+            <WorkbenchToolbar actions={toolbarActions} />
+          </View>
+        )
       )}
     </View>
     );
@@ -1024,7 +1040,10 @@ export function DataCenterBuilderScreen() {
                 onPress={() => !alreadyInstalled && handleInstallItem(d)}
                 style={({ pressed }) => [
                   styles.invItemWrap,
-                  { transform: [{ scale: pressed && !alreadyInstalled ? 0.985 : 1 }] }
+                  {
+                    opacity: (alreadyInstalled || pressed) ? 0.7 : 1,
+                    transform: [{ scale: pressed && !alreadyInstalled ? 0.985 : 1 }],
+                  }
                 ]}
                 accessibilityRole="button"
                 accessibilityState={{ disabled: alreadyInstalled }}
@@ -1034,8 +1053,8 @@ export function DataCenterBuilderScreen() {
                   styles.invItem,
                   {
                     backgroundColor: alreadyInstalled ? DC_COLORS.bgPanelInset : DC_COLORS.bgSurface,
-                    opacity: alreadyInstalled ? 0.5 : 1,
                     borderColor: alreadyInstalled ? "transparent" : DC_COLORS.borderSubtle,
+                    opacity: alreadyInstalled ? 0.5 : 1,
                   },
                 ]}>
                   <View style={styles.invIconWrap}>
@@ -1096,31 +1115,37 @@ export function DataCenterBuilderScreen() {
               onPress={() => {
                 setSelectedCable(c);
                 setShowCableMenu(false);
-                // Auto-wire the console cable to laptop.console as soon as the user picks it.
-                // This improves UX by skipping the second click on the laptop.
                 if (c.id === "console") {
                   tryAutoConnectConsoleToLaptop();
                 }
               }}
-              style={({ hovered }: { hovered?: boolean }) => [
-                styles.cableItem,
+              style={({ pressed }) => [
                 {
-                  backgroundColor: hovered ? DC_COLORS.bgSurfaceHover : DC_COLORS.bgSurface,
-                  borderColor: hovered ? `${visual.color}66` : DC_COLORS.borderSubtle,
+                  opacity: pressed ? 0.7 : 1,
+                  transform: [{ scale: pressed ? 0.98 : 1 }],
+                  marginBottom: 8,
                 },
               ]}
               accessibilityRole="button"
               accessibilityLabel={`Selecionar cabo ${visual.label}`}
             >
-              <View style={[styles.cableDot, { backgroundColor: visual.color }]} />
-              <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={styles.cableName}>{visual.label}</Text>
-                <Text style={styles.cableDesc} numberOfLines={2}>
-                  {c.speed ? `${c.speed} · ` : ""}
-                  {visual.description}
-                </Text>
+              <View style={[
+                styles.cableItem,
+                {
+                  backgroundColor: DC_COLORS.bgSurface,
+                  borderColor: DC_COLORS.borderSubtle,
+                },
+              ]}>
+                <View style={[styles.cableDot, { backgroundColor: visual.color }]} />
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <Text style={styles.cableName}>{visual.label}</Text>
+                  <Text style={styles.cableDesc} numberOfLines={2}>
+                    {c.speed ? `${c.speed} · ` : ""}
+                    {visual.description}
+                  </Text>
+                </View>
+                <MaterialIcons name="chevron-right" size={20} color={DC_COLORS.textMuted} />
               </View>
-              <MaterialIcons name="chevron-right" size={20} color={DC_COLORS.textMuted} />
             </Pressable>
           );
         })}
@@ -1561,7 +1586,20 @@ const styles = StyleSheet.create({
   toolbarDock: {
     position: "absolute",
     alignSelf: "center",
-    zIndex: 50,
+    zIndex: 999,
+    // Shadows for the floating bar
+    ...Platform.select({
+      web: {
+        boxShadow: "0px 8px 24px rgba(0,0,0,0.4)",
+      } as any,
+      default: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.4,
+        shadowRadius: 12,
+        elevation: 10,
+      },
+    }),
   },
   resultsContainer: {
     flexGrow: 1,

@@ -75,15 +75,19 @@ export function DcModal({
             </View>
             <Pressable
               onPress={onClose}
-              style={({ hovered }) => [
-                styles.closeBtn,
-                { backgroundColor: hovered ? DC_COLORS.bgSurfaceHover : DC_COLORS.bgSurface },
+              style={({ pressed }) => [
+                {
+                  opacity: pressed ? 0.7 : 1,
+                  transform: [{ scale: pressed ? 0.94 : 1 }],
+                },
               ]}
               accessibilityRole="button"
               accessibilityLabel="Fechar modal"
               hitSlop={8}
             >
-              <MaterialIcons name="close" size={18} color={DC_COLORS.textSecondary} />
+              <View style={[styles.closeBtn, { backgroundColor: DC_COLORS.bgSurface }]}>
+                <MaterialIcons name="close" size={18} color={DC_COLORS.textSecondary} />
+              </View>
             </Pressable>
           </View>
 
@@ -100,28 +104,37 @@ export function DcModal({
               {secondaryAction && (
                 <Pressable
                   onPress={secondaryAction.onPress}
-                  style={({ hovered }) => [
-                    styles.footerBtn,
-                    styles.secondaryBtn,
-                    { backgroundColor: hovered ? DC_COLORS.bgSurfaceHover : DC_COLORS.bgSurface },
+                  style={({ pressed }) => [
+                    {
+                      flex: 1,
+                      opacity: pressed ? 0.7 : 1,
+                      transform: [{ scale: pressed ? 0.98 : 1 }],
+                    },
                   ]}
                   accessibilityRole="button"
                   accessibilityLabel={secondaryAction.label}
                 >
-                  <Text style={styles.secondaryText}>{secondaryAction.label}</Text>
+                  <View style={[styles.footerBtn, styles.secondaryBtn]}>
+                    <Text style={styles.secondaryText}>{secondaryAction.label}</Text>
+                  </View>
                 </Pressable>
               )}
               {primaryAction && (
                 <Pressable
                   onPress={primaryAction.onPress}
-                  style={({ hovered }) => [
-                    styles.footerBtn,
-                    { backgroundColor: hovered ? "#2563EB" : DC_COLORS.accent },
+                  style={({ pressed }) => [
+                    {
+                      flex: 1,
+                      opacity: pressed ? 0.7 : 1,
+                      transform: [{ scale: pressed ? 0.98 : 1 }],
+                    },
                   ]}
                   accessibilityRole="button"
                   accessibilityLabel={primaryAction.label}
                 >
-                  <Text style={styles.primaryText}>{primaryAction.label}</Text>
+                  <View style={[styles.footerBtn, { backgroundColor: DC_COLORS.accent }]}>
+                    <Text style={styles.primaryText}>{primaryAction.label}</Text>
+                  </View>
                 </Pressable>
               )}
             </View>
@@ -215,15 +228,16 @@ const styles = StyleSheet.create({
     backgroundColor: DC_COLORS.bgPanelInset,
   },
   footerBtn: {
-    flex: 1,
+    width: "100%",
     height: 44,
     borderRadius: DC_RADII.md,
     alignItems: "center",
     justifyContent: "center",
   },
   secondaryBtn: {
+    backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: DC_COLORS.borderMuted,
+    borderColor: DC_COLORS.borderStrong,
   },
   primaryText: {
     color: "#FFFFFF",
@@ -232,9 +246,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
   },
   secondaryText: {
-    color: DC_COLORS.textSecondary,
-    fontSize: 13,
-    fontWeight: "800",
-    letterSpacing: 0.3,
+    color: DC_COLORS.textMuted,
+    fontSize: 12,
+    fontWeight: "900",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
   },
 });

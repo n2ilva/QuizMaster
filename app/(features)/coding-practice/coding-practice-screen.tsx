@@ -728,12 +728,14 @@ export function CodingPracticeScreen() {
                 </View>
               </View>
               
-              <ValidationFab
-                onPress={handleValidate}
-                disabled={placed.filter(p => p.tokenId !== 'sym_newline').length < activeExercise.solution.length}
-                icon="check"
-                bottomInset={-8}
-              />
+              <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, alignItems: 'flex-end', zIndex: 9999, pointerEvents: 'box-none' }}>
+                <ValidationFab
+                  onPress={handleValidate}
+                  disabled={placed.filter(p => p.tokenId !== 'sym_newline').length < activeExercise.solution.length}
+                  icon="check"
+                  bottomInset={16}
+                />
+              </View>
             </View>
           </DraxProvider>
         </GestureHandlerRootView>
