@@ -117,6 +117,7 @@ export function AcheOErroScreen() {
   const [confirmExitOpen, setConfirmExitOpen] = useState(false);
   const [showHintsModal, setShowHintsModal] = useState(false);
   const [currentHintIndex, setCurrentHintIndex] = useState(0);
+  const [selectedTokenId, setSelectedTokenId] = useState<string | null>(null);
 
   // Animation values for completion
   const completionBgOpacity = useRef(new Animated.Value(0)).current;
@@ -348,22 +349,14 @@ export function AcheOErroScreen() {
     if (!item) return;
 
     setPlaced((prev) => prev.filter((p) => p.instanceId !== instanceId));
+    setPool((prev) => [...prev, item]);
 
-    // Add back to pool only if a token with the same ID doesn't exist there yet
-    // This keeps the inventory clean but functional
-    setPool((prev) => {
-      const exists = prev.some((p) => p.tokenId === item.tokenId);
-      if (exists) return prev;
-      return [...prev, item];
-    });
-
-    setLastMovedId(null); // When removing, we don't highlight anything as "last moved"
+    setLastMovedId(null);
     setMoveCount((m) => m + 1);
     setIsCorrect(null);
   };
 
   const handleAddToPlaced = (instanceId: string, index?: number) => {
-    // Prevent double-firing (drag-drop and press event conflict)
     const now = Date.now();
     if (
       lastActionRef.current &&
@@ -377,26 +370,22 @@ export function AcheOErroScreen() {
     const item = pool.find((p) => p.instanceId === instanceId);
     if (!item) return;
 
-    // Do NOT remove from pool (Infinite Palette)
-    // Instead, we just create a NEW instance for the placed area
-    const newId = uid();
+    setPool((prev) => prev.filter((p) => p.instanceId !== instanceId));
     setPlaced((prev) => {
       const copy = [...prev];
-      const newItem = { ...item, instanceId: newId }; // Fresh instance ID
       if (index !== undefined) {
-        copy.splice(index, 0, newItem);
+        copy.splice(index, 0, item);
       } else {
-        copy.push(newItem);
+        copy.push(item);
       }
       return copy;
     });
-    setLastMovedId(newId);
+    setLastMovedId(item.instanceId);
     setMoveCount((m) => m + 1);
     setIsCorrect(null);
   };
 
   const handleReorderPlaced = (instanceId: string, targetIndex: number) => {
-    // Prevent double-firing (drag-drop race on mobile)
     const now = Date.now();
     if (
       lastActionRef.current &&
@@ -414,15 +403,50 @@ export function AcheOErroScreen() {
       const without = [...prev.slice(0, fromIdx), ...prev.slice(fromIdx + 1)];
       const insertAt = targetIndex > fromIdx ? targetIndex - 1 : targetIndex;
       without.splice(Math.min(insertAt, without.length), 0, item);
-      // Deduplicate: ensure each instanceId appears only once
-      const seen = new Set<string>();
-      return without.filter((p) => {
-        if (seen.has(p.instanceId)) return false;
-        seen.add(p.instanceId);
-        return true;
-      });
+      return without;
     });
     setLastMovedId(instanceId);
+    setMoveCount((m) => m + 1);
+    setIsCorrect(null);
+  };
+
+  const handleSwapCodeToCode = (dragId: string, dropId: string) => {
+    setPlaced((prev) => {
+      const dragIdx = prev.findIndex((p) => p.instanceId === dragId);
+      const dropIdx = prev.findIndex((p) => p.instanceId === dropId);
+      if (dragIdx === -1 || dropIdx === -1 || dragIdx === dropIdx) return prev;
+
+      const copy = [...prev];
+      const temp = copy[dragIdx];
+      copy[dragIdx] = copy[dropIdx];
+      copy[dropIdx] = temp;
+      return copy;
+    });
+    setLastMovedId(dragId);
+    setMoveCount((m) => m + 1);
+    setIsCorrect(null);
+  };
+
+  const handleSwapPoolToCode = (poolId: string, codeId: string) => {
+    const poolItem = pool.find((p) => p.instanceId === poolId);
+    const codeItem = placed.find((p) => p.instanceId === codeId);
+    if (!poolItem || !codeItem) return;
+
+    setPlaced((prev) => {
+      const copy = [...prev];
+      const dropIdx = copy.findIndex((p) => p.instanceId === codeId);
+      if (dropIdx > -1) {
+        copy[dropIdx] = poolItem;
+      }
+      return copy;
+    });
+
+    setPool((prev) => {
+      const withoutDragged = prev.filter((p) => p.instanceId !== poolId);
+      return [...withoutDragged, codeItem];
+    });
+
+    setLastMovedId(poolItem.instanceId);
     setMoveCount((m) => m + 1);
     setIsCorrect(null);
   };
@@ -803,7 +827,22 @@ export function AcheOErroScreen() {
                           token={{ id: p.tokenId, value: p.value }}
                           instanceId={p.instanceId}
                           variant="code"
-                          onPress={() => handleRemoveFromPlaced(p.instanceId)}
+                          isSelected={selectedTokenId === p.instanceId}
+                          onToggleSelect={() => setSelectedTokenId(prev => prev === p.instanceId ? null : p.instanceId)}
+                          onMoveLeft={() => {
+                            if (p.globalIndex > 0) {
+                              handleReorderPlaced(p.instanceId, p.globalIndex - 1);
+                            }
+                          }}
+                          onMoveRight={() => {
+                            if (p.globalIndex < placed.length - 1) {
+                              handleReorderPlaced(p.instanceId, p.globalIndex + 2);
+                            }
+                          }}
+                          onRemove={() => {
+                            handleRemoveFromPlaced(p.instanceId);
+                            if (selectedTokenId === p.instanceId) setSelectedTokenId(null);
+                          }}
                           receptive
                           isCorrectPosition={
                             correctFlags[p.globalIndex] || false
@@ -815,12 +854,9 @@ export function AcheOErroScreen() {
                             );
                             if (!drag) return;
                             if (drag.source === "pool")
-                              handleAddToPlaced(drag.instanceId, p.globalIndex);
+                              handleSwapPoolToCode(drag.instanceId, p.instanceId);
                             if (drag.source === "code")
-                              handleReorderPlaced(
-                                drag.instanceId,
-                                p.globalIndex,
-                              );
+                              handleSwapCodeToCode(drag.instanceId, p.instanceId);
                           }}
                         />
                       </View>

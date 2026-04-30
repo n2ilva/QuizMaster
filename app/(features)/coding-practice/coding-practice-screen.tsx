@@ -339,6 +339,46 @@ export function CodingPracticeScreen() {
     setIsCorrect(null);
   }, []);
 
+  const handleSwapCodeToCode = useCallback((dragId: string, dropId: string) => {
+    setPlaced((prev) => {
+      const dragIdx = prev.findIndex((p) => p.instanceId === dragId);
+      const dropIdx = prev.findIndex((p) => p.instanceId === dropId);
+      if (dragIdx === -1 || dropIdx === -1 || dragIdx === dropIdx) return prev;
+
+      const copy = [...prev];
+      const temp = copy[dragIdx];
+      copy[dragIdx] = copy[dropIdx];
+      copy[dropIdx] = temp;
+      setMoveCount((m) => m + 1);
+      return copy;
+    });
+    setIsCorrect(null);
+  }, []);
+
+  const handleSwapPoolToCode = useCallback((poolId: string, codeId: string) => {
+    const poolItem = pool.find((p) => p.instanceId === poolId);
+    const codeItem = placed.find((p) => p.instanceId === codeId);
+    if (!poolItem || !codeItem) return;
+    if (codeItem.tokenId === 'sym_newline') return;
+
+    setPlaced((prev) => {
+      const copy = [...prev];
+      const dropIdx = copy.findIndex((p) => p.instanceId === codeId);
+      if (dropIdx > -1) {
+        copy[dropIdx] = poolItem;
+      }
+      return copy;
+    });
+
+    setPool((prev) => {
+      const withoutDragged = prev.filter((p) => p.instanceId !== poolId);
+      return [...withoutDragged, codeItem];
+    });
+
+    setMoveCount((m) => m + 1);
+    setIsCorrect(null);
+  }, [pool, placed]);
+
   const handleReorder = useCallback((fromInstanceId: string, toIndex: number) => {
     setPlaced((prev) => {
       const fromIdx = prev.findIndex((p) => p.instanceId === fromInstanceId);
@@ -694,6 +734,8 @@ export function CodingPracticeScreen() {
                       onRename={handleRename}
                       onClear={handleClear}
                       onAddToken={handleAddToken}
+                      onSwapCodeToCode={handleSwapCodeToCode}
+                      onSwapPoolToCode={handleSwapPoolToCode}
                       onReorder={handleReorder}
                       onInsertAt={handleInsertAt}
                       isCorrect={isCorrect}

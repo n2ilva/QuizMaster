@@ -32,6 +32,7 @@ export function DraggableTokenWrapper({
       dragReleasedStyle={dragReleasedStyle}
       hoverDraggingStyle={hoverDraggingStyle}
       receivingStyle={receivingStyle}
+      longPressDelay={150}
     >
       {children}
     </DraxView>

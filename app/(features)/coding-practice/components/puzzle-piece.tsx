@@ -17,6 +17,10 @@ type PuzzlePieceProps = {
   variant?: 'key' | 'answer';
   instanceId?: string;
   isCorrectPosition?: boolean;
+  isSelected?: boolean;
+  onMoveLeft?: () => void;
+  onMoveRight?: () => void;
+  onToggleSelect?: () => void;
 };
 
 export function PuzzlePiece({
@@ -30,6 +34,10 @@ export function PuzzlePiece({
   variant = 'key',
   instanceId,
   isCorrectPosition = false,
+  isSelected = false,
+  onMoveLeft,
+  onMoveRight,
+  onToggleSelect,
 }: PuzzlePieceProps) {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [draftLabel, setDraftLabel] = useState(customLabel ?? token.label);
@@ -83,22 +91,12 @@ export function PuzzlePiece({
           style={{
             alignItems: 'center',
             justifyContent: 'center',
-            paddingHorizontal: 12,
-            paddingVertical: 10,
-            borderRadius: 10,
-            borderStyle: 'solid',
-            backgroundColor: used ? 'transparent' : '#1F2937',
-            borderWidth: 1.5,
-            borderColor: used ? '#111316' : '#374151',
-            borderBottomWidth: used ? 1.5 : 4,
+            paddingHorizontal: 6,
+            paddingVertical: 4,
+            borderRadius: 4,
+            backgroundColor: used ? 'transparent' : 'rgba(255,255,255,0.06)',
             opacity: used ? 0.3 : 1,
-            minWidth: 36,
-            minHeight: 40,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.3,
-            shadowRadius: 4,
-            elevation: 4,
+            minWidth: 24,
             ...(Platform.OS === 'web' && !used && {
               cursor: 'pointer',
             } as any),
@@ -106,11 +104,11 @@ export function PuzzlePiece({
         >
           <Text
             style={{
-              color: used ? '#4B5563' : '#E5E7EB',
-              fontSize: 14,
-              fontWeight: '800',
+              color: used ? '#4B5563' : colors.text,
+              fontSize: 15,
+              fontWeight: '500',
               fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-              letterSpacing: 0.1,
+              letterSpacing: 0.5,
             }}
           >
             {displayLabel}
@@ -138,7 +136,37 @@ export function PuzzlePiece({
 
   // Answer variant (inside the answer area)
   return (
-    <View style={{ position: 'relative', marginHorizontal: 3, marginVertical: 3 }}>
+    <View style={{ position: 'relative', marginHorizontal: 3, marginVertical: 3, zIndex: isSelected ? 10 : 1 }}>
+      {isSelected && (
+        <View style={{ 
+          position: 'absolute', 
+          top: -38, 
+          alignSelf: 'center',
+          flexDirection: 'row', 
+          backgroundColor: '#1A1D21', 
+          borderRadius: 8, 
+          padding: 4, 
+          gap: 8,
+          zIndex: 20,
+          borderWidth: 1,
+          borderColor: '#30363D',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 4,
+          elevation: 5,
+        }}>
+          <TouchableOpacity onPress={onMoveLeft} hitSlop={8} style={{ padding: 4, backgroundColor: '#2D3139', borderRadius: 6 }}>
+            <MaterialIcons name="chevron-left" size={18} color="#ECEDEE" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onRemove} hitSlop={8} style={{ padding: 4, backgroundColor: '#4C1D1D', borderRadius: 6 }}>
+            <MaterialIcons name="close" size={18} color="#FF5F56" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onMoveRight} hitSlop={8} style={{ padding: 4, backgroundColor: '#2D3139', borderRadius: 6 }}>
+            <MaterialIcons name="chevron-right" size={18} color="#ECEDEE" />
+          </TouchableOpacity>
+        </View>
+      )}
       <Animated.View style={{
         position: 'absolute',
         top: -4, bottom: -4, left: -4, right: -4,
@@ -151,7 +179,7 @@ export function PuzzlePiece({
         draggingStyle={{ opacity: 0.5 }}
       >
         <TouchableOpacity
-        onPress={onPress}
+        onPress={onToggleSelect}
         onLongPress={() => {
           if (token.editable && onRename) {
             setDraftLabel(customLabel ?? token.label);
@@ -163,29 +191,22 @@ export function PuzzlePiece({
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
-          paddingHorizontal: 12,
-          paddingVertical: 7,
-          borderRadius: 10,
-          borderStyle: 'solid',
-          borderWidth: 1.5,
-          borderBottomWidth: 4,
-          backgroundColor: '#0D0F12',
-          borderColor: '#1E2328',
-          minHeight: 34,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.4,
-          shadowRadius: 4,
-          elevation: 5,
+          paddingHorizontal: 6,
+          paddingVertical: 4,
+          borderRadius: 4,
+          backgroundColor: isSelected ? 'rgba(255,255,255,0.15)' : isCorrectPosition ? 'rgba(16, 185, 129, 0.12)' : 'transparent',
+          minWidth: 24,
+          borderWidth: isSelected ? 1 : 0,
+          borderColor: isSelected ? '#E2E8F0' : 'transparent',
         }}
       >
         <Text
           style={{
-            color: '#10B981',
-            fontSize: 14,
-            fontWeight: '900',
+            color: isCorrectPosition ? '#10B981' : colors.text,
+            fontSize: 15,
+            fontWeight: isCorrectPosition ? '800' : '500',
             fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-            letterSpacing: 0.1,
+            letterSpacing: 0.5,
           }}
         >
           {displayLabel}

@@ -217,6 +217,11 @@ type DebugTokenProps = {
   onReceiveDragDrop?: (event: any) => void;
   isCorrectPosition?: boolean;
   isLastMoved?: boolean;
+  isSelected?: boolean;
+  onToggleSelect?: () => void;
+  onMoveLeft?: () => void;
+  onMoveRight?: () => void;
+  onRemove?: () => void;
 };
 
 export function DebugToken({ 
@@ -227,7 +232,12 @@ export function DebugToken({
   receptive, 
   onReceiveDragDrop,
   isCorrectPosition = false,
-  isLastMoved = false
+  isLastMoved = false,
+  isSelected = false,
+  onToggleSelect,
+  onMoveLeft,
+  onMoveRight,
+  onRemove
 }: DebugTokenProps) {
   const isPool = variant === 'pool';
   const isTouchDevice =
@@ -286,7 +296,37 @@ export function DebugToken({
         zIndex: 30,
       }}
     >
-      <View style={{ position: 'relative', margin: 2 }}>
+      <View style={{ position: 'relative', marginHorizontal: 2, marginVertical: 2, zIndex: isSelected ? 10 : 1 }}>
+        {isSelected && (
+          <View style={{ 
+            position: 'absolute', 
+            top: -38, 
+            alignSelf: 'center',
+            flexDirection: 'row', 
+            backgroundColor: '#1A1D21', 
+            borderRadius: 8, 
+            padding: 4, 
+            gap: 8,
+            zIndex: 20,
+            borderWidth: 1,
+            borderColor: '#30363D',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+            elevation: 5,
+          }}>
+            <TouchableOpacity onPress={onMoveLeft} hitSlop={8} style={{ padding: 4, backgroundColor: '#2D3139', borderRadius: 6 }}>
+              <MaterialIcons name="chevron-left" size={18} color="#ECEDEE" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onRemove} hitSlop={8} style={{ padding: 4, backgroundColor: '#4C1D1D', borderRadius: 6 }}>
+              <MaterialIcons name="close" size={18} color="#FF5F56" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onMoveRight} hitSlop={8} style={{ padding: 4, backgroundColor: '#2D3139', borderRadius: 6 }}>
+              <MaterialIcons name="chevron-right" size={18} color="#ECEDEE" />
+            </TouchableOpacity>
+          </View>
+        )}
         <Animated.View style={{
           position: 'absolute',
           top: -3, bottom: -3, left: -3, right: -3,
@@ -295,31 +335,28 @@ export function DebugToken({
           opacity: glowAnim,
         }} />
         <TouchableOpacity
-          onPress={onPress}
+          onPress={isPool ? onPress : onToggleSelect}
           activeOpacity={0.7}
           style={{
-            paddingHorizontal: 8,
-            paddingVertical: 5,
-            borderRadius: 8,
-            backgroundColor: isPool ? '#1F2937' : '#111316',
-            borderWidth: 1.5,
-            borderColor: isPool ? '#374151' : (isCorrectPosition ? '#10B98133' : '#1E2328'),
-            borderBottomWidth: 3,
-            minWidth: 32,
+            paddingHorizontal: 6,
+            paddingVertical: 4,
+            borderRadius: 4,
+            backgroundColor: isSelected ? 'rgba(255,255,255,0.15)' : (isPool 
+              ? 'rgba(255,255,255,0.06)' 
+              : (isCorrectPosition ? 'rgba(16, 185, 129, 0.12)' : 'transparent')),
+            minWidth: 24,
             alignItems: 'center',
             justifyContent: 'center',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.2,
-            shadowRadius: 3,
-            elevation: 3,
+            borderWidth: isSelected ? 1 : 0,
+            borderColor: isSelected ? '#E2E8F0' : 'transparent',
           }}
         >
           <Text style={{ 
-            color: isPool ? '#E5E7EB' : (isCorrectPosition ? '#10B981' : '#ECEDEE'), 
-            fontSize: 14, 
+            color: isPool ? '#9BA1A6' : (isCorrectPosition ? '#10B981' : '#E5E7EB'), 
+            fontSize: 15, 
             fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace', 
-            fontWeight: '800' 
+            fontWeight: isCorrectPosition ? '800' : '500',
+            letterSpacing: 0.5,
           }}>
             {token.value}
           </Text>

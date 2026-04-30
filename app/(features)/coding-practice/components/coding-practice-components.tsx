@@ -715,6 +715,8 @@ type AnswerAreaProps = {
   onRename: (instanceId: string, newLabel: string) => void;
   onClear: () => void;
   onAddToken: (instanceId: string) => void;
+  onSwapCodeToCode: (dragId: string, dropId: string) => void;
+  onSwapPoolToCode: (poolId: string, codeId: string) => void;
   onReorder: (fromInstanceId: string, toIndex: number) => void;
   onInsertAt: (instanceId: string, atIndex: number) => void;
   isCorrect: boolean | null;
@@ -729,12 +731,16 @@ export function AnswerArea({
   onRename,
   onClear,
   onAddToken,
+  onSwapCodeToCode,
+  onSwapPoolToCode,
   onReorder,
   onInsertAt,
   isCorrect,
   expectedCount,
   solution = [],
 }: AnswerAreaProps) {
+  const [selectedTokenId, setSelectedTokenId] = React.useState<string | null>(null);
+  
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const tokenMap = React.useMemo(() => {
@@ -759,7 +765,18 @@ export function AnswerArea({
   const borderColor = isCorrect === false ? '#EF4444' : (isDark ? '#2D3139' : '#E2E8F0');
   const bgColor = isCorrect === false ? (isDark ? '#2D000005' : '#FEF2F2') : 'transparent';
 
-  // Handle drop on a specific index (reorder or insert)
+  // Handle drop directly on a token to swap
+  const handleDropOnToken = React.useCallback((payload: string, targetInstanceId: string) => {
+    if (payload.startsWith('ans_')) {
+      const fromId = payload.replace('ans_', '');
+      onSwapCodeToCode(fromId, targetInstanceId);
+    } else if (payload.startsWith('kb_')) {
+      const id = payload.replace('kb_', '');
+      onSwapPoolToCode(id, targetInstanceId);
+    }
+  }, [onSwapCodeToCode, onSwapPoolToCode]);
+
+  // Handle drop on a specific gap index (reorder or insert)
   const handleDropOnIndex = React.useCallback((payload: string, targetIndex: number) => {
     if (payload.startsWith('ans_')) {
       const fromId = payload.replace('ans_', '');
@@ -891,27 +908,62 @@ export function AnswerArea({
                  return rows.map((row, rowIdx) => (
                    <View key={`row-${rowIdx}`} style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', marginLeft: row.indent * 20, marginBottom: 4 }}>
                      {row.tokens.map((p) => (
-                       <DraxView
-                         key={p.instanceId}
-                         receptive
-                         onReceiveDragDrop={(event) => {
-                           const payload = event.dragged.payload;
-                           if (payload && typeof payload === 'string') {
-                             handleDropOnIndex(payload, p.globalIndex);
-                           }
-                         }}
-                         receivingStyle={{ opacity: 0.7, borderLeftWidth: 3, borderLeftColor: '#10B981', borderRadius: 4 }}
-                       >
-                         <PuzzlePiece
-                           instanceId={p.instanceId}
-                           token={tokenMap.get(p.tokenId)!}
-                           customLabel={p.customLabel}
-                           variant="answer"
-                           onPress={() => onRemove(p.instanceId)}
-                           onRename={(newLabel) => onRename(p.instanceId, newLabel)}
-                           isCorrectPosition={correctFlags[p.globalIndex] || false}
-                         />
-                       </DraxView>
+                       <View key={p.instanceId} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                         {/* Gap for inserting/reordering */}
+                         <DraxView
+                           receptive
+                           onReceiveDragDrop={(event) => {
+                             const payload = event.dragged.payload;
+                             if (payload && typeof payload === 'string') {
+                               handleDropOnIndex(payload, p.globalIndex);
+                             }
+                           }}
+                         >
+                           <View style={{ width: 4, height: 34 }} />
+                         </DraxView>
+
+                         <DraxView
+                           receptive
+                           onReceiveDragDrop={(event) => {
+                             const payload = event.dragged.payload;
+                             if (payload && typeof payload === 'string') {
+                               handleDropOnToken(payload, p.instanceId);
+                             }
+                           }}
+                           receivingStyle={{ 
+                             opacity: 0.7, 
+                             borderColor: '#10B981',
+                             backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                             borderWidth: 2, 
+                             borderRadius: 4 
+                           }}
+                         >
+                           <PuzzlePiece
+                             instanceId={p.instanceId}
+                             token={tokenMap.get(p.tokenId)!}
+                             customLabel={p.customLabel}
+                             variant="answer"
+                             isSelected={selectedTokenId === p.instanceId}
+                             onToggleSelect={() => setSelectedTokenId(prev => prev === p.instanceId ? null : p.instanceId)}
+                             onMoveLeft={() => {
+                               if (p.globalIndex > 0) {
+                                 onReorder(p.instanceId, p.globalIndex - 1);
+                               }
+                             }}
+                             onMoveRight={() => {
+                               if (p.globalIndex < placed.length - 1) {
+                                 onReorder(p.instanceId, p.globalIndex + 2);
+                               }
+                             }}
+                             onRemove={() => {
+                               onRemove(p.instanceId);
+                               if (selectedTokenId === p.instanceId) setSelectedTokenId(null);
+                             }}
+                             onRename={(newLabel) => onRename(p.instanceId, newLabel)}
+                             isCorrectPosition={correctFlags[p.globalIndex] || false}
+                           />
+                         </DraxView>
+                       </View>
                      ))}
                    </View>
                  ));
